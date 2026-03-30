@@ -6,7 +6,7 @@
     <title>Photography | Joshwuff</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-/* --- LIGHTBOX (FULLSCREEN IMAGE) --- */
+        /* --- LIGHTBOX (FULLSCREEN IMAGE) --- */
         .lightbox {
             position: fixed;
             top: 0;
@@ -187,6 +187,7 @@
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+            cursor: pointer; /* Makes it clear the photo is clickable */
         }
 
         .photo-item img {
@@ -283,9 +284,6 @@
         <footer>
             <p>&copy; 2026 Joshwuff. All rights reserved.</p>
         </footer>
-<footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-        </footer>
     </div>
 
     <script>
@@ -306,6 +304,15 @@
                         <img src="${photo.src}" alt="${photo.alt}">
                         <div class="photo-overlay">${photo.title}</div>
                     `;
+                    
+                    // --- NEW: Open Lightbox when clicked ---
+                    photoDiv.addEventListener('click', () => {
+                        const lightbox = document.getElementById('lightbox');
+                        const lightboxImg = document.getElementById('lightbox-img');
+                        lightboxImg.src = photo.src; 
+                        lightbox.classList.add('active'); 
+                    });
+
                     gallery.appendChild(photoDiv);
                 });
             } catch (error) {
@@ -313,11 +320,23 @@
                 gallery.innerHTML = "<p>Failed to load gallery.</p>";
             }
 
-            // 3. Re-attach the Filtering Logic (Same as before)
-            // Note: We have to wait for the photos to load BEFORE we can filter them!
-            // So we select them here inside the async function.
-            
-            // Give the browser a tiny microsecond to render the new HTML before finding it
+            // --- NEW: Lightbox Closing Logic ---
+            const lightbox = document.getElementById('lightbox');
+            const closeBtn = document.querySelector('.lightbox-close');
+
+            // Close when the X is clicked
+            closeBtn.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+            });
+
+            // Close when clicking the dark background outside the image
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+
+            // 3. Re-attach the Filtering Logic
             setTimeout(() => {
                 const photos = document.querySelectorAll('.photo-item');
                 
@@ -353,7 +372,7 @@
                         }
                     });
                 });
-            }, 50); // 50 millisecond delay to ensure elements exist
+            }, 50); 
         });
     </script>
 </body>
