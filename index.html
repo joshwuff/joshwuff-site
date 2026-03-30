@@ -7,13 +7,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #0b0f19;
+            /* Updated to Crimson/Red Theme */
+            --bg-color: #0d0d12;
             --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #38bdf8;
-            --accent-glow: rgba(56, 189, 248, 0.3);
+            --accent: #ef4444; /* Vibrant Red */
+            --accent-glow: rgba(239, 68, 68, 0.25);
         }
 
         * { box-sizing: border-box; }
@@ -23,9 +24,10 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
+            /* Subtle background glow using red hues */
             background-image: 
-                radial-gradient(circle at 20% 20%, rgba(56, 189, 248, 0.1) 0%, transparent 40%),
-                radial-gradient(circle at 80% 80%, rgba(129, 140, 248, 0.1) 0%, transparent 40%);
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
             color: var(--text-primary);
             display: flex;
             justify-content: center;
@@ -51,16 +53,17 @@
             width: 110px;
             height: 110px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--accent), #818cf8);
+            /* Gradient: Crimson to Burgundy */
+            background: linear-gradient(135deg, var(--accent), #b91c1c);
             margin: 0 auto 24px;
             border: 4px solid var(--glass-border);
-            box-shadow: 0 0 20px var(--accent-glow);
+            box-shadow: 0 0 25px var(--accent-glow);
             object-fit: cover;
         }
 
-        h1 { font-size: 1.75rem; margin: 0; font-weight: 700; letter-spacing: -0.025em; }
-        .handle { color: var(--accent); font-size: 1rem; margin-top: 6px; font-weight: 600; }
-        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+        h1 { font-size: 1.8rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .handle { color: var(--accent); font-size: 1.05rem; margin-top: 6px; font-weight: 600; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 42px; line-height: 1.6; }
 
         /* Links Section */
         .links-container { display: flex; flex-direction: column; gap: 14px; }
@@ -83,10 +86,10 @@
         }
 
         .link-card:hover {
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(255, 255, 255, 0.07);
             transform: scale(1.02);
             border-color: var(--accent);
-            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3), 0 0 10px var(--accent-glow);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
         }
 
         /* Footer */
@@ -102,7 +105,7 @@
             color: var(--accent);
             text-decoration: none;
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 12px;
             font-weight: 600;
             transition: opacity 0.2s;
         }
@@ -120,12 +123,13 @@
         <p class="bio">Digital creator, gaming enthusiast, and official home of the Joshwuff brand.</p>
 
         <div class="links-container">
-            <a href="https://discord.gg/joshwuff" class="link-card">Join the Discord</a>
-            <a href="https://patreon.com/joshwuff" class="link-card">Support on Patreon</a>
-            <a href="https://snapchat.com/add/joshwuff" class="link-card">Add on Snapchat</a>
-            <a href="https://x.com/joshwuff_" class="link-card">Follow on X (@joshwuff_)</a>
-            <a href="https://instagram.com/joshwuff" class="link-card">Instagram</a>
-            <a href="https://vrc.group/JOSHWUFF" class="link-card">VRChat Community</a>
+            <a href="https://www.instagram.com/kingskostumes" class="link-card" target="_blank" rel="noopener noreferrer">Fursuit maker: Kings Kostumes</a>
+            <a href="https://discord.com/invite/AegFgCKA" class="link-card" target="_blank" rel="noopener noreferrer">Discord Community</a>
+            <a href="https://www.furtrack.com/index/joshwuff" class="link-card" target="_blank" rel="noopener noreferrer">Furtrack Profile</a>
+            <a href="https://x.com/joshwuff_" class="link-card" target="_blank" rel="noopener noreferrer">Follow on X (@joshwuff_)</a>
+            <a href="https://www.tiktok.com/@joshwuff" class="link-card" target="_blank" rel="noopener noreferrer">TikTok</a>
+            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="link-card" target="_blank" rel="noopener noreferrer">BlueSky</a>
+            <a href="https://www.twitch.tv/joshwuff" class="link-card" target="_blank" rel="noopener noreferrer">Twitch Channel</a>
         </div>
 
         <footer>
