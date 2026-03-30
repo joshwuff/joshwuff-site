@@ -34,7 +34,7 @@
             min-height: 100vh;
         }
 
-        /* Navigation Bar - Same as other pages */
+        /* Navigation Bar */
         .navbar {
             position: fixed;
             top: 0;
@@ -61,11 +61,11 @@
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        /* Content Container */
+        /* Content Container - Widened for the grid */
         .container {
             width: 100%;
-            max-width: 480px;
-            padding: 120px 24px 60px; /* Top padding for navbar */
+            max-width: 900px; 
+            padding: 120px 24px 60px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
         }
@@ -77,53 +77,108 @@
 
         h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
         .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
-        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; max-width: 500px; margin-left: auto; margin-right: auto;}
 
-        /* Themed Placeholder Box */
-        .placeholder-box {
+        /* --- NEW FILTER CONTROLS --- */
+        .filter-controls {
             background: var(--glass-bg);
-            border: 2px dashed var(--glass-border);
+            border: 1px solid var(--glass-border);
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            padding: 60px 30px;
-            border-radius: 24px;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
+            padding: 15px 25px;
+            border-radius: 16px;
+            margin: 0 auto 40px auto;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            max-width: fit-content;
         }
 
-        .placeholder-box:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
+        .checkbox-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s ease;
         }
 
-        .placeholder-icon {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            display: block;
-            color: rgba(239, 68, 68, 0.5); /* Muted red icon */
-            animation: pulseIcon 2s infinite ease-in-out;
-        }
-
-        @keyframes pulseIcon {
-            0% { transform: scale(1); opacity: 0.5; }
-            50% { transform: scale(1.05); opacity: 0.8; }
-            100% { transform: scale(1); opacity: 0.5; }
-        }
-
-        .placeholder-title {
-            margin: 0;
-            font-size: 1.25rem;
-            font-weight: 700;
+        .checkbox-label:hover {
             color: var(--text-primary);
         }
 
-        .placeholder-text {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            margin-top: 12px;
-            line-height: 1.5;
+        .filter-checkbox {
+            accent-color: var(--accent);
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+        }
+
+        /* --- NEW PHOTO GRID --- */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .photo-item {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 1 / 1; /* Keeps images beautifully square */
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            opacity: 0.85;
+            transition: opacity 0.3s ease, transform 0.5s ease;
+        }
+
+        /* Hover Effects */
+        .photo-item:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 24px var(--accent-glow);
+            border-color: var(--accent);
+        }
+
+        .photo-item:hover img {
+            opacity: 1;
+            transform: scale(1.05); /* Slight zoom on hover */
+        }
+
+        .photo-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(transparent, rgba(13, 13, 18, 0.95));
+            color: var(--text-primary);
+            padding: 30px 20px 20px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-align: left;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            pointer-events: none;
+        }
+
+        .photo-item:hover .photo-overlay {
+            transform: translateY(0);
+        }
+
+        /* JavaScript hide class */
+        .hidden {
+            display: none;
         }
 
         footer {
@@ -146,17 +201,107 @@
         <h1>Photography</h1>
         <div class="subtitle">By joshwuff</div>
         
-        <p class="bio">Capturing moments all around the country and beyond! This portfolio expansion is actively underway.</p>
+        <p class="bio">Capturing moments all around the country and beyond! Select a category below to filter my latest work.</p>
 
-        <div class="placeholder-box">
-            <span class="placeholder-icon">📸</span>
-            <h2 class="placeholder-title">Gallery Coming Soon</h2>
-            <p class="placeholder-text">I am currently curating and uploading my best work for this space. The full portfolio will be available shortly.</p>
+        <div class="filter-controls">
+            <label class="checkbox-label">
+                <input type="checkbox" value="all" class="filter-checkbox" checked> All
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" value="nature" class="filter-checkbox"> Nature
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" value="furry" class="filter-checkbox"> Furry
+            </label>
+            <label class="checkbox-label">
+                <input type="checkbox" value="other" class="filter-checkbox"> Other
+            </label>
+        </div>
+
+        <div class="photo-grid" id="gallery">
+            
+            <div class="photo-item nature">
+                <img src="https://via.placeholder.com/400x400/1a1a24/ef4444?text=Nature+Trail" alt="Florida Nature Trail">
+                <div class="photo-overlay">Florida Nature Trail</div>
+            </div>
+            
+            <div class="photo-item furry">
+                <img src="https://via.placeholder.com/400x400/1a1a24/ef4444?text=Furry+Camp" alt="Furry Camp Event">
+                <div class="photo-overlay">Furry Camp 2026</div>
+            </div>
+
+            <div class="photo-item other">
+                <img src="https://via.placeholder.com/400x400/1a1a24/ef4444?text=Honda+Civic" alt="2023 Honda Civic">
+                <div class="photo-overlay">2023 Honda Civic</div>
+            </div>
+            
+            <div class="photo-item other">
+                <img src="https://via.placeholder.com/400x400/1a1a24/ef4444?text=Contemporary+Resort" alt="Contemporary Resort Architecture">
+                <div class="photo-overlay">Resort Architecture</div>
+            </div>
+
+             <div class="photo-item furry">
+                <img src="https://via.placeholder.com/400x400/1a1a24/ef4444?text=Convention+Shoot" alt="Convention Photoshoot">
+                <div class="photo-overlay">Convention Floor</div>
+            </div>
+
         </div>
 
         <footer>
             <p>&copy; 2026 Joshwuff. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const checkboxes = document.querySelectorAll('.filter-checkbox');
+            const photos = document.querySelectorAll('.photo-item');
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    
+                    // Uncheck "All" if a specific category is clicked, and vice versa
+                    if (checkbox.value !== 'all' && checkbox.checked) {
+                        document.querySelector('input[value="all"]').checked = false;
+                    } else if (checkbox.value === 'all' && checkbox.checked) {
+                        checkboxes.forEach(cb => {
+                            if (cb.value !== 'all') cb.checked = false;
+                        });
+                    }
+
+                    // Get all currently checked values
+                    const checkedValues = Array.from(checkboxes)
+                        .filter(cb => cb.checked)
+                        .map(cb => cb.value);
+
+                    // If nothing is checked, default back to "All"
+                    if (checkedValues.length === 0) {
+                        document.querySelector('input[value="all"]').checked = true;
+                        checkedValues.push('all');
+                    }
+
+                    // Show/Hide logic
+                    if (checkedValues.includes('all')) {
+                        photos.forEach(photo => photo.classList.remove('hidden'));
+                    } else {
+                        photos.forEach(photo => {
+                            let isVisible = false;
+                            checkedValues.forEach(value => {
+                                if (photo.classList.contains(value)) {
+                                    isVisible = true;
+                                }
+                            });
+
+                            if (isVisible) {
+                                photo.classList.remove('hidden');
+                            } else {
+                                photo.classList.add('hidden');
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
