@@ -221,74 +221,78 @@
         <div class="photo-grid" id="gallery">  
         </div>
 
-        <footer>
+<footer>
             <p>&copy; 2026 Joshwuff. All rights reserved.</p>
         </footer>
     </div>
 
     <script>
-<script>
-    document.addEventListener('DOMContentLoaded', async () => {
-        const gallery = document.getElementById('gallery');
-        const checkboxes = document.querySelectorAll('.filter-checkbox');
+        document.addEventListener('DOMContentLoaded', async () => {
+            const gallery = document.getElementById('gallery');
+            const checkboxes = document.querySelectorAll('.filter-checkbox');
 
-        // 1. Fetch the photos from your JSON file
-        try {
-            const response = await fetch('photos.json');
-            const photosData = await response.json();
+            // 1. Fetch the photos from your JSON file
+            try {
+                const response = await fetch('photos.json');
+                const photosData = await response.json();
 
-            // 2. Build the HTML for each photo automatically
-            photosData.forEach(photo => {
-                const photoDiv = document.createElement('div');
-                photoDiv.className = `photo-item ${photo.category}`;
-                photoDiv.innerHTML = `
-                    <img src="${photo.src}" alt="${photo.alt}">
-                    <div class="photo-overlay">${photo.title}</div>
-                `;
-                gallery.appendChild(photoDiv);
-            });
-        } catch (error) {
-            console.error("Error loading photos:", error);
-            gallery.innerHTML = "<p>Failed to load gallery.</p>";
-        }
+                // 2. Build the HTML for each photo automatically
+                photosData.forEach(photo => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = `photo-item ${photo.category}`;
+                    photoDiv.innerHTML = `
+                        <img src="${photo.src}" alt="${photo.alt}">
+                        <div class="photo-overlay">${photo.title}</div>
+                    `;
+                    gallery.appendChild(photoDiv);
+                });
+            } catch (error) {
+                console.error("Error loading photos:", error);
+                gallery.innerHTML = "<p>Failed to load gallery.</p>";
+            }
 
-        // 3. Re-attach the Filtering Logic (Same as before)
-        const photos = document.querySelectorAll('.photo-item');
-        
-        checkboxes.forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                if (checkbox.value !== 'all' && checkbox.checked) {
-                    document.querySelector('input[value="all"]').checked = false;
-                } else if (checkbox.value === 'all' && checkbox.checked) {
-                    checkboxes.forEach(cb => {
-                        if (cb.value !== 'all') cb.checked = false;
+            // 3. Re-attach the Filtering Logic (Same as before)
+            // Note: We have to wait for the photos to load BEFORE we can filter them!
+            // So we select them here inside the async function.
+            
+            // Give the browser a tiny microsecond to render the new HTML before finding it
+            setTimeout(() => {
+                const photos = document.querySelectorAll('.photo-item');
+                
+                checkboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', () => {
+                        if (checkbox.value !== 'all' && checkbox.checked) {
+                            document.querySelector('input[value="all"]').checked = false;
+                        } else if (checkbox.value === 'all' && checkbox.checked) {
+                            checkboxes.forEach(cb => {
+                                if (cb.value !== 'all') cb.checked = false;
+                            });
+                        }
+
+                        const checkedValues = Array.from(checkboxes)
+                            .filter(cb => cb.checked)
+                            .map(cb => cb.value);
+
+                        if (checkedValues.length === 0) {
+                            document.querySelector('input[value="all"]').checked = true;
+                            checkedValues.push('all');
+                        }
+
+                        if (checkedValues.includes('all')) {
+                            photos.forEach(photo => photo.classList.remove('hidden'));
+                        } else {
+                            photos.forEach(photo => {
+                                let isVisible = false;
+                                checkedValues.forEach(value => {
+                                    if (photo.classList.contains(value)) isVisible = true;
+                                });
+                                if (isVisible) photo.classList.remove('hidden'); else photo.classList.add('hidden');
+                            });
+                        }
                     });
-                }
-
-                const checkedValues = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-
-                if (checkedValues.length === 0) {
-                    document.querySelector('input[value="all"]').checked = true;
-                    checkedValues.push('all');
-                }
-
-                if (checkedValues.includes('all')) {
-                    photos.forEach(photo => photo.classList.remove('hidden'));
-                } else {
-                    photos.forEach(photo => {
-                        let isVisible = false;
-                        checkedValues.forEach(value => {
-                            if (photo.classList.contains(value)) isVisible = true;
-                        });
-                        if (isVisible) photo.classList.remove('hidden'); else photo.classList.add('hidden');
-                    });
-                }
-            });
+                });
+            }, 50); // 50 millisecond delay to ensure elements exist
         });
-    });
-</script>
     </script>
 </body>
 </html>
