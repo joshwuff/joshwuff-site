@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshwuff | Official Links</title>
+    <style>
+        :root {
+            --bg-color: #0f172a; /* Deep slate background */
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --accent: #3b82f6;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 3rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 420px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .profile-img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            margin-bottom: 1rem;
+            background-color: var(--card-bg);
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 1.75rem;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+
+        .handle {
+            color: #94a3b8;
+            font-size: 1.1rem;
+            margin-top: 0.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .bio {
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2.5rem;
+            color: #cbd5e1;
+            padding: 0 1rem;
+        }
+
+        .links-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .link-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            text-decoration: none;
+            padding: 1.1rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Custom Brand Hover Colors */
+        .link-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2); }
+        .discord:hover { background-color: #5865F2; color: white; border-color: #5865F2; }
+        .patreon:hover { background-color: #FF424D; color: white; border-color: #FF424D; }
+        .snapchat:hover { background-color: #FFFC00; color: black; border-color: #FFFC00; }
+        .x-twitter:hover { background-color: #ffffff; color: black; border-color: #ffffff; }
+        .instagram:hover { background-color: #E1306C; color: white; border-color: #E1306C; }
+        .vrchat:hover { background-color: #51a3a3; color: white; border-color: #51a3a3; }
+
+        footer {
+            margin-top: 4rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+        
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://via.placeholder.com/120/1e293b/3b82f6?text=JW" alt="Joshwuff" class="profile-img">
+        
+        <h1>Joshwuff</h1>
+        <div class="handle">@joshwuff</div>
+        
+        <p class="bio">Digital creator, gaming enthusiast, and official home of the Joshwuff brand.</p>
+        
+        <div class="links-grid">
+            <a href="https://discord.gg/YUPnz7h6KP" class="link-btn discord" target="_blank">Join the Discord</a>
+            <a href="https://patreon.com/" class="link-btn patreon" target="_blank">Support on Patreon</a>
+            <a href="https://snapchat.com/add/joshwuff" class="link-btn snapchat" target="_blank">Add on Snapchat</a>
+            <a href="https://twitter.com/joshwuff_" class="link-btn x-twitter" target="_blank">Follow on X (@joshwuff_)</a>
+            <a href="https://instagram.com/" class="link-btn instagram" target="_blank">Instagram</a>
+            <a href="#" class="link-btn vrchat" target="_blank">VRChat</a>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+            <p>Official Contact: <a href="mailto:hello@joshwuff.com">hello@joshwuff.com</a></p>
+        </footer>
+    </div>
+
+</body>
+</html>
