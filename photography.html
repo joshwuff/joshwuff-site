@@ -5,7 +5,136 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photography | Joshwuff</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    </head>
+    <style>
+        :root {
+            /* The Unified Crimson Theme */
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444; /* Radiant Red */
+            --accent-glow: rgba(239, 68, 68, 0.25);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            /* Crimson Background Glows */
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar - Same as other pages */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 13, 18, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 18px 0;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+
+        /* Content Container */
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 120px 24px 60px; /* Top padding for navbar */
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+
+        /* Themed Placeholder Box */
+        .placeholder-box {
+            background: var(--glass-bg);
+            border: 2px dashed var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 60px 30px;
+            border-radius: 24px;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .placeholder-box:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        .placeholder-icon {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            display: block;
+            color: rgba(239, 68, 68, 0.5); /* Muted red icon */
+            animation: pulseIcon 2s infinite ease-in-out;
+        }
+
+        @keyframes pulseIcon {
+            0% { transform: scale(1); opacity: 0.5; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 0.5; }
+        }
+
+        .placeholder-title {
+            margin: 0;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .placeholder-text {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
 <body>
     <nav class="navbar">
         <a href="index.html" class="nav-link">Socials</a>
@@ -15,19 +144,18 @@
 
     <div class="container">
         <h1>Photography</h1>
-        <div class="handle">By Joshua Hernandez</div>
+        <div class="subtitle">By Joshua Hernandez</div>
         
-        <p class="bio">Capturing moments in the Naples and Central Florida area. Portfolio expansion in progress.</p>
+        <p class="bio">Capturing moments in Naples, Central Florida, and beyond. This portfolio expansion is actively underway.</p>
 
         <div class="placeholder-box">
             <span class="placeholder-icon">📸</span>
-            <h2 style="margin:0; font-size: 1.2rem;">Gallery Coming Soon</h2>
-            <p style="color: var(--text-secondary); font-size: 0.9rem; margin-top: 10px;">I am currently curating my best work for this space. Check back soon for the full portfolio.</p>
+            <h2 class="placeholder-title">Gallery Coming Soon</h2>
+            <p class="placeholder-text">I am currently curating and uploading my best work for this space. The full portfolio will be available shortly.</p>
         </div>
 
         <footer>
             <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-            <a href="mailto:contact@joshwuff.com" class="contact-email">contact@joshwuff.com</a>
         </footer>
     </div>
 </body>
