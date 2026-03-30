@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact | Joshwuff</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444; 
+            --accent-glow: rgba(239, 68, 68, 0.25);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image: 
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 13, 18, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 18px 0;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            padding: 120px 24px 60px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+
+        /* Contact Cards */
+        .contact-method {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 24px;
+            border-radius: 20px;
+            text-decoration: none;
+            color: var(--text-primary);
+            transition: all 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .contact-method:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
+        }
+
+        .method-icon { font-size: 1.5rem; margin-bottom: 12px; }
+        .method-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
+        .method-detail { color: var(--accent); font-weight: 600; font-size: 0.95rem; }
+
+        footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-link">Socials</a>
+        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="contact.html" class="nav-link active">Contact</a>
+    </nav>
+
+    <div class="container">
+        <h1>Contact</h1>
+        <div class="subtitle">Official Inquiries</div>
+        
+        <p class="bio">For business opportunities, photography bookings, or priority outreach, please use the verified channels below.</p>
+
+        <a href="mailto:contact@joshwuff.com" class="contact-method">
+            <span class="method-icon">✉️</span>
+            <span class="method-title">Business Email</span>
+            <span class="method-detail">contact@joshwuff.com</span>
+        </a>
+
+        <a href="https://discord.com/invite/AegFgCKA" class="contact-method" target="_blank">
+            <span class="method-icon">💬</span>
+            <span class="method-title">Discord Community</span>
+            <span class="method-detail">Join the Server</span>
+        </a>
+
+        <footer>
+            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+        </footer>
+    </div>
+</body>
+</html>
