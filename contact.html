@@ -30,6 +30,7 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
+            overflow-y: scroll; /* Scrollbar Lock */
         }
 
         /* Navigation Bar */
@@ -65,6 +66,7 @@
             padding: 120px 24px 60px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
+            will-change: transform, opacity; /* Hardware Acceleration */
         }
 
         @keyframes fadeIn {
@@ -191,18 +193,19 @@
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
+            let isTransitioning = false; // Transition Lock
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // Only apply to links that leave the current page
                     if (this.href !== window.location.href) {
-                        e.preventDefault(); // Stop the instant jump
-                        const targetUrl = this.href;
+                        e.preventDefault(); 
                         
-                        // Add the fade out class to the main container
+                        if (isTransitioning) return; // Prevent double clicking
+                        isTransitioning = true;
+                        
+                        const targetUrl = this.href;
                         container.classList.add('fade-out');
                         
-                        // Wait 400ms for the animation to finish, then go to the new page
                         setTimeout(() => {
                             window.location.href = targetUrl;
                         }, 400);
