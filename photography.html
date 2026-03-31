@@ -297,6 +297,15 @@
             .checkbox-label {
                 font-size: 0.85rem;
             }
+
+            /* Permanently show the titles since hover doesn't exist on touch screens */
+            .photo-item .photo-overlay {
+                transform: translateY(0); 
+                font-size: 0.9rem; 
+                padding: 25px 12px 12px;
+                /* Makes the dark gradient slightly taller so text stays readable */
+                background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); 
+            }
         }
 
     </style>
