@@ -63,7 +63,7 @@
         .container {
             width: 100%;
             max-width: 480px;
-            padding: 60px 24px;
+            padding: 90px 24px 60px; /* Adjusted top padding to match photography page */
             text-align: center;
             animation: fadeIn 0.8s ease-out;
         }
@@ -136,6 +136,49 @@
         }
 
         .contact-email:hover { opacity: 0.8; }
+
+        /* --- PAGE TRANSITION OUT --- */
+        .fade-out {
+            opacity: 0 !important;
+            transform: translateY(-20px) !important;
+            transition: opacity 0.4s ease, transform 0.4s ease !important;
+        }
+
+        /* --- MOBILE RESPONSIVENESS --- */
+        @media (max-width: 600px) {
+            .navbar {
+                gap: 15px;
+                padding: 12px 0;
+            }
+            
+            .nav-link {
+                font-size: 0.85rem;
+            }
+
+            .container {
+                padding: 90px 16px 40px;
+            }
+
+            .profile-img {
+                width: 90px;
+                height: 90px;
+                margin-bottom: 20px;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .bio {
+                font-size: 0.9rem;
+                margin: 16px 0 30px;
+            }
+
+            .link-card {
+                font-size: 0.95rem;
+                padding: 15px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -167,5 +210,30 @@
             <p>&copy; 2026 Joshwuff. All rights reserved.</p>
         </footer>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navLinks = document.querySelectorAll('.nav-link');
+            const container = document.querySelector('.container');
+
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    // Only apply to links that leave the current page
+                    if (this.href !== window.location.href) {
+                        e.preventDefault(); // Stop the instant jump
+                        const targetUrl = this.href;
+                        
+                        // Add the fade out class to the main container
+                        container.classList.add('fade-out');
+                        
+                        // Wait 400ms for the animation to finish, then go to the new page
+                        setTimeout(() => {
+                            window.location.href = targetUrl;
+                        }, 400);
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
