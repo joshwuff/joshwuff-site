@@ -1,27 +1,21 @@
 [
   {
-    "category": "nature",
-    "src": "https://via.placeholder.com/400x400/1a1a24/ef4444?text=Nature+Trail",
-    "alt": "Florida Nature Trail",
-    "title": "Florida Nature Trail"
-  },
-  {
     "category": "furry",
-    "src": "https://via.placeholder.com/400x400/1a1a24/ef4444?text=Convention+Shoot",
-    "alt": "Convention Photoshoot",
-    "title": "Convention Floor"
+    "src": "Photos/furry/AD136594-887D-438F-8E22-8DB9CA1D8B37_1_105_c.jpeg",
+    "alt": "Contemporary Resort Balcony",
+    "title": "Cruisin' at the Contemporary"
   },
   {
     "category": "other",
-    "src": "https://via.placeholder.com/400x400/1a1a24/ef4444?text=Honda+Civic",
+    "src": "Photos/other/4D96D245-D487-4034-AC78-FD99F9D1784B_1_201_a.jpeg",
     "alt": "2023 Honda Civic",
-    "title": "2023 Honda Civic"
+    "title": "Civic Skyline"
   },
   {
     "category": "other",
-    "src": "https://via.placeholder.com/400x400/1a1a24/ef4444?text=Contemporary+Resort",
-    "alt": "Contemporary Resort Architecture",
-    "title": "Resort Architecture"
+    "src": "Photos/other/C1A4CD15-34E8-4D23-9D12-53E34E054D33_1_105_c.jpeg",
+    "alt": "1932 Ford Coupe",
+    "title": "1932 Ford Coupe \"<i>Deuce Coupe</i>\""
   },
   {
     "category": "nature",
