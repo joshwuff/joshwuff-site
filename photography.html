@@ -115,7 +115,6 @@
 
         .container {
             width: 100%;
-            /* WIDENED TO 1280px SO THE 4 COLUMNS ACTUALLY FIT! */
             max-width: 1280px;
             padding: 120px 24px 60px;
             text-align: center;
@@ -370,9 +369,9 @@
             <div class="per-page-dropdown">
                 <label for="itemsPerPage">Photos per page:</label>
                 <select id="itemsPerPage">
-                    <option value="12">12</option>
-                    <option value="48" selected>48</option>
-                    <option value="96">96</option>
+                    <option value="8">8</option>
+                    <option value="24" selected>24</option>
+                    <option value="48">48</option>
                 </select>
             </div>
         </div>
@@ -433,7 +432,7 @@
             let filteredPhotos = [];
             let thumbnailMap = {};
             let currentPage = 1;
-            let itemsPerPage = 48; // Default matches HTML
+            let itemsPerPage = 24; // Default matches HTML
 
             // 1. Fetch JSON Data
             try {
@@ -443,7 +442,12 @@
                     fetch('thumbnails.json')
                 ]);
                 
-                allPhotos = await photosRes.json();
+                const rawPhotos = await photosRes.json();
+                
+                // THE MAGIC FIX: This line strips out invisible comment objects so they
+                // don't secretly steal spots on your pages and mess up the math!
+                allPhotos = rawPhotos.filter(photo => photo.src !== undefined);
+                
                 thumbnailMap = await thumbsRes.json();
                 
                 filteredPhotos = [...allPhotos];
@@ -469,8 +473,6 @@
 
                 // Build the HTML for the chunk
                 photosToShow.forEach(photo => {
-                    // Skip over comments in the JSON
-                    if(photo._comment) return;
 
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
