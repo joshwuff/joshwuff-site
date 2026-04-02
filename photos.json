@@ -1,96 +1,95 @@
 [
-    {
-        "src": "DSC_0044.JPG",
-        "title": "Taveta Weaver Twirling",
-        "category": "nature",
-        "alt": "A bright yellow Taveta Weaver bird on a branch"
-      },
-      {
-        "src": "DSC_0066.JPG",
-        "title": "Gazing Giraffe",
-        "category": "nature",
-        "alt": "A giraffe walking through trees"
-      },
-      {
-        "src": "DSC_0143.JPG",
-        "title": "Monitoring Meerkat",
-        "category": "nature",
-        "alt": "A meerkat standing upright on a rock"
-      },
-      {
-        "src": "DSC_0224.JPG",
-        "title": "Helping Human",
-        "category": "other",
-        "alt": "A keeper waving while holding hay near an ostrich"
-      },
-      {
-        "src": "DSC_0228.JPG",
-        "title": "Ogling Ostrich",
-        "category": "nature",
-        "alt": "Close up of an ostrich by a green truck"
-      },
-      {
-        "src": "DSC_0247.JPG",
-        "title": "Ambling Antelope",
-        "category": "nature",
-        "alt": "An antelope standing in the sand"
-      },
-      {
-        "src": "DSC_0312.JPG",
-        "title": "Gliding Gorilla",
-        "category": "nature",
-        "alt": "A silverback gorilla walking through the grass"
-      },
-      {
-        "src": "DSC_0352.JPG",
-        "title": "Splashing Spoonbill",
-        "category": "nature",
-        "alt": "A pink roseate spoonbill in shallow water"
-      },
-      {
-        "src": "DSC_0460.JPG",
-        "title": "Singing Starling",
-        "category": "nature",
-        "alt": "An iridescent starling with red eyes chirping"
-      },
-      {
-        "src": "DSC_0488.JPG",
-        "title": "Noticing Nicobar",
-        "category": "nature",
-        "alt": "A Nicobar bird with shiny green and blue feathers"
-      },
-      {
-        "src": "DSC_0491.JPG",
-        "title": "Hanging Bat",
-        "category": "nature",
-        "alt": "A fruit bat hanging upside down"
-      },
-      {
-        "src": "DSC_0577.JPG",
-        "title": "Standing Stork",
-        "category": "nature",
-        "alt": "A tall grey stork or crane standing in the grass"
-      },
-      {
-        "src": "DSC_0623.JPG",
-        "title": "Browsing Buffalo",
-        "category": "nature",
-        "alt": "A water buffalo looking toward the camera"
-      },
-      {
-        "src": "DSC_0651.JPG",
-        "title": "Perched Passerine",
-        "category": "nature",
-        "alt": "A small dark bird perched on a branch"
-      },
-      {
-        "src": "DSC_0805.JPG",
-        "title": "Wandering Wildebeest",
-        "category": "nature",
-        "alt": "A wildebeest or large antelope in a field"
+  {
+    "src": "Photos/nature/DSC_0044.JPG",
+    "title": "Twirling Taveta Weaver",
+    "category": "nature",
+    "alt": "A bright yellow Taveta Weaver bird on a branch"
   },
   {
-    "_comment": "--- LATEST: MP25 PHOTOS ---",
+    "src": "Photos/nature/DSC_0066.JPG",
+    "title": "Gazing Giraffe",
+    "category": "nature",
+    "alt": "A giraffe walking through trees"
+  },
+  {
+    "src": "Photos/nature/DSC_0143.JPG",
+    "title": "Monitoring Meerkat",
+    "category": "nature",
+    "alt": "A meerkat standing upright on a rock"
+  },
+  {
+    "src": "Photos/other/DSC_0224.JPG",
+    "title": "Helping Human",
+    "category": "other",
+    "alt": "A keeper waving while holding hay near an ostrich"
+  },
+  {
+    "src": "Photos/nature/DSC_0228.JPG",
+    "title": "Ogling Ostrich",
+    "category": "nature",
+    "alt": "Close up of an ostrich by a green truck"
+  },
+  {
+    "src": "Photos/nature/DSC_0247.JPG",
+    "title": "Ambling Antelope",
+    "category": "nature",
+    "alt": "An antelope standing in the sand"
+  },
+  {
+    "src": "Photos/nature/DSC_0312.JPG",
+    "title": "Gliding Gorilla",
+    "category": "nature",
+    "alt": "A silverback gorilla walking through the grass"
+  },
+  {
+    "src": "Photos/nature/DSC_0352.JPG",
+    "title": "Splashing Spoonbill",
+    "category": "nature",
+    "alt": "A pink roseate spoonbill in shallow water"
+  },
+  {
+    "src": "Photos/nature/DSC_0460.JPG",
+    "title": "Singing Starling",
+    "category": "nature",
+    "alt": "An iridescent starling with red eyes chirping"
+  },
+  {
+    "src": "Photos/nature/DSC_0488.JPG",
+    "title": "Noticing Nicobar",
+    "category": "nature",
+    "alt": "A Nicobar bird with shiny green and blue feathers"
+  },
+  {
+    "src": "Photos/nature/DSC_0491.JPG",
+    "title": "Hanging Bat",
+    "category": "nature",
+    "alt": "A fruit bat hanging upside down"
+  },
+  {
+    "src": "Photos/nature/DSC_0577.JPG",
+    "title": "Standing Stork",
+    "category": "nature",
+    "alt": "A tall grey stork or crane standing in the grass"
+  },
+  {
+    "src": "Photos/nature/DSC_0623.JPG",
+    "title": "Browsing Buffalo",
+    "category": "nature",
+    "alt": "A water buffalo looking toward the camera"
+  },
+  {
+    "src": "Photos/nature/DSC_0651.JPG",
+    "title": "Perched Passerine",
+    "category": "nature",
+    "alt": "A small dark bird perched on a branch"
+  },
+  {
+    "src": "Photos/nature/DSC_0805.JPG",
+    "title": "Wandering Wildebeest",
+    "category": "nature",
+    "alt": "A wildebeest or large antelope in a field"
+  },
+  {
     "category": "furry",
     "src": "Photos/MP25/IMG_5925.jpg",
     "alt": "Convention Photo",
@@ -445,7 +444,6 @@
     "title": "Megaplex 2025"
   },
   {
-    "_comment": "--- NATURE PHOTOS ---",
     "category": "nature",
     "src": "Photos/nature/DSC_0007.jpg",
     "alt": "White Rhinoceros",
@@ -500,7 +498,6 @@
     "title": "Lazing Lion"
   },
   {
-    "_comment": "--- OTHER PHOTOS ---",
     "category": "other",
     "src": "Photos/other/IMG_0499.jpeg",
     "alt": "2023 Honda Civic",
@@ -519,7 +516,6 @@
     "title": "Vintage Yellow"
   },
   {
-    "_comment": "--- OLDER FURRY ---",
     "category": "furry",
     "src": "Photos/furry/AD136594-887D-438F-8E22-8DB9CA1D8B37_1_105_c.jpeg",
     "alt": "Wolf fursuit standing inside the Disney Contemporary Resort concourse.",
