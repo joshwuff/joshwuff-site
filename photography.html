@@ -4,86 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Photography | Joshwuff</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
     <style>
-        /* --- LIGHTBOX (FULLSCREEN IMAGE) --- */
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100vw;
-            height: 100vh;
-            background: rgba(13, 13, 18, 0.95);
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            z-index: 2000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s ease;
-        }
-
-        .lightbox.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        #lightbox-img {
-            max-width: 95vw;
-            max-height: 95vh;
-            object-fit: contain;
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
-            transform: scale(0.95);
-            transition: transform 0.3s ease;
-        }
-
-        .lightbox.active #lightbox-img {
-            transform: scale(1);
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 20px;
-            right: 30px;
-            color: white;
-            font-size: 40px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s ease;
-            z-index: 2001;
-        }
-
-        .lightbox-close:hover {
-            color: var(--accent);
-        }
-
-        /* --- LIGHTBOX NAVIGATION ARROWS --- */
-        .lightbox-prev, .lightbox-next {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-size: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: color 0.3s ease, transform 0.3s ease;
-            z-index: 2001;
-            padding: 20px;
-            user-select: none;
-            opacity: 0.7;
-        }
-
-        .lightbox-prev { left: 20px; }
-        .lightbox-next { right: 20px; }
-
-        .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
-        .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
-
-
         :root {
             --bg-color: #0d0d12;
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -97,275 +21,80 @@
         * { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color); color: var(--text-primary);
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-y: scroll;
+            
+            /* --- THE BRIGHTER BREATHING BACKGROUND --- */
             background-image:
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-y: scroll;
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.20) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.20) 0%, transparent 45%);
+            background-size: 100% 100%;
+            animation: breathe 10s infinite alternate ease-in-out;
         }
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(13, 13, 18, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 18px 0;
-            z-index: 1000;
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
+        /* Lightbox CSS */
+        .lightbox { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center; opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        #lightbox-img { max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 12px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); transform: scale(0.95); transition: transform 0.3s ease; }
+        .lightbox.active #lightbox-img { transform: scale(1); }
+        .lightbox-close { position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; z-index: 2001; }
+        .lightbox-close:hover { color: var(--accent); }
+        .lightbox-prev, .lightbox-next { position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 50px; font-weight: bold; cursor: pointer; transition: color 0.3s ease, transform 0.3s ease; z-index: 2001; padding: 20px; user-select: none; opacity: 0.7; }
+        .lightbox-prev { left: 20px; } .lightbox-next { right: 20px; }
+        .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
+        .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
 
+        .navbar { position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000; }
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        .container {
-            width: 100%;
-            max-width: 1280px;
-            padding: 120px 24px 60px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-            will-change: transform, opacity;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
+        .container { width: 100%; max-width: 1280px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
         .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; max-width: 500px; margin-left: auto; margin-right: auto;}
 
-        /* --- GALLERY CONTROLS --- */
-        .gallery-controls-wrapper {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 40px;
-        }
-
-        .filter-controls {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 15px 25px;
-            border-radius: 16px;
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .checkbox-label {
-            color: var(--text-secondary);
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s ease;
-        }
-
+        .gallery-controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .filter-controls { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(16px); padding: 15px 25px; border-radius: 16px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .checkbox-label { color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.3s ease; }
         .checkbox-label:hover { color: var(--text-primary); }
         .filter-checkbox { accent-color: var(--accent); cursor: pointer; width: 16px; height: 16px; }
+        .per-page-dropdown { color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .per-page-dropdown select { background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; padding: 6px 12px; font-family: 'Inter', sans-serif; font-weight: 600; outline: none; cursor: pointer; transition: border-color 0.3s ease; }
+        .per-page-dropdown select:focus { border-color: var(--accent); }
 
-        .per-page-dropdown {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, 280px); justify-content: center; gap: 24px; width: 100%; }
+        .photo-item { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 1 / 1; background: var(--glass-bg); border: 1px solid var(--glass-border); transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; cursor: pointer; opacity: 0; animation: popIn 0.5s ease-out forwards; animation-delay: 0.15s; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; transition: opacity 0.3s ease, transform 0.5s ease; }
+        .photo-item:hover { transform: translateY(-6px); box-shadow: 0 12px 24px var(--accent-glow); border-color: var(--accent); }
+        .photo-item:hover img { opacity: 1; transform: scale(1.05); }
+        .photo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(13, 13, 18, 0.95)); color: var(--text-primary); padding: 30px 20px 20px; font-weight: 600; font-size: 1rem; text-align: left; transform: translateY(100%); transition: transform 0.3s ease; pointer-events: none; }
+        .photo-item:hover .photo-overlay { transform: translateY(0); }
 
-        .per-page-dropdown select {
-            background: var(--bg-color);
-            color: var(--text-primary);
-            border: 1px solid var(--glass-border);
-            border-radius: 8px;
-            padding: 6px 12px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            outline: none;
-            cursor: pointer;
-            transition: border-color 0.3s ease;
-        }
+        .pagination-controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 40px; }
+        .pagination-controls.top-pagination { margin-top: 10px; margin-bottom: 20px; }
+        .page-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .page-btn:hover:not(:disabled) { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-info { color: var(--text-secondary); font-weight: 600; font-size: 0.95rem; }
 
-        .per-page-dropdown select:focus {
-            border-color: var(--accent);
-        }
-
-        /* --- PHOTO GRID --- */
-        .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, 280px);
-            justify-content: center;
-            gap: 24px;
-            width: 100%;
-        }
-
-        .photo-item {
-            position: relative;
-            border-radius: 16px;
-            overflow: hidden;
-            aspect-ratio: 1 / 1;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            cursor: pointer;
-            opacity: 0;
-            animation: popIn 0.5s ease-out forwards;
-            animation-delay: 0.15s;
-        }
-
-        @keyframes popIn {
-            from { opacity: 0; transform: scale(0.95); }
-            to { opacity: 1; transform: scale(1); }
-        }
-
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            opacity: 0.85;
-            transition: opacity 0.3s ease, transform 0.5s ease;
-        }
-
-        .photo-item:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 24px var(--accent-glow);
-            border-color: var(--accent);
-        }
-
-        .photo-item:hover img {
-            opacity: 1;
-            transform: scale(1.05);
-        }
-
-        .photo-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: linear-gradient(transparent, rgba(13, 13, 18, 0.95));
-            color: var(--text-primary);
-            padding: 30px 20px 20px;
-            font-weight: 600;
-            font-size: 1rem;
-            text-align: left;
-            transform: translateY(100%);
-            transition: transform 0.3s ease;
-            pointer-events: none;
-        }
-
-        .photo-item:hover .photo-overlay {
-            transform: translateY(0);
-        }
-
-        /* --- PAGINATION BUTTONS --- */
-        .pagination-controls {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 40px;
-        }
-
-        .pagination-controls.top-pagination {
-            margin-top: 10px; /* Tighter spacing for the top controls */
-            margin-bottom: 20px;
-        }
-
-        .page-btn {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            color: var(--text-primary);
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-family: 'Inter', sans-serif;
-            font-weight: 600;
-            font-size: 0.95rem;
-            cursor: pointer;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-
-        .page-btn:hover:not(:disabled) {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-
-        .page-btn:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        .page-info {
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        footer {
-            margin-top: 64px;
-            padding-top: 32px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-        
-        .fade-out {
-            opacity: 0 !important;
-            transform: translateY(-20px) !important;
-            transition: opacity 0.4s ease, transform 0.4s ease !important;
-        }
+        footer { width: 100%; margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); text-align: center;}
+        .fade-out { opacity: 0 !important; transform: translateY(-20px) !important; transition: opacity 0.4s ease, transform 0.4s ease !important; }
 
         @media (max-width: 600px) {
             .navbar { gap: 15px; padding: 12px 0; }
-            .nav-link { font-size: 0.85rem; }
             .container { padding: 90px 16px 40px; }
-            h1 { font-size: 1.5rem; }
-            .bio { font-size: 0.9rem; margin: 16px 0 30px; }
-            .filter-controls { gap: 12px; padding: 12px 16px; border-radius: 12px; }
-            .checkbox-label { font-size: 0.85rem; }
-            
-            .photo-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .photo-item .photo-overlay {
-                transform: translateY(0);
-                font-size: 0.9rem;
-                padding: 25px 12px 12px;
-                background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%);
-            }
-
-            .lightbox-prev { left: 5px; font-size: 40px; padding: 10px; }
-            .lightbox-next { right: 5px; font-size: 40px; padding: 10px; }
+            .photo-grid { grid-template-columns: 1fr; }
+            .photo-item .photo-overlay { transform: translateY(0); padding: 25px 12px 12px; background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); }
+            .lightbox-prev, .lightbox-next { font-size: 40px; padding: 10px; }
         }
     </style>
 </head>
@@ -379,23 +108,14 @@
     <div class="container">
         <h1>Photography</h1>
         <div class="subtitle">By joshwuff</div>
-        
         <p class="bio">Capturing moments all around the country and beyond! Select a category below to filter my latest work.</p>
 
         <div class="gallery-controls-wrapper">
             <div class="filter-controls">
-                <label class="checkbox-label">
-                    <input type="checkbox" value="all" class="filter-checkbox" checked> All
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" value="nature" class="filter-checkbox"> Nature
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" value="furry" class="filter-checkbox"> Furry
-                </label>
-                <label class="checkbox-label">
-                    <input type="checkbox" value="other" class="filter-checkbox"> Other
-                </label>
+                <label class="checkbox-label"><input type="checkbox" value="all" class="filter-checkbox" checked> All</label>
+                <label class="checkbox-label"><input type="checkbox" value="nature" class="filter-checkbox"> Nature</label>
+                <label class="checkbox-label"><input type="checkbox" value="furry" class="filter-checkbox"> Furry</label>
+                <label class="checkbox-label"><input type="checkbox" value="other" class="filter-checkbox"> Other</label>
             </div>
             
             <div class="per-page-dropdown">
@@ -404,7 +124,8 @@
                     <option value="8">8</option>
                     <option value="24">24</option>
                     <option value="48" selected>48</option>
-                    <option value="96">96</option> </select>
+                    <option value="96">96</option>
+                </select>
             </div>
 
             <div class="pagination-controls top-pagination">
@@ -414,8 +135,7 @@
             </div>
         </div>
 
-        <div class="photo-grid" id="gallery">
-            </div>
+        <div class="photo-grid" id="gallery"></div>
 
         <div class="pagination-controls">
             <button class="page-btn prev-page-btn">Back</button>
@@ -423,9 +143,7 @@
             <button class="page-btn next-page-btn">Next</button>
         </div>
 
-        <footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-        </footer>
+        <footer><p>&copy; 2026 Joshwuff. All rights reserved.</p></footer>
     </div>
 
     <div id="lightbox" class="lightbox">
@@ -437,235 +155,109 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            
-            // --- SMOOTH PAGE TRANSITIONS ---
+            // Page Transitions
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
             let isTransitioning = false;
-
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     if (this.href !== window.location.href) {
                         e.preventDefault();
                         if (isTransitioning) return;
                         isTransitioning = true;
-                        
-                        const targetUrl = this.href;
                         container.classList.add('fade-out');
-                        
-                        setTimeout(() => {
-                            window.location.href = targetUrl;
-                        }, 400);
+                        setTimeout(() => { window.location.href = this.href; }, 400);
                     }
                 });
             });
 
-            // --- GALLERY & PAGINATION LOGIC ---
+            // Gallery Logic
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
             const selectPerPage = document.getElementById('itemsPerPage');
-            
-            // NEW: Using querySelectorAll to grab BOTH sets of pagination controls at once
             const prevBtns = document.querySelectorAll('.prev-page-btn');
             const nextBtns = document.querySelectorAll('.next-page-btn');
             const pageInfos = document.querySelectorAll('.page-info-display');
 
-            let allPhotos = [];
-            let filteredPhotos = [];
-            let thumbnailMap = {};
-            let currentPage = 1;
-            let itemsPerPage = 48; // Matches HTML default
-            
-            let currentLightboxIndex = 0;
+            let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
+            let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
 
-            // 1. Fetch JSON Data
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
-                    fetch('photos.json?v=2'),
-                    fetch('thumbnails.json?v=2')
+                    fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
                 ]);
-                
-                const rawPhotos = await photosRes.json();
-                
-                allPhotos = rawPhotos.filter(photo => photo.src !== undefined);
+                allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
                 thumbnailMap = await thumbsRes.json();
-                
                 filteredPhotos = [...allPhotos];
                 renderGallery();
             } catch (error) {
-                console.error("Error loading photos or thumbnails:", error);
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
             function updateLightboxImage() {
                 if (filteredPhotos.length === 0) return;
-                const lightboxImg = document.getElementById('lightbox-img');
-                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
+                document.getElementById('lightbox-img').src = filteredPhotos[currentLightboxIndex].src;
             }
 
-            // 2. Render the specific page of photos
             function renderGallery() {
-                gallery.innerHTML = ''; // Clear the grid
-                
-                // Math for pagination
+                gallery.innerHTML = '';
                 const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
                 if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
-                
                 const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                
-                // Grab just the chunk of photos for this page
-                const photosToShow = filteredPhotos.slice(startIndex, endIndex);
+                const photosToShow = filteredPhotos.slice(startIndex, startIndex + itemsPerPage);
 
-                // Build the HTML for the chunk
                 photosToShow.forEach((photo, localIndex) => {
-
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
-                    
                     const thumbSrc = thumbnailMap[photo.src] || photo.src;
-
-                    photoDiv.innerHTML = `
-                        <img src="${thumbSrc}" alt="${photo.alt}" loading="lazy">
-                        <div class="photo-overlay">${photo.title}</div>
-                    `;
+                    photoDiv.innerHTML = `<img src="${thumbSrc}" alt="${photo.alt}" loading="lazy"><div class="photo-overlay">${photo.title}</div>`;
                     
                     const globalIndex = startIndex + localIndex;
-
-                    // Lightbox logic ALWAYS uses the high-res file
                     photoDiv.addEventListener('click', () => {
                         currentLightboxIndex = globalIndex;
                         updateLightboxImage();
-                        const lightbox = document.getElementById('lightbox');
-                        lightbox.classList.add('active');
+                        document.getElementById('lightbox').classList.add('active');
                     });
-
                     gallery.appendChild(photoDiv);
                 });
 
-                // NEW: Loop through both sets of page info displays and buttons to update them
-                pageInfos.forEach(info => {
-                    info.innerText = `Page ${currentPage} of ${totalPages || 1}`;
-                });
-                
-                prevBtns.forEach(btn => {
-                    btn.disabled = currentPage === 1;
-                });
-                
-                nextBtns.forEach(btn => {
-                    btn.disabled = currentPage >= totalPages || totalPages === 0;
-                });
+                pageInfos.forEach(info => info.innerText = `Page ${currentPage} of ${totalPages || 1}`);
+                prevBtns.forEach(btn => btn.disabled = currentPage === 1);
+                nextBtns.forEach(btn => btn.disabled = currentPage >= totalPages || totalPages === 0);
             }
 
-            // 3. Filtering Logic
             function applyFilters() {
-                const checkedValues = Array.from(checkboxes)
-                    .filter(cb => cb.checked)
-                    .map(cb => cb.value);
-
-                if (checkedValues.includes('all') || checkedValues.length === 0) {
-                    filteredPhotos = [...allPhotos];
-                } else {
-                    filteredPhotos = allPhotos.filter(photo => checkedValues.includes(photo.category));
-                }
-                
-                currentPage = 1; // Always reset to page 1 when filtering
-                renderGallery();
+                const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+                if (checkedValues.includes('all') || checkedValues.length === 0) { filteredPhotos = [...allPhotos]; }
+                else { filteredPhotos = allPhotos.filter(photo => checkedValues.includes(photo.category)); }
+                currentPage = 1; renderGallery();
             }
 
-            checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
-                    if (checkbox.value !== 'all' && checkbox.checked) {
-                        document.querySelector('input[value="all"]').checked = false;
-                    } else if (checkbox.value === 'all' && checkbox.checked) {
-                        checkboxes.forEach(cb => {
-                            if (cb.value !== 'all') cb.checked = false;
-                        });
-                    }
-
-                    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
-                    if (!anyChecked) {
-                        document.querySelector('input[value="all"]').checked = true;
-                    }
-
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', () => {
+                    if (cb.value !== 'all' && cb.checked) { document.querySelector('input[value="all"]').checked = false; }
+                    else if (cb.value === 'all' && cb.checked) { checkboxes.forEach(c => { if (c.value !== 'all') c.checked = false; }); }
+                    if (!Array.from(checkboxes).some(c => c.checked)) document.querySelector('input[value="all"]').checked = true;
                     applyFilters();
                 });
             });
 
-            // 4. Pagination Controls Listeners
-            selectPerPage.addEventListener('change', (e) => {
-                itemsPerPage = parseInt(e.target.value);
-                currentPage = 1;
-                renderGallery();
-            });
+            selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
+            prevBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
+            nextBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { currentPage++; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
 
-            // Listen to all "Back" buttons
-            prevBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        renderGallery();
-                        window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // Listen to all "Next" buttons
-            nextBtns.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        renderGallery();
-                        window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
-                    }
-                });
-            });
-
-            // 5. Lightbox Interactive Logic
+            // Lightbox
             const lightbox = document.getElementById('lightbox');
-            const closeBtn = document.querySelector('.lightbox-close');
-            const prevArrow = document.getElementById('lightbox-prev');
-            const nextArrow = document.getElementById('lightbox-next');
-
-            closeBtn.addEventListener('click', () => {
-                lightbox.classList.remove('active');
-            });
-
-            lightbox.addEventListener('click', (e) => {
-                if (e.target === lightbox) {
-                    lightbox.classList.remove('active');
-                }
-            });
-
-            prevArrow.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (filteredPhotos.length === 0) return;
-                currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1;
-                updateLightboxImage();
-            });
-
-            nextArrow.addEventListener('click', (e) => {
-                e.stopPropagation();
-                if (filteredPhotos.length === 0) return;
-                currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0;
-                updateLightboxImage();
-            });
-
+            document.querySelector('.lightbox-close').addEventListener('click', () => lightbox.classList.remove('active'));
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
+            document.getElementById('lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); } });
+            document.getElementById('lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); } });
             document.addEventListener('keydown', (e) => {
                 if (!lightbox.classList.contains('active')) return;
-
-                if (e.key === 'ArrowLeft') {
-                    currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1;
-                    updateLightboxImage();
-                } else if (e.key === 'ArrowRight') {
-                    currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0;
-                    updateLightboxImage();
-                } else if (e.key === 'Escape') {
-                    lightbox.classList.remove('active');
-                }
+                if (e.key === 'ArrowLeft') { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
+                else if (e.key === 'ArrowRight') { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
+                else if (e.key === 'Escape') lightbox.classList.remove('active');
             });
-
         });
     </script>
 </body>

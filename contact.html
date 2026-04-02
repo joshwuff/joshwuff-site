@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact | Joshwuff</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         :root {
             --bg-color: #0d0d12;
@@ -13,150 +14,61 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #ef4444; 
+            --accent: #ef4444;
             --accent-glow: rgba(239, 68, 68, 0.25);
         }
 
         * { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-y: scroll; /* Scrollbar Lock */
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color); color: var(--text-primary);
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-y: scroll;
+            
+            /* --- THE BRIGHTER BREATHING BACKGROUND --- */
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.20) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.20) 0%, transparent 45%);
+            background-size: 100% 100%;
+            animation: breathe 10s infinite alternate ease-in-out;
         }
 
-        /* Navigation Bar */
-        .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(13, 13, 18, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 18px 0;
-            z-index: 1000;
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: all 0.3s;
-        }
-
+        .navbar { position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000; }
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        .container {
-            width: 100%;
-            max-width: 480px;
-            padding: 120px 24px 60px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-            will-change: transform, opacity; /* Hardware Acceleration */
+        .container { width: 100%; max-width: 600px; padding: 150px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; flex: 1;}
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-size: 2.5rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .bio { font-size: 1.1rem; color: var(--text-secondary); margin: 20px auto 40px; line-height: 1.6; }
+
+        .contact-box {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 40px; backdrop-filter: blur(16px); box-shadow: 0 10px 30px rgba(0,0,0,0.5);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+        .email-btn {
+            display: inline-block; padding: 14px 32px; background-color: var(--accent); color: white;
+            text-decoration: none; font-weight: 700; border-radius: 8px; font-size: 1.1rem;
+            transition: all 0.3s ease; box-shadow: 0 4px 15px var(--accent-glow); margin-top: 10px;
         }
+        .email-btn:hover { transform: translateY(-3px); box-shadow: 0 8px 25px var(--accent-glow); }
 
-        h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
-        .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
-        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+        footer { width: 100%; padding-top: 24px; padding-bottom: 24px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); text-align: center;}
+        .fade-out { opacity: 0 !important; transform: translateY(-20px) !important; transition: opacity 0.4s ease, transform 0.4s ease !important; }
 
-        /* Contact Cards */
-        .contact-method {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 24px;
-            border-radius: 20px;
-            text-decoration: none;
-            color: var(--text-primary);
-            transition: all 0.25s ease;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 16px;
-        }
-
-        .contact-method:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--accent);
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
-        }
-
-        .method-icon { font-size: 1.5rem; margin-bottom: 12px; }
-        .method-title { font-weight: 700; font-size: 1.1rem; margin-bottom: 4px; }
-        .method-detail { color: var(--accent); font-weight: 600; font-size: 0.95rem; }
-
-        footer {
-            margin-top: 64px;
-            padding-top: 32px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        /* --- PAGE TRANSITION OUT --- */
-        .fade-out {
-            opacity: 0 !important;
-            transform: translateY(-20px) !important;
-            transition: opacity 0.4s ease, transform 0.4s ease !important;
-        }
-
-        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 600px) {
-            .navbar {
-                gap: 15px;
-                padding: 12px 0;
-            }
-            
-            .nav-link {
-                font-size: 0.85rem;
-            }
-
-            .container {
-                padding: 90px 16px 40px; /* matched to other pages */
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .bio {
-                font-size: 0.9rem;
-                margin: 16px 0 30px;
-            }
-
-            .contact-method {
-                padding: 18px;
-            }
-
-            .method-title {
-                font-size: 1rem;
-            }
-
-            .method-detail {
-                font-size: 0.9rem;
-            }
+            .navbar { gap: 15px; padding: 12px 0; }
+            .container { padding: 120px 16px 40px; }
+            h1 { font-size: 2rem; }
+            .contact-box { padding: 30px 20px; }
         }
     </style>
 </head>
@@ -168,48 +80,31 @@
     </nav>
 
     <div class="container">
-        <h1>Contact</h1>
-        <div class="subtitle">Official Inquiries</div>
+        <h1>Get in Touch</h1>
+        <p class="bio">Whether you want to discuss a photography project, have a question about my fursuit work, or just want to say hi, my inbox is always open!</p>
         
-        <p class="bio">For business opportunities, photography bookings, or priority outreach, please use the verified channels below.</p>
-
-        <a href="mailto:contact@joshwuff.com" class="contact-method">
-            <span class="method-icon">✉️</span>
-            <span class="method-title">Business Email</span>
-            <span class="method-detail">contact@joshwuff.com</span>
-        </a>
-
-        <a href="https://discord.com/invite/AegFgCKA" class="contact-method" target="_blank">
-            <span class="method-icon">💬</span>
-            <span class="method-title">Discord Community</span>
-            <span class="method-detail">Join the Server</span>
-        </a>
-
-        <footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-        </footer>
+        <div class="contact-box">
+            <a href="mailto:your_email@example.com" class="email-btn">Email Me</a>
+        </div>
     </div>
+
+    <footer>
+        <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+    </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
-            let isTransitioning = false; // Transition Lock
-
+            let isTransitioning = false;
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    if (this.href !== window.location.href) {
-                        e.preventDefault(); 
-                        
-                        if (isTransitioning) return; // Prevent double clicking
+                    if (this.href !== window.location.href && !this.href.includes('mailto:')) {
+                        e.preventDefault();
+                        if (isTransitioning) return;
                         isTransitioning = true;
-                        
-                        const targetUrl = this.href;
                         container.classList.add('fade-out');
-                        
-                        setTimeout(() => {
-                            window.location.href = targetUrl;
-                        }, 400);
+                        setTimeout(() => { window.location.href = this.href; }, 400);
                     }
                 });
             });
