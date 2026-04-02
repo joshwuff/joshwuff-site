@@ -60,7 +60,7 @@
             color: var(--accent);
         }
 
-        /* --- NEW: LIGHTBOX NAVIGATION ARROWS --- */
+        /* --- LIGHTBOX NAVIGATION ARROWS --- */
         .lightbox-prev, .lightbox-next {
             position: absolute;
             top: 50%;
@@ -293,6 +293,11 @@
             margin-top: 40px;
         }
 
+        .pagination-controls.top-pagination {
+            margin-top: 10px; /* Tighter spacing for the top controls */
+            margin-bottom: 20px;
+        }
+
         .page-btn {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -398,7 +403,13 @@
                     <option value="8">8</option>
                     <option value="24">24</option>
                     <option value="48" selected>48</option>
-                </select>
+                    <option value="96">96</option> </select>
+            </div>
+
+            <div class="pagination-controls top-pagination">
+                <button class="page-btn prev-page-btn">Back</button>
+                <span class="page-info-display page-info">Page 1 of 1</span>
+                <button class="page-btn next-page-btn">Next</button>
             </div>
         </div>
 
@@ -406,9 +417,9 @@
             </div>
 
         <div class="pagination-controls">
-            <button id="prevPage" class="page-btn">Back</button>
-            <span id="pageInfo" class="page-info">Page 1 of 1</span>
-            <button id="nextPage" class="page-btn">Next</button>
+            <button class="page-btn prev-page-btn">Back</button>
+            <span class="page-info-display page-info">Page 1 of 1</span>
+            <button class="page-btn next-page-btn">Next</button>
         </div>
 
         <footer>
@@ -452,22 +463,22 @@
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
             const selectPerPage = document.getElementById('itemsPerPage');
-            const btnPrev = document.getElementById('prevPage');
-            const btnNext = document.getElementById('nextPage');
-            const pageInfo = document.getElementById('pageInfo');
+            
+            // NEW: Using querySelectorAll to grab BOTH sets of pagination controls at once
+            const prevBtns = document.querySelectorAll('.prev-page-btn');
+            const nextBtns = document.querySelectorAll('.next-page-btn');
+            const pageInfos = document.querySelectorAll('.page-info-display');
 
             let allPhotos = [];
             let filteredPhotos = [];
             let thumbnailMap = {};
             let currentPage = 1;
-            let itemsPerPage = 48; // Matches HTML
+            let itemsPerPage = 48; // Matches HTML default
             
-            // NEW: Keeps track of where we are in the lightbox
             let currentLightboxIndex = 0;
 
             // 1. Fetch JSON Data
             try {
-                // Fetch BOTH files at the exact same time (Using the cache-buster trick just in case!)
                 const [photosRes, thumbsRes] = await Promise.all([
                     fetch('photos.json?v=2'),
                     fetch('thumbnails.json?v=2')
@@ -485,7 +496,6 @@
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
-            // NEW: Function to cleanly update the lightbox image
             function updateLightboxImage() {
                 if (filteredPhotos.length === 0) return;
                 const lightboxImg = document.getElementById('lightbox-img');
@@ -512,7 +522,6 @@
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
                     
-                    // --- CROSS-REFERENCE THUMBNAILS FILE ---
                     const thumbSrc = thumbnailMap[photo.src] || photo.src;
 
                     photoDiv.innerHTML = `
@@ -520,7 +529,6 @@
                         <div class="photo-overlay">${photo.title}</div>
                     `;
                     
-                    // We need to know this photo's exact number in the total list so the arrows work
                     const globalIndex = startIndex + localIndex;
 
                     // Lightbox logic ALWAYS uses the high-res file
@@ -534,10 +542,18 @@
                     gallery.appendChild(photoDiv);
                 });
 
-                // Update the UI buttons
-                pageInfo.innerText = `Page ${currentPage} of ${totalPages || 1}`;
-                btnPrev.disabled = currentPage === 1;
-                btnNext.disabled = currentPage >= totalPages || totalPages === 0;
+                // NEW: Loop through both sets of page info displays and buttons to update them
+                pageInfos.forEach(info => {
+                    info.innerText = `Page ${currentPage} of ${totalPages || 1}`;
+                });
+                
+                prevBtns.forEach(btn => {
+                    btn.disabled = currentPage === 1;
+                });
+                
+                nextBtns.forEach(btn => {
+                    btn.disabled = currentPage >= totalPages || totalPages === 0;
+                });
             }
 
             // 3. Filtering Logic
@@ -556,10 +572,8 @@
                 renderGallery();
             }
 
-            // Checkbox event listeners
             checkboxes.forEach(checkbox => {
                 checkbox.addEventListener('change', () => {
-                    // Visual logic to keep "All" synced
                     if (checkbox.value !== 'all' && checkbox.checked) {
                         document.querySelector('input[value="all"]').checked = false;
                     } else if (checkbox.value === 'all' && checkbox.checked) {
@@ -568,7 +582,6 @@
                         });
                     }
 
-                    // Check if everything was unclicked, default back to 'All'
                     const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
                     if (!anyChecked) {
                         document.querySelector('input[value="all"]').checked = true;
@@ -578,28 +591,34 @@
                 });
             });
 
-            // 4. Pagination Controls
+            // 4. Pagination Controls Listeners
             selectPerPage.addEventListener('change', (e) => {
                 itemsPerPage = parseInt(e.target.value);
-                currentPage = 1; // Reset to page 1 when changing limits
+                currentPage = 1;
                 renderGallery();
             });
 
-            btnPrev.addEventListener('click', () => {
-                if (currentPage > 1) {
-                    currentPage--;
-                    renderGallery();
-                    window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
-                }
+            // Listen to all "Back" buttons
+            prevBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    if (currentPage > 1) {
+                        currentPage--;
+                        renderGallery();
+                        window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
+                    }
+                });
             });
 
-            btnNext.addEventListener('click', () => {
-                const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
-                if (currentPage < totalPages) {
-                    currentPage++;
-                    renderGallery();
-                    window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
-                }
+            // Listen to all "Next" buttons
+            nextBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
+                    if (currentPage < totalPages) {
+                        currentPage++;
+                        renderGallery();
+                        window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
+                    }
+                });
             });
 
             // 5. Lightbox Interactive Logic
@@ -608,39 +627,31 @@
             const prevArrow = document.getElementById('lightbox-prev');
             const nextArrow = document.getElementById('lightbox-next');
 
-            // Close button
             closeBtn.addEventListener('click', () => {
                 lightbox.classList.remove('active');
             });
 
-            // Click outside the image to close
             lightbox.addEventListener('click', (e) => {
                 if (e.target === lightbox) {
                     lightbox.classList.remove('active');
                 }
             });
 
-            // Left Arrow Click
             prevArrow.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stops the click from accidentally closing the lightbox
+                e.stopPropagation();
                 if (filteredPhotos.length === 0) return;
-                // If we are at the beginning, loop to the end. Otherwise go back 1.
                 currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1;
                 updateLightboxImage();
             });
 
-            // Right Arrow Click
             nextArrow.addEventListener('click', (e) => {
                 e.stopPropagation();
                 if (filteredPhotos.length === 0) return;
-                // If we are at the end, loop to the beginning. Otherwise go forward 1.
                 currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0;
                 updateLightboxImage();
             });
 
-            // --- BONUS: KEYBOARD SUPPORT ---
             document.addEventListener('keydown', (e) => {
-                // Only listen to keyboard if the lightbox is actually open
                 if (!lightbox.classList.contains('active')) return;
 
                 if (e.key === 'ArrowLeft') {
