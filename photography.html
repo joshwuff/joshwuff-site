@@ -195,14 +195,15 @@
 
         /* --- PHOTO GRID --- */
         .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, 260px);
+            display: flex;
+            flex-wrap: wrap;
             justify-content: center;
             gap: 24px;
             width: 100%;
         }
 
         .photo-item {
+            flex: 0 0 260px;
             position: relative;
             border-radius: 16px;
             overflow: hidden;
@@ -366,9 +367,9 @@
             <div class="per-page-dropdown">
                 <label for="itemsPerPage">Photos per page:</label>
                 <select id="itemsPerPage">
-                    <option value="10">10</option>
-                    <option value="50" selected>50</option>
-                    <option value="100">100</option>
+                    <option value="12">12</option>
+                    <option value="48" selected>48</option>
+                    <option value="96">96</option>
                 </select>
             </div>
         </div>
@@ -428,7 +429,7 @@
             let allPhotos = [];
             let filteredPhotos = [];
             let currentPage = 1;
-            let itemsPerPage = 50; // Default matches HTML
+            let itemsPerPage = 48; // Default matches HTML
 
             // 1. Fetch JSON Data
             try {
