@@ -1,117 +1,117 @@
 [
-    {
-        "src": "Photos/other/IMG_0480.jpeg",
-        "title": "Nyan Mercedes",
-        "category": "other",
-        "alt": "A baby blue Mercedes with a Nyan cat painted on the side and a roof exhaust"
-      },
-      {
-        "src": "Photos/other/IMG_0937.jpeg",
-        "title": "Gleaming GT",
-        "category": "other",
-        "alt": "A red Ford GT with white racing stripes in a showroom"
-      },
-      {
-        "src": "Photos/other/IMG_0938.jpeg",
-        "title": "Fierce Ford",
-        "category": "other",
-        "alt": "A white Ford GT with black racing stripes in a showroom"
-      },
-      {
-        "src": "Photos/other/IMG_0940.jpeg",
-        "title": "Muscular Mustang",
-        "category": "other",
-        "alt": "A bright orange Ford Mustang Shelby GT500"
-      },
-      {
-        "src": "Photos/other/IMG_0941.jpeg",
-        "title": "Classic Chevrolet",
-        "category": "other",
-        "alt": "A teal classic Chevrolet pickup truck parked outdoors"
-      },
-      {
-        "src": "Photos/other/IMG_0945.jpeg",
-        "title": "Vibrant Viper",
-        "category": "other",
-        "alt": "A red Dodge Viper with silver racing stripes in a parking lot"
-      },
-      {
-        "src": "Photos/other/IMG_0950.jpeg",
-        "title": "Awesome Acura",
-        "category": "other",
-        "alt": "A metallic blue Acura NSX parked outdoors"
-      },
-      {
-        "src": "Photos/other/IMG_2516.jpeg",
-        "title": "Catchy Corvette",
-        "category": "other",
-        "alt": "A bright yellow Chevrolet Corvette C8 on display"
-      },
-      {
-        "src": "Photos/other/IMG_3225.jpeg",
-        "title": "Marvelous MG",
-        "category": "other",
-        "alt": "A red classic MG MGA convertible parked near a McDonald's"
-      },
-      {
-        "src": "Photos/furry/IMG_5567.JPG",
-        "title": "Cowboy Canine",
-        "category": "furry",
-        "alt": "A person in a wolf fursuit wearing a cowboy hat posing on a white Honda Civic at sunset"
-      },
-      {
-        "src": "Photos/other/IMG_6358.jpeg",
-        "title": "Classic Cadillac",
-        "category": "other",
-        "alt": "Front grille of a white 1929 Cadillac with large round headlights"
-      },
-      {
-        "src": "Photos/other/IMG_6624.jpeg",
-        "title": "Cruising Comet",
-        "category": "other",
-        "alt": "An orange Mercury Comet race car with the number 45 and sponsor decals"
-      },
-      {
-        "src": "Photos/other/IMG_6861.jpeg",
-        "title": "Fast Ferrari",
-        "category": "other",
-        "alt": "A red Ferrari parked on a brick driveway"
-      },
-      {
-        "src": "Photos/other/IMG_7073.jpeg",
-        "title": "Historic Honda",
-        "category": "other",
-        "alt": "A silver classic Honda Prelude parked indoors"
-      },
-      {
-        "src": "Photos/other/IMG_7076.jpeg",
-        "title": "Retro Ride",
-        "category": "other",
-        "alt": "A maroon classic Honda N600 parked in a showroom"
-      },
-      {
-        "src": "Photos/other/IMG_7077.jpeg",
-        "title": "Handsome Honda",
-        "category": "other",
-        "alt": "A white classic Honda S600 convertible parked indoors"
-      },
-      {
-        "src": "Photos/other/IMG_7855.jpeg",
-        "title": "Doc Hudson",
-        "category": "other",
-        "alt": "A life-sized statue of Doc Hudson from the movie Cars"
-      },
-      {
-        "src": "Photos/other/IMG_7857.jpeg",
-        "title": "Stern Sheriff",
-        "category": "other",
-        "alt": "A life-sized statue of Sheriff from the movie Cars"
-      },
-      {
-        "src": "Photos/other/IMG_7938.jpeg",
-        "title": "Lightning McQueen",
-        "category": "other",
-        "alt": "A life-sized statue of Lightning McQueen from the movie Cars"
+  {
+    "src": "Photos/other/IMG_0480.jpeg",
+    "title": "Nyan Mercedes",
+    "category": "other",
+    "alt": "A baby blue Mercedes with a Nyan cat painted on the side and a roof exhaust"
+  },
+  {
+    "src": "Photos/other/IMG_0937.jpeg",
+    "title": "Gleaming GT",
+    "category": "other",
+    "alt": "A red Ford GT with white racing stripes in a showroom"
+  },
+  {
+    "src": "Photos/other/IMG_0938.jpeg",
+    "title": "Fierce Ford",
+    "category": "other",
+    "alt": "A white Ford GT with black racing stripes in a showroom"
+  },
+  {
+    "src": "Photos/other/IMG_0940.jpeg",
+    "title": "Muscular Mustang",
+    "category": "other",
+    "alt": "A bright orange Ford Mustang Shelby GT500"
+  },
+  {
+    "src": "Photos/other/IMG_0941.jpeg",
+    "title": "Classic Chevrolet",
+    "category": "other",
+    "alt": "A teal classic Chevrolet pickup truck parked outdoors"
+  },
+  {
+    "src": "Photos/other/IMG_0945.jpeg",
+    "title": "Vibrant Viper",
+    "category": "other",
+    "alt": "A red Dodge Viper with silver racing stripes in a parking lot"
+  },
+  {
+    "src": "Photos/other/IMG_0950.jpeg",
+    "title": "Awesome Acura",
+    "category": "other",
+    "alt": "A metallic blue Acura NSX parked outdoors"
+  },
+  {
+    "src": "Photos/other/IMG_2516.jpeg",
+    "title": "Catchy Corvette",
+    "category": "other",
+    "alt": "A bright yellow Chevrolet Corvette C8 on display"
+  },
+  {
+    "src": "Photos/other/IMG_3225.jpeg",
+    "title": "Marvelous MG",
+    "category": "other",
+    "alt": "A red classic MG MGA convertible parked near a McDonald's"
+  },
+  {
+    "src": "Photos/furry/IMG_5567.JPG",
+    "title": "Cowboy Canine",
+    "category": "furry",
+    "alt": "A person in a wolf fursuit wearing a cowboy hat posing on a white Honda Civic at sunset"
+  },
+  {
+    "src": "Photos/other/IMG_6358.jpeg",
+    "title": "Classic Cadillac",
+    "category": "other",
+    "alt": "Front grille of a white 1929 Cadillac with large round headlights"
+  },
+  {
+    "src": "Photos/other/IMG_6624.jpeg",
+    "title": "Cruising Comet",
+    "category": "other",
+    "alt": "An orange Mercury Comet race car with the number 45 and sponsor decals"
+  },
+  {
+    "src": "Photos/other/IMG_6861.jpeg",
+    "title": "Fast Ferrari",
+    "category": "other",
+    "alt": "A red Ferrari parked on a brick driveway"
+  },
+  {
+    "src": "Photos/other/IMG_7073.jpeg",
+    "title": "Historic Honda",
+    "category": "other",
+    "alt": "A silver classic Honda Prelude parked indoors"
+  },
+  {
+    "src": "Photos/other/IMG_7076.jpeg",
+    "title": "Retro Ride",
+    "category": "other",
+    "alt": "A maroon classic Honda N600 parked in a showroom"
+  },
+  {
+    "src": "Photos/other/IMG_7077.jpeg",
+    "title": "Handsome Honda",
+    "category": "other",
+    "alt": "A white classic Honda S600 convertible parked indoors"
+  },
+  {
+    "src": "Photos/other/IMG_7855.jpeg",
+    "title": "Doc Hudson",
+    "category": "other",
+    "alt": "A life-sized statue of Doc Hudson from the movie Cars"
+  },
+  {
+    "src": "Photos/other/IMG_7857.jpeg",
+    "title": "Stern Sheriff",
+    "category": "other",
+    "alt": "A life-sized statue of Sheriff from the movie Cars"
+  },
+  {
+    "src": "Photos/other/IMG_7938.jpeg",
+    "title": "Lightning McQueen",
+    "category": "other",
+    "alt": "A life-sized statue of Lightning McQueen from the movie Cars"
   },
   {
     "src": "Photos/nature/DSC_0044.JPG",
