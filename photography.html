@@ -428,18 +428,26 @@
 
             let allPhotos = [];
             let filteredPhotos = [];
+            let thumbnailMap = {};
             let currentPage = 1;
             let itemsPerPage = 48; // Default matches HTML
 
             // 1. Fetch JSON Data
             try {
-                const response = await fetch('photos.json');
-                allPhotos = await response.json();
-                filteredPhotos = [...allPhotos]; // Initially, all photos are shown
-                renderGallery(); // Build the first page
+                // Fetch BOTH files at the exact same time
+                const [photosRes, thumbsRes] = await Promise.all([
+                    fetch('photos.json'),
+                    fetch('thumbnails.json')
+                ]);
+                
+                allPhotos = await photosRes.json();
+                thumbnailMap = await thumbsRes.json();
+                
+                filteredPhotos = [...allPhotos];
+                renderGallery();
             } catch (error) {
-                console.error("Error loading photos:", error);
-                gallery.innerHTML = "<p>Failed to load gallery.</p>";
+                console.error("Error loading photos or thumbnails:", error);
+                gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
             // 2. Render the specific page of photos
@@ -463,12 +471,17 @@
 
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
+                    
+                    // --- CROSS-REFERENCE THUMBNAILS FILE ---
+                    // Check the dictionary. If it finds a match, use it! Otherwise fallback to original.
+                    const thumbSrc = thumbnailMap[photo.src] || photo.src;
+
                     photoDiv.innerHTML = `
-                        <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
+                        <img src="${thumbSrc}" alt="${photo.alt}" loading="lazy">
                         <div class="photo-overlay">${photo.title}</div>
                     `;
                     
-                    // Lightbox logic
+                    // Lightbox logic ALWAYS uses the high-res file
                     photoDiv.addEventListener('click', () => {
                         const lightbox = document.getElementById('lightbox');
                         const lightboxImg = document.getElementById('lightbox-img');
