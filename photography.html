@@ -13,28 +13,27 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(13, 13, 18, 0.95); /* Deep dark background */
+            background: rgba(13, 13, 18, 0.95); 
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            z-index: 2000; /* Stays above the navbar */
+            z-index: 2000; 
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            pointer-events: none; /* Prevents clicking when hidden */
+            pointer-events: none; 
             transition: opacity 0.3s ease;
         }
 
-        /* This class makes it visible when clicked */
         .lightbox.active {
             opacity: 1;
             pointer-events: all;
         }
 
         #lightbox-img {
-            max-width: 95vw; /* UPDATED: Makes the image much wider */
-            max-height: 95vh; /* UPDATED: Makes the image much taller */
-            object-fit: contain; /* Ensures the whole image stays visible */
+            max-width: 95vw; 
+            max-height: 95vh; 
+            object-fit: contain; 
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
             transform: scale(0.95);
@@ -58,17 +57,16 @@
         }
 
         .lightbox-close:hover {
-            color: var(--accent); /* Turns crimson when hovered */
+            color: var(--accent); 
         }
 
         :root {
-            /* The Unified Crimson Theme */
             --bg-color: #0d0d12;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #ef4444; /* Radiant Red */
+            --accent: #ef4444; 
             --accent-glow: rgba(239, 68, 68, 0.25);
         }
 
@@ -79,7 +77,6 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            /* Crimson Background Glows */
             background-image: 
                 radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
                 radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
@@ -87,10 +84,9 @@
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-y: scroll; /* Scrollbar Lock */
+            overflow-y: scroll; 
         }
 
-        /* Navigation Bar */
         .navbar {
             position: fixed;
             top: 0;
@@ -117,14 +113,13 @@
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        /* Content Container - Widened for the grid */
         .container {
             width: 100%;
             max-width: 900px; 
             padding: 120px 24px 60px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
-            will-change: transform, opacity; /* Hardware Acceleration */
+            will-change: transform, opacity; 
         }
 
         @keyframes fadeIn {
@@ -136,7 +131,15 @@
         .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; max-width: 500px; margin-left: auto; margin-right: auto;}
 
-        /* --- NEW FILTER CONTROLS --- */
+        /* --- GALLERY CONTROLS (Filters + Pagination limits) --- */
+        .gallery-controls-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
         .filter-controls {
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -144,12 +147,10 @@
             -webkit-backdrop-filter: blur(16px);
             padding: 15px 25px;
             border-radius: 16px;
-            margin: 0 auto 40px auto;
             display: flex;
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
-            max-width: fit-content;
         }
 
         .checkbox-label {
@@ -163,18 +164,36 @@
             transition: color 0.3s ease;
         }
 
-        .checkbox-label:hover {
+        .checkbox-label:hover { color: var(--text-primary); }
+        .filter-checkbox { accent-color: var(--accent); cursor: pointer; width: 16px; height: 16px; }
+
+        .per-page-dropdown {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .per-page-dropdown select {
+            background: var(--bg-color);
             color: var(--text-primary);
-        }
-
-        .filter-checkbox {
-            accent-color: var(--accent);
+            border: 1px solid var(--glass-border);
+            border-radius: 8px;
+            padding: 6px 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            outline: none;
             cursor: pointer;
-            width: 16px;
-            height: 16px;
+            transition: border-color 0.3s ease;
         }
 
-        /* --- NEW PHOTO GRID --- */
+        .per-page-dropdown select:focus {
+            border-color: var(--accent);
+        }
+
+        /* --- PHOTO GRID --- */
         .photo-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -186,14 +205,14 @@
             position: relative;
             border-radius: 16px;
             overflow: hidden;
-            aspect-ratio: 1 / 1; /* Keeps images beautifully square */
+            aspect-ratio: 1 / 1; 
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            cursor: pointer; /* Makes it clear the photo is clickable */
+            cursor: pointer; 
             opacity: 0;
             animation: popIn 0.5s ease-out forwards;
-            animation-delay: 0.15s; /* Graceful Pop-in */
+            animation-delay: 0.15s; 
         }
 
         @keyframes popIn {
@@ -210,7 +229,6 @@
             transition: opacity 0.3s ease, transform 0.5s ease;
         }
 
-        /* Hover Effects */
         .photo-item:hover {
             transform: translateY(-6px);
             box-shadow: 0 12px 24px var(--accent-glow);
@@ -219,7 +237,7 @@
 
         .photo-item:hover img {
             opacity: 1;
-            transform: scale(1.05); /* Slight zoom on hover */
+            transform: scale(1.05); 
         }
 
         .photo-overlay {
@@ -242,9 +260,44 @@
             transform: translateY(0);
         }
 
-        /* JavaScript hide class */
-        .hidden {
-            display: none;
+        /* --- PAGINATION BUTTONS --- */
+        .pagination-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .page-btn {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            color: var(--text-primary);
+            padding: 10px 24px;
+            border-radius: 12px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .page-btn:hover:not(:disabled) {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.95rem;
         }
 
         footer {
@@ -255,51 +308,22 @@
             color: var(--text-secondary);
         }
         
-        /* --- PAGE TRANSITION OUT --- */
         .fade-out {
             opacity: 0 !important;
             transform: translateY(-20px) !important;
             transition: opacity 0.4s ease, transform 0.4s ease !important;
         }
 
-        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 600px) {
-            /* Shrink the navbar text and spacing */
-            .navbar {
-                gap: 15px;
-                padding: 12px 0;
-            }
+            .navbar { gap: 15px; padding: 12px 0; }
+            .nav-link { font-size: 0.85rem; }
+            .container { padding: 90px 16px 40px; }
+            h1 { font-size: 1.5rem; }
+            .bio { font-size: 0.9rem; margin: 16px 0 30px; }
+            .filter-controls { gap: 12px; padding: 12px 16px; border-radius: 12px; }
+            .checkbox-label { font-size: 0.85rem; }
             
-            .nav-link {
-                font-size: 0.85rem;
-            }
-
-            /* Reduce spacing at the top of the page so content fits better */
-            .container {
-                padding: 90px 16px 40px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .bio {
-                font-size: 0.9rem;
-                margin: 16px 0 30px;
-            }
-
-            /* Stack the filter buttons neatly */
-            .filter-controls {
-                gap: 12px;
-                padding: 12px 16px;
-                border-radius: 12px;
-            }
-
-            .checkbox-label {
-                font-size: 0.85rem;
-            }
-
-            /* Permanently show the titles since hover doesn't exist on touch screens */
+            /* Mobile Titles */
             .photo-item .photo-overlay {
                 transform: translateY(0); 
                 font-size: 0.9rem; 
@@ -307,7 +331,6 @@
                 background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); 
             }
         }
-
     </style>
 </head>
 <body>
@@ -323,22 +346,39 @@
         
         <p class="bio">Capturing moments all around the country and beyond! Select a category below to filter my latest work.</p>
 
-        <div class="filter-controls">
-            <label class="checkbox-label">
-                <input type="checkbox" value="all" class="filter-checkbox" checked> All
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" value="nature" class="filter-checkbox"> Nature
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" value="furry" class="filter-checkbox"> Furry
-            </label>
-            <label class="checkbox-label">
-                <input type="checkbox" value="other" class="filter-checkbox"> Other
-            </label>
+        <div class="gallery-controls-wrapper">
+            <div class="filter-controls">
+                <label class="checkbox-label">
+                    <input type="checkbox" value="all" class="filter-checkbox" checked> All
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" value="nature" class="filter-checkbox"> Nature
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" value="furry" class="filter-checkbox"> Furry
+                </label>
+                <label class="checkbox-label">
+                    <input type="checkbox" value="other" class="filter-checkbox"> Other
+                </label>
+            </div>
+            
+            <div class="per-page-dropdown">
+                <label for="itemsPerPage">Photos per page:</label>
+                <select id="itemsPerPage">
+                    <option value="10">10</option>
+                    <option value="50" selected>50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
         </div>
 
         <div class="photo-grid" id="gallery">  
+            </div>
+
+        <div class="pagination-controls">
+            <button id="prevPage" class="page-btn">Back</button>
+            <span id="pageInfo" class="page-info">Page 1 of 1</span>
+            <button id="nextPage" class="page-btn">Next</button>
         </div>
 
         <footer>
@@ -357,49 +397,76 @@
             // --- SMOOTH PAGE TRANSITIONS ---
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
-            let isTransitioning = false; // Transition Lock
+            let isTransitioning = false; 
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
-                    // Only apply to links that leave the current page
                     if (this.href !== window.location.href) {
-                        e.preventDefault(); // Stop the instant jump
-                        
-                        if (isTransitioning) return; // Prevent double clicking
+                        e.preventDefault(); 
+                        if (isTransitioning) return; 
                         isTransitioning = true;
                         
                         const targetUrl = this.href;
-                        
-                        // Add the fade out class to the main container
                         container.classList.add('fade-out');
                         
-                        // Wait 400ms for the animation to finish, then go to the new page
                         setTimeout(() => {
                             window.location.href = targetUrl;
                         }, 400);
                     }
                 });
             });
-            // --- END OF TRANSITIONS ---
 
+            // --- GALLERY & PAGINATION LOGIC ---
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
+            const selectPerPage = document.getElementById('itemsPerPage');
+            const btnPrev = document.getElementById('prevPage');
+            const btnNext = document.getElementById('nextPage');
+            const pageInfo = document.getElementById('pageInfo');
 
-            // 1. Fetch the photos from your JSON file
+            let allPhotos = [];
+            let filteredPhotos = [];
+            let currentPage = 1;
+            let itemsPerPage = 50; // Default matches HTML
+
+            // 1. Fetch JSON Data
             try {
                 const response = await fetch('photos.json');
-                const photosData = await response.json();
+                allPhotos = await response.json();
+                filteredPhotos = [...allPhotos]; // Initially, all photos are shown
+                renderGallery(); // Build the first page
+            } catch (error) {
+                console.error("Error loading photos:", error);
+                gallery.innerHTML = "<p>Failed to load gallery.</p>";
+            }
 
-                // 2. Build the HTML for each photo automatically
-                photosData.forEach(photo => {
+            // 2. Render the specific page of photos
+            function renderGallery() {
+                gallery.innerHTML = ''; // Clear the grid
+                
+                // Math for pagination
+                const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
+                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+                
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const endIndex = startIndex + itemsPerPage;
+                
+                // Grab just the chunk of photos for this page
+                const photosToShow = filteredPhotos.slice(startIndex, endIndex);
+
+                // Build the HTML for the chunk
+                photosToShow.forEach(photo => {
+                    // Skip over comments in the JSON
+                    if(photo._comment) return; 
+
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
                     photoDiv.innerHTML = `
-                        <img src="${photo.src}" alt="${photo.alt}">
+                        <img src="${photo.src}" alt="${photo.alt}" loading="lazy">
                         <div class="photo-overlay">${photo.title}</div>
                     `;
                     
-                    // Open Lightbox when clicked
+                    // Lightbox logic
                     photoDiv.addEventListener('click', () => {
                         const lightbox = document.getElementById('lightbox');
                         const lightboxImg = document.getElementById('lightbox-img');
@@ -409,64 +476,91 @@
 
                     gallery.appendChild(photoDiv);
                 });
-            } catch (error) {
-                console.error("Error loading photos:", error);
-                gallery.innerHTML = "<p>Failed to load gallery.</p>";
+
+                // Update the UI buttons
+                pageInfo.innerText = `Page ${currentPage} of ${totalPages || 1}`;
+                btnPrev.disabled = currentPage === 1;
+                btnNext.disabled = currentPage >= totalPages || totalPages === 0;
             }
 
-            // Lightbox Closing Logic
+            // 3. Filtering Logic
+            function applyFilters() {
+                const checkedValues = Array.from(checkboxes)
+                    .filter(cb => cb.checked)
+                    .map(cb => cb.value);
+
+                if (checkedValues.includes('all') || checkedValues.length === 0) {
+                    filteredPhotos = [...allPhotos];
+                } else {
+                    filteredPhotos = allPhotos.filter(photo => checkedValues.includes(photo.category));
+                }
+                
+                currentPage = 1; // Always reset to page 1 when filtering
+                renderGallery();
+            }
+
+            // Checkbox event listeners
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', () => {
+                    // Visual logic to keep "All" synced
+                    if (checkbox.value !== 'all' && checkbox.checked) {
+                        document.querySelector('input[value="all"]').checked = false;
+                    } else if (checkbox.value === 'all' && checkbox.checked) {
+                        checkboxes.forEach(cb => {
+                            if (cb.value !== 'all') cb.checked = false;
+                        });
+                    }
+
+                    // Check if everything was unclicked, default back to 'All'
+                    const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                    if (!anyChecked) {
+                        document.querySelector('input[value="all"]').checked = true;
+                    }
+
+                    applyFilters();
+                });
+            });
+
+            // 4. Pagination Controls
+            selectPerPage.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                currentPage = 1; // Reset to page 1 when changing limits
+                renderGallery();
+            });
+
+            btnPrev.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderGallery();
+                    // Scroll back to the top of the gallery
+                    window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
+                }
+            });
+
+            btnNext.addEventListener('click', () => {
+                const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderGallery();
+                    // Scroll back to the top of the gallery
+                    window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
+                }
+            });
+
+            // 5. Lightbox Closing Logic
             const lightbox = document.getElementById('lightbox');
             const closeBtn = document.querySelector('.lightbox-close');
 
-            // Close when the X is clicked
             closeBtn.addEventListener('click', () => {
                 lightbox.classList.remove('active');
             });
 
-            // Close when clicking the dark background outside the image
             lightbox.addEventListener('click', (e) => {
                 if (e.target === lightbox) {
                     lightbox.classList.remove('active');
                 }
             });
 
-            // 3. Re-attach the Filtering Logic
-            setTimeout(() => {
-                const photos = document.querySelectorAll('.photo-item');
-                
-                checkboxes.forEach(checkbox => {
-                    checkbox.addEventListener('change', () => {
-                        if (checkbox.value !== 'all' && checkbox.checked) {
-                            document.querySelector('input[value="all"]').checked = false;
-                        } else if (checkbox.value === 'all' && checkbox.checked) {
-                            checkboxes.forEach(cb => {
-                                if (cb.value !== 'all') cb.checked = false;
-                            });
-                        }
-
-                        const checkedValues = Array.from(checkboxes)
-                            .filter(cb => cb.checked)
-                            .map(cb => cb.value);
-
-                        if (checkedValues.length === 0) {
-                            document.querySelector('input[value="all"]').checked = true;
-                            checkedValues.push('all');
-                        }
-
-                        if (checkedValues.includes('all')) {
-                            photos.forEach(photo => photo.classList.remove('hidden'));
-                        } else {
-                            photos.forEach(photo => {
-                                let isVisible = false;
-                                checkedValues.forEach(value => {
-                                    if (photo.classList.contains(value)) isVisible = true;
-                                });
-                                if (isVisible) photo.classList.remove('hidden'); else photo.classList.add('hidden');
-                            });
-                        }
-                    });
-                });
-            }, 50); 
         });
     </script>
 </body>
