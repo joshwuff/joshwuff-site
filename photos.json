@@ -1,55 +1,55 @@
 [
   {
     "src": "Photos/other/IMG_0480.jpeg",
-    "title": "Nyan Mercedes",
+    "title": "Nyan Mercedes <br><i>Mercedes-Benz W123 Custom</i>",
     "category": "other",
     "alt": "A baby blue Mercedes with a Nyan cat painted on the side and a roof exhaust"
   },
   {
     "src": "Photos/other/IMG_0937.jpeg",
-    "title": "Gleaming GT",
+    "title": "Gleaming GT <br><i>2005 Ford GT</i>",
     "category": "other",
     "alt": "A red Ford GT with white racing stripes in a showroom"
   },
   {
     "src": "Photos/other/IMG_0938.jpeg",
-    "title": "Fierce Ford",
+    "title": "Fierce Ford <br><i>2017 Ford GT</i>",
     "category": "other",
     "alt": "A white Ford GT with black racing stripes in a showroom"
   },
   {
     "src": "Photos/other/IMG_0940.jpeg",
-    "title": "Muscular Mustang",
+    "title": "Muscular Mustang <br><i>Ford Mustang Shelby GT500</i>",
     "category": "other",
     "alt": "A bright orange Ford Mustang Shelby GT500"
   },
   {
     "src": "Photos/other/IMG_0941.jpeg",
-    "title": "Classic Chevrolet",
+    "title": "Classic Chevrolet <br><i>Chevrolet 3100 Pickup</i>",
     "category": "other",
     "alt": "A teal classic Chevrolet pickup truck parked outdoors"
   },
   {
     "src": "Photos/other/IMG_0945.jpeg",
-    "title": "Vibrant Viper",
+    "title": "Vibrant Viper <br><i>Dodge Viper</i>",
     "category": "other",
     "alt": "A red Dodge Viper with silver racing stripes in a parking lot"
   },
   {
     "src": "Photos/other/IMG_0950.jpeg",
-    "title": "Awesome Acura",
+    "title": "Awesome Acura <br><i>Acura NSX</i>",
     "category": "other",
     "alt": "A metallic blue Acura NSX parked outdoors"
   },
   {
     "src": "Photos/other/IMG_2516.jpeg",
-    "title": "Catchy Corvette",
+    "title": "Catchy Corvette <br><i>Chevrolet Corvette C8</i>",
     "category": "other",
     "alt": "A bright yellow Chevrolet Corvette C8 on display"
   },
   {
     "src": "Photos/other/IMG_3225.jpeg",
-    "title": "Marvelous MG",
+    "title": "Marvelous MG <br><i>MG MGA</i>",
     "category": "other",
     "alt": "A red classic MG MGA convertible parked near a McDonald's"
   },
@@ -61,55 +61,55 @@
   },
   {
     "src": "Photos/other/IMG_6358.jpeg",
-    "title": "Classic Cadillac",
+    "title": "Classic Cadillac <br><i>1929 Cadillac</i>",
     "category": "other",
     "alt": "Front grille of a white 1929 Cadillac with large round headlights"
   },
   {
     "src": "Photos/other/IMG_6624.jpeg",
-    "title": "Cruising Comet",
+    "title": "Cruising Comet <br><i>Mercury Comet</i>",
     "category": "other",
     "alt": "An orange Mercury Comet race car with the number 45 and sponsor decals"
   },
   {
     "src": "Photos/other/IMG_6861.jpeg",
-    "title": "Fast Ferrari",
+    "title": "Fast Ferrari <br><i>Ferrari 328 GTS</i>",
     "category": "other",
     "alt": "A red Ferrari parked on a brick driveway"
   },
   {
     "src": "Photos/other/IMG_7073.jpeg",
-    "title": "Historic Honda",
+    "title": "Historic Honda <br><i>Honda Prelude (1st Gen)</i>",
     "category": "other",
     "alt": "A silver classic Honda Prelude parked indoors"
   },
   {
     "src": "Photos/other/IMG_7076.jpeg",
-    "title": "Retro Ride",
+    "title": "Retro Ride <br><i>Honda N600</i>",
     "category": "other",
     "alt": "A maroon classic Honda N600 parked in a showroom"
   },
   {
     "src": "Photos/other/IMG_7077.jpeg",
-    "title": "Handsome Honda",
+    "title": "Handsome Honda <br><i>Honda S600</i>",
     "category": "other",
     "alt": "A white classic Honda S600 convertible parked indoors"
   },
   {
     "src": "Photos/other/IMG_7855.jpeg",
-    "title": "Doc Hudson",
+    "title": "Doc Hudson <br><i>1951 Hudson Hornet</i>",
     "category": "other",
     "alt": "A life-sized statue of Doc Hudson from the movie Cars"
   },
   {
     "src": "Photos/other/IMG_7857.jpeg",
-    "title": "Stern Sheriff",
+    "title": "Stern Sheriff <br><i>1949 Mercury Club Coupe</i>",
     "category": "other",
     "alt": "A life-sized statue of Sheriff from the movie Cars"
   },
   {
     "src": "Photos/other/IMG_7938.jpeg",
-    "title": "Lightning McQueen",
+    "title": "Lightning McQueen <br><i>Custom Stock Car</i>",
     "category": "other",
     "alt": "A life-sized statue of Lightning McQueen from the movie Cars"
   },
@@ -181,9 +181,9 @@
   },
   {
     "src": "Photos/nature/DSC_0577.JPG",
-    "title": "Standing Stork",
+    "title": "Mellow Reeves's Muntjac",
     "category": "nature",
-    "alt": "A tall grey stork or crane standing in the grass"
+    "alt": "A small brown Reeves's Muntjac deer resting on the ground in the shade"
   },
   {
     "src": "Photos/nature/DSC_0623.JPG",
@@ -193,9 +193,9 @@
   },
   {
     "src": "Photos/nature/DSC_0651.JPG",
-    "title": "Perched Passerine",
+    "title": "Kilimanjaro Safari's Truck",
     "category": "nature",
-    "alt": "A small dark bird perched on a branch"
+    "alt": "Kilimanjaro Safari's Truck"
   },
   {
     "src": "Photos/nature/DSC_0805.JPG",
@@ -621,13 +621,13 @@
     "category": "other",
     "src": "Photos/other/IMG_5552.jpeg",
     "alt": "Porsche at night",
-    "title": "Porsche Cruisin' in the Rain"
+    "title": "Porsche Cruisin' in the Rain <br><i>Porsche 911</i>"
   },
   {
     "category": "other",
     "src": "Photos/other/IMG_7611.jpeg",
     "alt": "Yellow Hot Rod",
-    "title": "Vintage Yellow"
+    "title": "Vintage Yellow <br><i>Custom Hot Rod</i>"
   },
   {
     "category": "furry",
