@@ -411,6 +411,7 @@
   },
   {
     "_comment": "--- OTHER PHOTOS ---",
+  {
     "category": "other",
     "src": "Photos/other/IMG_0499.jpeg",
     "alt": "2023 Honda Civic",
@@ -419,8 +420,8 @@
   {
     "category": "other",
     "src": "Photos/other/IMG_5552.jpg",
-    "alt": "Car at night",
-    "title": "Cruisin' in the Rain"
+    "alt": "Porsche at night",
+    "title": "Porsche Cruisin' in the Rain"
   },
   {
     "category": "other",
