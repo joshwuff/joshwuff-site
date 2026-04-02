@@ -60,6 +60,29 @@
             color: var(--accent);
         }
 
+        /* --- NEW: LIGHTBOX NAVIGATION ARROWS --- */
+        .lightbox-prev, .lightbox-next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-size: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: color 0.3s ease, transform 0.3s ease;
+            z-index: 2001;
+            padding: 20px;
+            user-select: none;
+            opacity: 0.7;
+        }
+
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+
+        .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
+        .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
+
+
         :root {
             --bg-color: #0d0d12;
             --glass-bg: rgba(255, 255, 255, 0.03);
@@ -334,6 +357,9 @@
                 padding: 25px 12px 12px;
                 background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%);
             }
+
+            .lightbox-prev { left: 5px; font-size: 40px; padding: 10px; }
+            .lightbox-next { right: 5px; font-size: 40px; padding: 10px; }
         }
     </style>
 </head>
@@ -370,8 +396,8 @@
                 <label for="itemsPerPage">Photos per page:</label>
                 <select id="itemsPerPage">
                     <option value="8">8</option>
-                    <option value="24" selected>24</option>
-                    <option value="48">48</option>
+                    <option value="24">24</option>
+                    <option value="48" selected>48</option>
                 </select>
             </div>
         </div>
@@ -392,7 +418,9 @@
 
     <div id="lightbox" class="lightbox">
         <span class="lightbox-close">&times;</span>
+        <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
         <img id="lightbox-img" src="" alt="Fullscreen Photography">
+        <span class="lightbox-next" id="lightbox-next">&#10095;</span>
     </div>
 
     <script>
@@ -432,22 +460,22 @@
             let filteredPhotos = [];
             let thumbnailMap = {};
             let currentPage = 1;
-            let itemsPerPage = 24; // Default matches HTML
+            let itemsPerPage = 48; // Matches HTML
+            
+            // NEW: Keeps track of where we are in the lightbox
+            let currentLightboxIndex = 0;
 
             // 1. Fetch JSON Data
             try {
-                // Fetch BOTH files at the exact same time
+                // Fetch BOTH files at the exact same time (Using the cache-buster trick just in case!)
                 const [photosRes, thumbsRes] = await Promise.all([
-                    fetch('photos.json'),
-                    fetch('thumbnails.json')
+                    fetch('photos.json?v=2'),
+                    fetch('thumbnails.json?v=2')
                 ]);
                 
                 const rawPhotos = await photosRes.json();
                 
-                // THE MAGIC FIX: This line strips out invisible comment objects so they
-                // don't secretly steal spots on your pages and mess up the math!
                 allPhotos = rawPhotos.filter(photo => photo.src !== undefined);
-                
                 thumbnailMap = await thumbsRes.json();
                 
                 filteredPhotos = [...allPhotos];
@@ -455,6 +483,13 @@
             } catch (error) {
                 console.error("Error loading photos or thumbnails:", error);
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
+            }
+
+            // NEW: Function to cleanly update the lightbox image
+            function updateLightboxImage() {
+                if (filteredPhotos.length === 0) return;
+                const lightboxImg = document.getElementById('lightbox-img');
+                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
             }
 
             // 2. Render the specific page of photos
@@ -472,7 +507,7 @@
                 const photosToShow = filteredPhotos.slice(startIndex, endIndex);
 
                 // Build the HTML for the chunk
-                photosToShow.forEach(photo => {
+                photosToShow.forEach((photo, localIndex) => {
 
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
@@ -485,11 +520,14 @@
                         <div class="photo-overlay">${photo.title}</div>
                     `;
                     
+                    // We need to know this photo's exact number in the total list so the arrows work
+                    const globalIndex = startIndex + localIndex;
+
                     // Lightbox logic ALWAYS uses the high-res file
                     photoDiv.addEventListener('click', () => {
+                        currentLightboxIndex = globalIndex;
+                        updateLightboxImage();
                         const lightbox = document.getElementById('lightbox');
-                        const lightboxImg = document.getElementById('lightbox-img');
-                        lightboxImg.src = photo.src;
                         lightbox.classList.add('active');
                     });
 
@@ -551,7 +589,6 @@
                 if (currentPage > 1) {
                     currentPage--;
                     renderGallery();
-                    // Scroll back to the top of the gallery
                     window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
                 }
             });
@@ -561,21 +598,58 @@
                 if (currentPage < totalPages) {
                     currentPage++;
                     renderGallery();
-                    // Scroll back to the top of the gallery
                     window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' });
                 }
             });
 
-            // 5. Lightbox Closing Logic
+            // 5. Lightbox Interactive Logic
             const lightbox = document.getElementById('lightbox');
             const closeBtn = document.querySelector('.lightbox-close');
+            const prevArrow = document.getElementById('lightbox-prev');
+            const nextArrow = document.getElementById('lightbox-next');
 
+            // Close button
             closeBtn.addEventListener('click', () => {
                 lightbox.classList.remove('active');
             });
 
+            // Click outside the image to close
             lightbox.addEventListener('click', (e) => {
                 if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                }
+            });
+
+            // Left Arrow Click
+            prevArrow.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stops the click from accidentally closing the lightbox
+                if (filteredPhotos.length === 0) return;
+                // If we are at the beginning, loop to the end. Otherwise go back 1.
+                currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1;
+                updateLightboxImage();
+            });
+
+            // Right Arrow Click
+            nextArrow.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (filteredPhotos.length === 0) return;
+                // If we are at the end, loop to the beginning. Otherwise go forward 1.
+                currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0;
+                updateLightboxImage();
+            });
+
+            // --- BONUS: KEYBOARD SUPPORT ---
+            document.addEventListener('keydown', (e) => {
+                // Only listen to keyboard if the lightbox is actually open
+                if (!lightbox.classList.contains('active')) return;
+
+                if (e.key === 'ArrowLeft') {
+                    currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1;
+                    updateLightboxImage();
+                } else if (e.key === 'ArrowRight') {
+                    currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0;
+                    updateLightboxImage();
+                } else if (e.key === 'Escape') {
                     lightbox.classList.remove('active');
                 }
             });
