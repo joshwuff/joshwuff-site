@@ -19,7 +19,7 @@
     <div class="container gallery-container">
         <h1>Photography</h1>
         <div class="subtitle">By joshwuff</div>
-        <p class="bio">Capturing moments all around the country and beyond! Select a category below to filter my latest work.</p>
+        <p class="bio">Capturing moments all around Florida and beyond! Select a category below to filter my latest work.</p>
 
         <div class="gallery-controls-wrapper">
             <div class="filter-controls">
@@ -94,33 +94,32 @@
             let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
 
             try {
-                            const [photosRes, thumbsRes] = await Promise.all([
-                                fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
-                            ]);
-                            allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
-                            thumbnailMap = await thumbsRes.json();
-                            
-                            // FIX: Instead of forcing all photos to show,
-                            // run the filter check immediately in case of a page refresh!
-                            applyFilters();
-                        } catch (error) {
+                const [photosRes, thumbsRes] = await Promise.all([
+                    fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
+                ]);
+                allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
+                thumbnailMap = await thumbsRes.json();
+                
+                // Ensure filters apply immediately on load or refresh
+                applyFilters();
+            } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
-                        function updateLightboxImage() {
-                                        if (filteredPhotos.length === 0) return;
-                                        const lightboxImg = document.getElementById('lightbox-img');
-                                        
-                                        // FIX: Hide the image temporarily to prevent the "ghost" effect
-                                        lightboxImg.style.opacity = '0';
-                                        
-                                        // Only reveal the image once the new high-res file is fully downloaded
-                                        lightboxImg.onload = () => {
-                                            lightboxImg.style.opacity = '1';
-                                        };
-                                        
-                                        lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
-                                    }
+            function updateLightboxImage() {
+                if (filteredPhotos.length === 0) return;
+                const lightboxImg = document.getElementById('lightbox-img');
+                
+                // Hide the image temporarily to prevent the "ghost" effect
+                lightboxImg.style.opacity = '0';
+                
+                // Only reveal the image once the new high-res file is fully downloaded
+                lightboxImg.onload = () => {
+                    lightboxImg.style.opacity = '1';
+                };
+                
+                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
+            }
 
             function renderGallery() {
                 gallery.innerHTML = '';
@@ -140,6 +139,7 @@
                         currentLightboxIndex = globalIndex;
                         updateLightboxImage();
                         document.getElementById('lightbox').classList.add('active');
+                        document.body.style.overflow = 'hidden'; // Prevent background scrolling
                     });
                     gallery.appendChild(photoDiv);
                 });
@@ -171,15 +171,58 @@
 
             // Lightbox
             const lightbox = document.getElementById('lightbox');
-            document.querySelector('.lightbox-close').addEventListener('click', () => lightbox.classList.remove('active'));
-            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
-            document.getElementById('lightbox-prev').addEventListener('click', (e) => { e.stopPropagation(); if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); } });
-            document.getElementById('lightbox-next').addEventListener('click', (e) => { e.stopPropagation(); if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); } });
+            const lightboxImg = document.getElementById('lightbox-img');
+
+            // Function to cleanly close the lightbox and restore scrolling
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = ''; // Restore background scrolling
+                resetZoom();
+            }
+
+            // Function to reset the zoom state
+            function resetZoom() {
+                lightboxImg.style.transform = 'scale(1)';
+                lightboxImg.style.cursor = 'zoom-in';
+                lightboxImg.classList.remove('zoomed');
+            }
+
+            // Desktop click-to-zoom feature
+            lightboxImg.style.transition = 'transform 0.3s ease';
+            lightboxImg.style.cursor = 'zoom-in';
+            lightboxImg.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent the click from closing the lightbox
+                if (lightboxImg.classList.contains('zoomed')) {
+                    resetZoom();
+                } else {
+                    lightboxImg.style.transform = 'scale(2)'; // Zoom in 2x
+                    lightboxImg.style.cursor = 'zoom-out';
+                    lightboxImg.classList.add('zoomed');
+                }
+            });
+
+            // Close listeners
+            document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
+            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
+            
+            // Navigation listeners (Reset zoom when changing photos)
+            document.getElementById('lightbox-prev').addEventListener('click', (e) => {
+                e.stopPropagation();
+                resetZoom();
+                if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
+            });
+            
+            document.getElementById('lightbox-next').addEventListener('click', (e) => {
+                e.stopPropagation();
+                resetZoom();
+                if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
+            });
+            
             document.addEventListener('keydown', (e) => {
                 if (!lightbox.classList.contains('active')) return;
-                if (e.key === 'ArrowLeft') { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
-                else if (e.key === 'ArrowRight') { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
-                else if (e.key === 'Escape') lightbox.classList.remove('active');
+                if (e.key === 'ArrowLeft') { resetZoom(); currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
+                else if (e.key === 'ArrowRight') { resetZoom(); currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
+                else if (e.key === 'Escape') closeLightbox();
             });
         });
     </script>
