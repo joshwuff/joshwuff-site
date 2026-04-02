@@ -10,13 +10,17 @@
     <link rel="stylesheet" href="style.css?v=1">
     
     <style>
+        /* Default state: Dark background, no glow */
         .email-btn {
-            box-shadow: none !important; /* Removes the permanent glow */
-            transition: box-shadow 0.3s ease !important; /* Smooth fade effect */
+            background-color: #2a2a2a !important; /* Dark grey to match the Discord button */
+            box-shadow: none !important;
+            transition: all 0.3s ease !important;
         }
         
+        /* Hover state: Turns red and glows! */
         .email-btn:hover {
-            box-shadow: 0 0 15px red !important; /* Applies glow ONLY on hover */
+            background-color: #ff4d4d !important; /* Turns red */
+            box-shadow: 0 0 15px rgba(255, 77, 77, 0.6) !important; /* Adds the red glow */
         }
     </style>
 </head>
