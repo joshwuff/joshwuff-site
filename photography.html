@@ -195,16 +195,14 @@
 
         /* --- PHOTO GRID --- */
         .photo-grid {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center; /* This is the magic rule that centers the leftovers! */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, 260px);
+            justify-content: center;
             gap: 24px;
             width: 100%;
         }
 
         .photo-item {
-            flex: 0 0 260px; /* Locks the size of the square so they don't warp */
-            
             position: relative;
             border-radius: 16px;
             overflow: hidden;
