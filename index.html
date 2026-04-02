@@ -32,10 +32,10 @@
             min-height: 100vh;
             overflow-y: scroll;
             
-            /* --- THE BREATHING BACKGROUND --- */
+            /* The Brighter Breathing Background */
             background-image:
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.20) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.20) 0%, transparent 45%);
             background-size: 100% 100%;
             animation: breathe 10s infinite alternate ease-in-out;
         }
@@ -45,7 +45,6 @@
             100% { background-size: 130% 130%; background-position: 5% 5%; }
         }
 
-        /* --- NAVBAR --- */
         .navbar {
             position: fixed;
             top: 0;
@@ -61,116 +60,40 @@
             z-index: 1000;
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        /* --- PROFILE CONTAINER --- */
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 120px 24px 60px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-        }
+        .container { width: 100%; max-width: 600px; padding: 120px 24px 40px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .profile-pic {
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-            margin-bottom: 20px;
-        }
-
+        .profile-pic { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent); box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 20px; }
         h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
         .handle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 20px auto 40px; line-height: 1.6; }
 
-        /* --- SOCIAL LINKS BASE --- */
         .social-link {
-            display: block;
-            width: 100%;
-            max-width: 400px;
-            margin: 0 auto 16px;
-            padding: 16px 24px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            transition: all 0.3s ease !important; /* Critical for smooth color changes */
+            display: block; width: 100%; max-width: 400px; margin: 0 auto 16px; padding: 16px 24px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px;
+            color: var(--text-primary); text-decoration: none; font-weight: 600;
+            backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: all 0.3s ease !important;
         }
+        .social-link:hover { border-color: var(--accent); box-shadow: 0 10px 20px var(--accent-glow); transform: translateY(-3px); }
 
-        /* Default hover (Red) for any links that aren't specific brands */
-        .social-link:hover {
-            border-color: var(--accent);
-            box-shadow: 0 10px 20px var(--accent-glow);
-            transform: translateY(-3px);
-        }
+        /* Brand Glows */
+        .social-link[href*="discord"]:hover { border-color: #5865F2 !important; box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4) !important; color: #5865F2 !important; }
+        .social-link[href*="x.com"]:hover, .social-link[href*="twitter"]:hover { border-color: #ffffff !important; box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
+        .social-link[href*="tiktok"]:hover { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
+        .social-link[href*="bsky"]:hover, .social-link[href*="bluesky"]:hover { border-color: #0085ff !important; box-shadow: 0 10px 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
+        .social-link[href*="twitch"]:hover { border-color: #9146FF !important; box-shadow: 0 10px 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
+        .social-link[href*="furtrack"]:hover { border-color: #f59e0b !important; box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
 
-        /* --- BRAND GLOW HOVER EFFECTS --- */
-        /* Discord - Blurple */
-        .social-link[href*="discord"]:hover {
-            border-color: #5865F2 !important;
-            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4) !important;
-            color: #5865F2 !important;
-        }
-
-        /* X / Twitter - Pure White */
-        .social-link[href*="x.com"]:hover, .social-link[href*="twitter"]:hover {
-            border-color: #ffffff !important;
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3) !important;
-            color: #ffffff !important;
-        }
-
-        /* TikTok - Cyan & Pink Dual Glow! */
-        .social-link[href*="tiktok"]:hover {
-            border-color: #fe2c55 !important;
-            box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important;
-            color: #f8fafc !important;
-        }
-
-        /* Twitch - Purple */
-        .social-link[href*="twitch"]:hover {
-            border-color: #9146FF !important;
-            box-shadow: 0 10px 20px rgba(145, 70, 255, 0.4) !important;
-            color: #9146FF !important;
-        }
-
-        /* Furtrack - Amber/Orange */
-        .social-link[href*="furtrack"]:hover {
-            border-color: #f59e0b !important;
-            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4) !important;
-            color: #f59e0b !important;
-        }
-
-        .fade-out {
-            opacity: 0 !important;
-            transform: translateY(-20px) !important;
-            transition: opacity 0.4s ease, transform 0.4s ease !important;
-        }
+        footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
+        .fade-out { opacity: 0 !important; transform: translateY(-20px) !important; transition: opacity 0.4s ease, transform 0.4s ease !important; }
 
         @media (max-width: 600px) {
             .navbar { gap: 15px; padding: 12px 0; }
-            .nav-link { font-size: 0.85rem; }
-            .container { padding: 90px 16px 40px; }
+            .container { padding: 90px 16px 20px; }
             .profile-pic { width: 100px; height: 100px; }
             h1 { font-size: 1.75rem; }
         }
@@ -185,45 +108,36 @@
 
     <div class="container">
         <img src="main_icon_circle.jpg" alt="Joshwuff Profile Picture" class="profile-pic">
-        
         <h1>Joshwuff</h1>
         <div class="handle">@joshwuff</div>
-        
-        <p class="bio">
-            Digital creator, gaming enthusiast, and photographer.<br>
-            Welcome to the official home of everything joshwuff! :3
-        </p>
+        <p class="bio">Digital creator, gaming enthusiast, and photographer.<br>Welcome to the official home of everything joshwuff! :3</p>
 
         <div class="links-container">
             <a href="https://kingskostumes.com" class="social-link" target="_blank">Fursuit maker: Kings Kostumes</a>
-            <a href="https://discord.gg/your_invite_code" class="social-link" target="_blank">Discord Community</a>
+            <a href="https://discord.gg/your_code" class="social-link" target="_blank">Discord Community</a>
             <a href="https://furtrack.com/user/joshwuff" class="social-link" target="_blank">Furtrack Profile</a>
             <a href="https://x.com/joshwuff_" class="social-link" target="_blank">Follow on X (@joshwuff_)</a>
             <a href="https://www.tiktok.com/@joshwuff" class="social-link" target="_blank">TikTok</a>
-            <a href="https://www.twitch.tv/joshwuff" class="social-link" target="_blank">Twitch</a>
+            <a href="https://bsky.app/profile/your_handle" class="social-link" target="_blank">BlueSky</a>
+            <a href="https://www.twitch.tv/joshwuff" class="social-link" target="_blank">Twitch Channel</a>
         </div>
+
+        <footer><p>&copy; 2026 Joshwuff. All rights reserved.</p></footer>
     </div>
 
     <script>
-        // Smooth Page Transitions
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
             let isTransitioning = false;
-
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     if (this.href !== window.location.href) {
                         e.preventDefault();
                         if (isTransitioning) return;
                         isTransitioning = true;
-                        
-                        const targetUrl = this.href;
                         container.classList.add('fade-out');
-                        
-                        setTimeout(() => {
-                            window.location.href = targetUrl;
-                        }, 400);
+                        setTimeout(() => { window.location.href = this.href; }, 400);
                     }
                 });
             });
