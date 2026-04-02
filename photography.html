@@ -66,6 +66,7 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
+            // Page Transitions
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
             let isTransitioning = false;
@@ -81,6 +82,7 @@
                 });
             });
 
+            // Gallery Logic
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
             const selectPerPage = document.getElementById('itemsPerPage');
@@ -155,6 +157,7 @@
             prevBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
             nextBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { currentPage++; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
 
+            // Lightbox
             const lightbox = document.getElementById('lightbox');
             document.querySelector('.lightbox-close').addEventListener('click', () => lightbox.classList.remove('active'));
             lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
