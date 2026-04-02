@@ -13,15 +13,15 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background: rgba(13, 13, 18, 0.95); 
+            background: rgba(13, 13, 18, 0.95);
             backdrop-filter: blur(15px);
             -webkit-backdrop-filter: blur(15px);
-            z-index: 2000; 
+            z-index: 2000;
             display: flex;
             justify-content: center;
             align-items: center;
             opacity: 0;
-            pointer-events: none; 
+            pointer-events: none;
             transition: opacity 0.3s ease;
         }
 
@@ -31,9 +31,9 @@
         }
 
         #lightbox-img {
-            max-width: 95vw; 
-            max-height: 95vh; 
-            object-fit: contain; 
+            max-width: 95vw;
+            max-height: 95vh;
+            object-fit: contain;
             border-radius: 12px;
             box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
             transform: scale(0.95);
@@ -57,7 +57,7 @@
         }
 
         .lightbox-close:hover {
-            color: var(--accent); 
+            color: var(--accent);
         }
 
         :root {
@@ -66,7 +66,7 @@
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #ef4444; 
+            --accent: #ef4444;
             --accent-glow: rgba(239, 68, 68, 0.25);
         }
 
@@ -77,14 +77,14 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
                 radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
             color: var(--text-primary);
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            overflow-y: scroll; 
+            overflow-y: scroll;
         }
 
         .navbar {
@@ -115,11 +115,11 @@
 
         .container {
             width: 100%;
-            max-width: 900px; 
+            max-width: 900px;
             padding: 120px 24px 60px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
-            will-change: transform, opacity; 
+            will-change: transform, opacity;
         }
 
         @keyframes fadeIn {
@@ -195,24 +195,27 @@
 
         /* --- PHOTO GRID --- */
         .photo-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center; /* This is the magic rule that centers the leftovers! */
             gap: 24px;
             width: 100%;
         }
 
         .photo-item {
+            flex: 0 0 260px; /* Locks the size of the square so they don't warp */
+            
             position: relative;
             border-radius: 16px;
             overflow: hidden;
-            aspect-ratio: 1 / 1; 
+            aspect-ratio: 1 / 1;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
-            cursor: pointer; 
+            cursor: pointer;
             opacity: 0;
             animation: popIn 0.5s ease-out forwards;
-            animation-delay: 0.15s; 
+            animation-delay: 0.15s;
         }
 
         @keyframes popIn {
@@ -237,7 +240,7 @@
 
         .photo-item:hover img {
             opacity: 1;
-            transform: scale(1.05); 
+            transform: scale(1.05);
         }
 
         .photo-overlay {
@@ -325,10 +328,10 @@
             
             /* Mobile Titles */
             .photo-item .photo-overlay {
-                transform: translateY(0); 
-                font-size: 0.9rem; 
+                transform: translateY(0);
+                font-size: 0.9rem;
                 padding: 25px 12px 12px;
-                background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); 
+                background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%);
             }
         }
     </style>
@@ -372,7 +375,7 @@
             </div>
         </div>
 
-        <div class="photo-grid" id="gallery">  
+        <div class="photo-grid" id="gallery">
             </div>
 
         <div class="pagination-controls">
@@ -397,13 +400,13 @@
             // --- SMOOTH PAGE TRANSITIONS ---
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
-            let isTransitioning = false; 
+            let isTransitioning = false;
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     if (this.href !== window.location.href) {
-                        e.preventDefault(); 
-                        if (isTransitioning) return; 
+                        e.preventDefault();
+                        if (isTransitioning) return;
                         isTransitioning = true;
                         
                         const targetUrl = this.href;
@@ -457,7 +460,7 @@
                 // Build the HTML for the chunk
                 photosToShow.forEach(photo => {
                     // Skip over comments in the JSON
-                    if(photo._comment) return; 
+                    if(photo._comment) return;
 
                     const photoDiv = document.createElement('div');
                     photoDiv.className = `photo-item ${photo.category}`;
@@ -470,8 +473,8 @@
                     photoDiv.addEventListener('click', () => {
                         const lightbox = document.getElementById('lightbox');
                         const lightboxImg = document.getElementById('lightbox-img');
-                        lightboxImg.src = photo.src; 
-                        lightbox.classList.add('active'); 
+                        lightboxImg.src = photo.src;
+                        lightbox.classList.add('active');
                     });
 
                     gallery.appendChild(photoDiv);
