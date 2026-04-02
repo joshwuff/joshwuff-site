@@ -3,18 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joshwuff | Official </title>
+    <title>Joshwuff | Official</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=2">
+    <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="favicon.png">
     <style>
         :root {
-            /* Updated to Crimson/Red Theme */
             --bg-color: #0d0d12;
             --glass-bg: rgba(255, 255, 255, 0.03);
             --glass-border: rgba(255, 255, 255, 0.08);
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
-            --accent: #ef4444; /* Vibrant Red */
+            --accent: #ef4444;
             --accent-glow: rgba(239, 68, 68, 0.25);
         }
 
@@ -25,27 +25,39 @@
             padding: 0;
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            /* Subtle background glow using red hues */
-            background-image: 
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
             color: var(--text-primary);
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
             min-height: 100vh;
-            overflow-y: scroll; /* Scrollbar Lock */
+            overflow-y: scroll;
+            
+            /* --- THE BREATHING BACKGROUND --- */
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            background-size: 100% 100%;
+            animation: breathe 10s infinite alternate ease-in-out;
         }
+
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
+        }
+
+        /* --- NAVBAR --- */
         .navbar {
             position: fixed;
             top: 0;
             width: 100%;
             background: rgba(13, 13, 18, 0.8);
             backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
             border-bottom: 1px solid var(--glass-border);
             display: flex;
             justify-content: center;
             gap: 30px;
-            padding: 15px 0;
+            padding: 18px 0;
             z-index: 1000;
         }
 
@@ -57,23 +69,16 @@
             transition: color 0.3s;
         }
 
-        .nav-link:hover { 
-            color: var(--accent); 
-        }
-        
-        .nav-link.active { 
-            color: var(--accent); 
-            border-bottom: 2px solid var(--accent); 
-            padding-bottom: 4px; 
-        }
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
+        /* --- PROFILE CONTAINER --- */
         .container {
             width: 100%;
-            max-width: 480px;
-            padding: 90px 24px 60px; /* Adjusted top padding to match photography page */
+            max-width: 600px;
+            padding: 120px 24px 60px;
             text-align: center;
             animation: fadeIn 0.8s ease-out;
-            will-change: transform, opacity; /* Hardware Acceleration */
         }
 
         @keyframes fadeIn {
@@ -81,111 +86,93 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* Profile Section */
-        .profile-img {
-            width: 110px;
-            height: 110px;
+        .profile-pic {
+            width: 120px;
+            height: 120px;
             border-radius: 50%;
-            /* Gradient: Crimson to Burgundy */
-            background: linear-gradient(135deg, var(--accent), #b91c1c);
-            margin: 0 auto 24px;
-            border: 4px solid var(--glass-border);
-            box-shadow: 0 0 25px var(--accent-glow);
             object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            margin-bottom: 20px;
         }
 
-        h1 { font-size: 1.8rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
-        .handle { color: var(--accent); font-size: 1.05rem; margin-top: 6px; font-weight: 600; }
-        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 42px; line-height: 1.6; }
+        h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .handle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 20px auto 40px; line-height: 1.6; }
 
-        /* Links Section */
-        .links-container { display: flex; flex-direction: column; gap: 14px; }
-
-        .link-card {
+        /* --- SOCIAL LINKS BASE --- */
+        .social-link {
+            display: block;
+            width: 100%;
+            max-width: 400px;
+            margin: 0 auto 16px;
+            padding: 16px 24px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
-            backdrop-filter: blur(16px);
-            -webkit-backdrop-filter: blur(16px);
-            padding: 18px;
-            border-radius: 16px;
-            text-decoration: none;
+            border-radius: 12px;
             color: var(--text-primary);
-            font-weight: 600;
-            font-size: 1.05rem;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .link-card:hover {
-            background: rgba(255, 255, 255, 0.07);
-            transform: scale(1.02);
-            border-color: var(--accent);
-            box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
-        }
-
-        /* Footer */
-        footer {
-            margin-top: 64px;
-            padding-top: 32px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
-        .contact-email {
-            color: var(--accent);
             text-decoration: none;
-            display: inline-block;
-            margin-top: 12px;
             font-weight: 600;
-            transition: opacity 0.2s;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease !important; /* Critical for smooth color changes */
         }
 
-        .contact-email:hover { opacity: 0.8; }
+        /* Default hover (Red) for any links that aren't specific brands */
+        .social-link:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 20px var(--accent-glow);
+            transform: translateY(-3px);
+        }
 
-        /* --- PAGE TRANSITION OUT --- */
+        /* --- BRAND GLOW HOVER EFFECTS --- */
+        /* Discord - Blurple */
+        .social-link[href*="discord"]:hover {
+            border-color: #5865F2 !important;
+            box-shadow: 0 10px 20px rgba(88, 101, 242, 0.4) !important;
+            color: #5865F2 !important;
+        }
+
+        /* X / Twitter - Pure White */
+        .social-link[href*="x.com"]:hover, .social-link[href*="twitter"]:hover {
+            border-color: #ffffff !important;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3) !important;
+            color: #ffffff !important;
+        }
+
+        /* TikTok - Cyan & Pink Dual Glow! */
+        .social-link[href*="tiktok"]:hover {
+            border-color: #fe2c55 !important;
+            box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important;
+            color: #f8fafc !important;
+        }
+
+        /* Twitch - Purple */
+        .social-link[href*="twitch"]:hover {
+            border-color: #9146FF !important;
+            box-shadow: 0 10px 20px rgba(145, 70, 255, 0.4) !important;
+            color: #9146FF !important;
+        }
+
+        /* Furtrack - Amber/Orange */
+        .social-link[href*="furtrack"]:hover {
+            border-color: #f59e0b !important;
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.4) !important;
+            color: #f59e0b !important;
+        }
+
         .fade-out {
             opacity: 0 !important;
             transform: translateY(-20px) !important;
             transition: opacity 0.4s ease, transform 0.4s ease !important;
         }
 
-        /* --- MOBILE RESPONSIVENESS --- */
         @media (max-width: 600px) {
-            .navbar {
-                gap: 15px;
-                padding: 12px 0;
-            }
-            
-            .nav-link {
-                font-size: 0.85rem;
-            }
-
-            .container {
-                padding: 90px 16px 40px;
-            }
-
-            .profile-img {
-                width: 90px;
-                height: 90px;
-                margin-bottom: 20px;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .bio {
-                font-size: 0.9rem;
-                margin: 16px 0 30px;
-            }
-
-            .link-card {
-                font-size: 0.95rem;
-                padding: 15px;
-            }
+            .navbar { gap: 15px; padding: 12px 0; }
+            .nav-link { font-size: 0.85rem; }
+            .container { padding: 90px 16px 40px; }
+            .profile-pic { width: 100px; height: 100px; }
+            h1 { font-size: 1.75rem; }
         }
     </style>
 </head>
@@ -197,40 +184,38 @@
     </nav>
 
     <div class="container">
-        <img src="main_icon_circle.jpg" class="profile-img" alt="Joshwuff">
+        <img src="main_icon_circle.jpg" alt="Joshwuff Profile Picture" class="profile-pic">
         
         <h1>Joshwuff</h1>
         <div class="handle">@joshwuff</div>
         
-        <p class="bio">Digital creator, gaming enthusiast, and photographer. Welcome to the official home of everything joshwuff! :3</p>
+        <p class="bio">
+            Digital creator, gaming enthusiast, and photographer.<br>
+            Welcome to the official home of everything joshwuff! :3
+        </p>
 
         <div class="links-container">
-            <a href="https://www.instagram.com/kingskostumes" class="link-card" target="_blank">Fursuit maker: Kings Kostumes</a>
-            <a href="https://discord.gg/fnqvg7dyhR" class="link-card" target="_blank">Discord Community</a>
-            <a href="https://www.furtrack.com/index/joshwuff" class="link-card" target="_blank">Furtrack Profile</a>
-            <a href="https://x.com/joshwuff_" class="link-card" target="_blank">Follow on X (@joshwuff_)</a>
-            <a href="https://www.tiktok.com/@joshwuff" class="link-card" target="_blank">TikTok</a>
-            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="link-card" target="_blank">BlueSky</a>
-            <a href="https://www.twitch.tv/joshwuff" class="link-card" target="_blank">Twitch Channel</a>
+            <a href="https://kingskostumes.com" class="social-link" target="_blank">Fursuit maker: Kings Kostumes</a>
+            <a href="https://discord.gg/your_invite_code" class="social-link" target="_blank">Discord Community</a>
+            <a href="https://furtrack.com/user/joshwuff" class="social-link" target="_blank">Furtrack Profile</a>
+            <a href="https://x.com/joshwuff_" class="social-link" target="_blank">Follow on X (@joshwuff_)</a>
+            <a href="https://www.tiktok.com/@joshwuff" class="social-link" target="_blank">TikTok</a>
+            <a href="https://www.twitch.tv/joshwuff" class="social-link" target="_blank">Twitch</a>
         </div>
-
-        <footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-        </footer>
     </div>
 
     <script>
+        // Smooth Page Transitions
         document.addEventListener('DOMContentLoaded', () => {
             const navLinks = document.querySelectorAll('.nav-link');
             const container = document.querySelector('.container');
-            let isTransitioning = false; // Transition Lock
+            let isTransitioning = false;
 
             navLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     if (this.href !== window.location.href) {
-                        e.preventDefault(); 
-                        
-                        if (isTransitioning) return; // Prevent double clicking
+                        e.preventDefault();
+                        if (isTransitioning) return;
                         isTransitioning = true;
                         
                         const targetUrl = this.href;
