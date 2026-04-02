@@ -94,21 +94,33 @@
             let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
 
             try {
-                const [photosRes, thumbsRes] = await Promise.all([
-                    fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
-                ]);
-                allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
-                thumbnailMap = await thumbsRes.json();
-                filteredPhotos = [...allPhotos];
-                renderGallery();
-            } catch (error) {
+                            const [photosRes, thumbsRes] = await Promise.all([
+                                fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
+                            ]);
+                            allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
+                            thumbnailMap = await thumbsRes.json();
+                            
+                            // FIX: Instead of forcing all photos to show,
+                            // run the filter check immediately in case of a page refresh!
+                            applyFilters();
+                        } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
-            function updateLightboxImage() {
-                if (filteredPhotos.length === 0) return;
-                document.getElementById('lightbox-img').src = filteredPhotos[currentLightboxIndex].src;
-            }
+                        function updateLightboxImage() {
+                                        if (filteredPhotos.length === 0) return;
+                                        const lightboxImg = document.getElementById('lightbox-img');
+                                        
+                                        // FIX: Hide the image temporarily to prevent the "ghost" effect
+                                        lightboxImg.style.opacity = '0';
+                                        
+                                        // Only reveal the image once the new high-res file is fully downloaded
+                                        lightboxImg.onload = () => {
+                                            lightboxImg.style.opacity = '1';
+                                        };
+                                        
+                                        lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
+                                    }
 
             function renderGallery() {
                 gallery.innerHTML = '';
