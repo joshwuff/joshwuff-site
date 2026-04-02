@@ -1,88 +1,6 @@
 [
   {
-    "category": "other",
-    "src": "Photos/other/90187171-AE51-4F7F-998F-68472C79A624_4_5005_c.jpeg",
-    "alt": "Porsche 911 GT3",
-    "title": "Porsche 911 GT3 Cruisin'"
-  },
-  {
-    "category": "furry",
-    "src": "Photos/furry/AD136594-887D-438F-8E22-8DB9CA1D8B37_1_105_c.jpeg",
-    "alt": "Contemporary Resort Balcony",
-    "title": "Cruisin' at the Contemporary"
-  },
-  {
-    "category": "other",
-    "src": "Photos/other/4D96D245-D487-4034-AC78-FD99F9D1784B_1_201_a.jpeg",
-    "alt": "2023 Honda Civic",
-    "title": "Civic Skyline"
-  },
-  {
-    "category": "other",
-    "src": "Photos/other/C1A4CD15-34E8-4D23-9D12-53E34E054D33_1_105_c.jpeg",
-    "alt": "1932 Ford Coupe",
-    "title": "1932 Ford Coupe \"Deuce Coupe\""
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0007 Medium.jpeg",
-    "alt": "White Rhinoceros",
-    "title": "Resting Rhino"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0072 Medium.jpeg",
-    "alt": "Asian small-clawed otter",
-    "title": "Observing Otter"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0134 Medium.jpeg",
-    "alt": "Okapi",
-    "title": "Observant Okapi"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0142 Medium.jpeg",
-    "alt": "Hippos resting in the water",
-    "title": "Hiding Hippos"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0211 Medium.jpeg",
-    "alt": "Flamingo spreading its wings",
-    "title": "Flaunting Flamingo"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0250 Medium.jpeg",
-    "alt": "Cheetah walking through the shadows",
-    "title": "Creeping Cheetah"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0266 Medium.jpeg",
-    "alt": "Cheetah walking",
-    "title": "Cruising Cheetah"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0269 Medium.jpeg",
-    "alt": "Lion resting on a grassy hill",
-    "title": "Lounging Lion"
-  },
-  {
-    "category": "nature",
-    "src": "Photos/nature/DSC_0490 Medium.jpeg",
-    "alt": "Lion sleeping on a large rock",
-    "title": "Lazing Lion"
-  },
-
-
-
-
-  {
-    "_comment": "--- MP25 PHOTOS START HERE ---",
+    "_comment": "--- LATEST: MP25 PHOTOS ---",
     "category": "furry",
     "src": "Photos/MP25/IMG_5925.jpg",
     "alt": "Convention Photo",
@@ -435,5 +353,88 @@
     "src": "Photos/MP25/IMG_7588.jpg",
     "alt": "Convention Photo",
     "title": "Megaplex 2025"
+  },
+
+
+
+
+  {
+    "_comment": "--- OLDER PHOTOS START HERE ---",
+    "category": "other",
+    "src": "Photos/other/90187171-AE51-4F7F-998F-68472C79A624_4_5005_c.jpeg",
+    "alt": "Porsche 911 GT3",
+    "title": "Porsche 911 GT3 Cruisin'"
+  },
+  {
+    "category": "furry",
+    "src": "Photos/furry/AD136594-887D-438F-8E22-8DB9CA1D8B37_1_105_c.jpeg",
+    "alt": "Wolf fursuit standing inside the Disney Contemporary Resort concourse near the monorail track.",
+    "title": "Cruisin' at the Contemporary"
+  },
+  {
+    "category": "other",
+    "src": "Photos/other/4D96D245-D487-4034-AC78-FD99F9D1784B_1_201_a.jpeg",
+    "alt": "2023 Honda Civic",
+    "title": "Civic Skyline"
+  },
+  {
+    "category": "other",
+    "src": "Photos/other/C1A4CD15-34E8-4D23-9D12-53E34E054D33_1_105_c.jpeg",
+    "alt": "1932 Ford Coupe",
+    "title": "1932 Ford Coupe \"Deuce Coupe\""
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0007 Medium.jpeg",
+    "alt": "White Rhinoceros",
+    "title": "Resting Rhino"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0072 Medium.jpeg",
+    "alt": "Asian small-clawed otter",
+    "title": "Observing Otter"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0134 Medium.jpeg",
+    "alt": "Okapi",
+    "title": "Observant Okapi"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0142 Medium.jpeg",
+    "alt": "Hippos resting in the water",
+    "title": "Hiding Hippos"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0211 Medium.jpeg",
+    "alt": "Flamingo spreading its wings",
+    "title": "Flaunting Flamingo"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0250 Medium.jpeg",
+    "alt": "Cheetah walking through the shadows",
+    "title": "Creeping Cheetah"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0266 Medium.jpeg",
+    "alt": "Cheetah walking",
+    "title": "Cruising Cheetah"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0269 Medium.jpeg",
+    "alt": "Lion resting on a grassy hill",
+    "title": "Lounging Lion"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0490 Medium.jpeg",
+    "alt": "Lion sleeping on a large rock",
+    "title": "Lazing Lion"
   }
 ]
