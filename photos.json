@@ -344,4 +344,95 @@
   },
   {
     "category": "furry",
-    "
+    "src": "Photos/MP25/IMG_7575.jpg",
+    "alt": "Convention Photo",
+    "title": "Megaplex 2025"
+  },
+  {
+    "category": "furry",
+    "src": "Photos/MP25/IMG_7588.jpg",
+    "alt": "Convention Photo",
+    "title": "Megaplex 2025"
+  },
+  {
+    "_comment": "--- NATURE PHOTOS ---",
+    "category": "nature",
+    "src": "Photos/nature/DSC_0007.jpg",
+    "alt": "White Rhinoceros",
+    "title": "Resting Rhino"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0072.jpeg",
+    "alt": "Asian small-clawed otter",
+    "title": "Observing Otter"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0134.jpg",
+    "alt": "Okapi",
+    "title": "Observant Okapi"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0142.jpeg",
+    "alt": "Hippos resting in the water",
+    "title": "Hiding Hippos"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0211.jpg",
+    "alt": "Flamingo spreading its wings",
+    "title": "Flaunting Flamingo"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0250.jpg",
+    "alt": "Cheetah walking through the shadows",
+    "title": "Creeping Cheetah"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0266.jpg",
+    "alt": "Cheetah walking",
+    "title": "Cruising Cheetah"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0269.jpg",
+    "alt": "Lion resting on a grassy hill",
+    "title": "Lounging Lion"
+  },
+  {
+    "category": "nature",
+    "src": "Photos/nature/DSC_0490.jpg",
+    "alt": "Lion sleeping on a large rock",
+    "title": "Lazing Lion"
+  },
+  {
+    "_comment": "--- OTHER PHOTOS ---",
+    "category": "other",
+    "src": "Photos/other/IMG_0499.jpeg",
+    "alt": "2023 Honda Civic",
+    "title": "Civic Skyline"
+  },
+  {
+    "category": "other",
+    "src": "Photos/other/IMG_5552.jpg",
+    "alt": "Porsche at night",
+    "title": "Porsche Cruisin' in the Rain"
+  },
+  {
+    "category": "other",
+    "src": "Photos/other/IMG_7611.jpeg",
+    "alt": "Yellow Hot Rod",
+    "title": "Vintage Yellow"
+  },
+  {
+    "_comment": "--- OLDER FURRY ---",
+    "category": "furry",
+    "src": "Photos/furry/AD136594-887D-438F-8E22-8DB9CA1D8B37_1_105_c.jpeg",
+    "alt": "Wolf fursuit standing inside the Disney Contemporary Resort concourse.",
+    "title": "Cruisin' at the Contemporary"
+  }
+]
