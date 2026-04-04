@@ -237,7 +237,22 @@
             <div class="embed-wrapper">
                 <a href="javascript:void(0);" class="social-link social-twitch" onclick="toggleEmbed('twitch-embed')">Twitch</a>
                 <div id="twitch-embed" class="embed-container">
-                    <iframe src="https://player.twitch.tv/?channel=joshwuff&parent=joshwuff.com" frameborder="0" allowfullscreen="true" scrolling="no" height="300" width="100%" style="border-radius: 8px;"></iframe>
+                    
+                    <div id="twitch-interactive-frame"></div>
+                    
+                    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+                    <script>
+                        new Twitch.Embed("twitch-interactive-frame", {
+                            width: "100%",
+                            height: 300,
+                            channel: "joshwuff",
+                            // This covers both versions of your site so it never blocks!
+                            parent: ["joshwuff.com", "www.joshwuff.com"], 
+                            layout: "video",
+                            autoplay: false
+                        });
+                    </script>
+
                     <br>
                     <a href="https://twitch.tv/joshwuff" class="direct-link-btn" style="background: #9146FF;">Go to Twitch</a>
                 </div>
@@ -253,72 +268,3 @@
         // --- EMBED TOGGLE LOGIC ---
         function toggleEmbed(id) {
             const element = document.getElementById(id);
-            
-            // If it is already open, close it
-            if (element.classList.contains('active')) {
-                element.classList.remove('active');
-            } else {
-                // Optional: Close any other open embeds first so only one is open at a time
-                document.querySelectorAll('.embed-container').forEach(el => el.classList.remove('active'));
-                
-                // Open the one we clicked
-                element.classList.add('active');
-            }
-        }
-
-        // --- EASTER EGG LOGIC ---
-        document.addEventListener('DOMContentLoaded', () => {
-            const profilePic = document.getElementById('profile-pic');
-            let clickCount = 0;
-            let clickTimer;
-
-            const hornSound = new Audio('Party Horn sound effect.mp3');
-            hornSound.preload = 'auto';
-            hornSound.volume = 0.1;
-            
-            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
-            yippeeSound.preload = 'auto';
-            yippeeSound.volume = 0.1;
-
-            profilePic.addEventListener('click', () => {
-                clickCount++;
-                
-                clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 2000);
-
-                if (clickCount === 5) {
-                    hornSound.currentTime = 0;
-                    yippeeSound.currentTime = 0;
-                    
-                    Promise.all([
-                        hornSound.play(),
-                        yippeeSound.play()
-                    ]).catch(err => console.error("Audio error:", err));
-
-                    profilePic.classList.add('easter-egg-bounce');
-                    
-                    const rect = profilePic.getBoundingClientRect();
-                    const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
-                    const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
-
-                    confetti({
-                        particleCount: 150,
-                        spread: 100,
-                        origin: { x: xCenter, y: yCenter },
-                        zIndex: 9999,
-                        colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff']
-                    });
-
-                    setTimeout(() => {
-                        profilePic.classList.remove('easter-egg-bounce');
-                    }, 800);
-
-                    clickCount = 0;
-                }
-            });
-        });
-    </script>
-</body>
-</html>
