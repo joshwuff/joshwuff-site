@@ -134,6 +134,7 @@
             backdrop-filter: blur(10px);
             transition: all 0.3s ease !important;
             cursor: pointer;
+            user-select: none;
         }
 
         .social-link:hover {
@@ -150,7 +151,7 @@
         }
 
         .embed-container {
-            display: none; /* Hidden by default */
+            display: none; 
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
             border-radius: 12px;
@@ -159,7 +160,7 @@
         }
 
         .embed-container.active {
-            display: block; /* Shows when clicked */
+            display: block; 
         }
 
         .direct-link-btn {
@@ -187,8 +188,8 @@
         .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; }
         .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
         .social-x:hover { border-color: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
-        .social-tiktok:hover { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
-        .social-twitch:hover { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
+        .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
+        .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
 
         footer { 
@@ -224,7 +225,7 @@
             <a href="https://x.com/joshwuff_" class="social-link social-x">Follow on X (@joshwuff_)</a>
             
             <div class="embed-wrapper">
-                <a href="javascript:void(0);" class="social-link social-tiktok" onclick="toggleEmbed('tiktok-embed')">TikTok</a>
+                <a class="social-link social-tiktok" id="tiktok-btn">TikTok</a>
                 <div id="tiktok-embed" class="embed-container">
                     <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > 
                         <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> 
@@ -235,24 +236,9 @@
             </div>
 
             <div class="embed-wrapper">
-                <a href="javascript:void(0);" class="social-link social-twitch" onclick="toggleEmbed('twitch-embed')">Twitch</a>
+                <a class="social-link social-twitch" id="twitch-btn">Twitch</a>
                 <div id="twitch-embed" class="embed-container">
-                    
                     <div id="twitch-interactive-frame"></div>
-                    
-                    <script src="https://embed.twitch.tv/embed/v1.js"></script>
-                    <script>
-                        new Twitch.Embed("twitch-interactive-frame", {
-                            width: "100%",
-                            height: 300,
-                            channel: "joshwuff",
-                            // This covers both versions of your site so it never blocks!
-                            parent: ["joshwuff.com", "www.joshwuff.com"], 
-                            layout: "video",
-                            autoplay: false
-                        });
-                    </script>
-
                     <br>
                     <a href="https://twitch.tv/joshwuff" class="direct-link-btn" style="background: #9146FF;">Go to Twitch</a>
                 </div>
@@ -264,7 +250,108 @@
         </footer>
     </div>
 
+    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+
     <script>
-        // --- EMBED TOGGLE LOGIC ---
-        function toggleEmbed(id) {
-            const element = document.getElementById(id);
+        document.addEventListener('DOMContentLoaded', () => {
+            
+            // --- 1. INITIALIZE TWITCH LINKTREE PLAYER ---
+            new Twitch.Embed("twitch-interactive-frame", {
+                width: "100%",
+                height: 300,
+                channel: "joshwuff",
+                parent: ["joshwuff.com", "www.joshwuff.com"], 
+                layout: "video",
+                autoplay: false
+            });
+
+            // --- 2. ACCORDION TOGGLE LOGIC ---
+            const tiktokBtn = document.getElementById('tiktok-btn');
+            const tiktokEmbed = document.getElementById('tiktok-embed');
+            
+            const twitchBtn = document.getElementById('twitch-btn');
+            const twitchEmbed = document.getElementById('twitch-embed');
+
+            // Function to close all embeds
+            function closeAllEmbeds() {
+                tiktokEmbed.classList.remove('active');
+                tiktokBtn.classList.remove('active-btn');
+                twitchEmbed.classList.remove('active');
+                twitchBtn.classList.remove('active-btn');
+            }
+
+            // TikTok Click
+            tiktokBtn.addEventListener('click', () => {
+                const isAlreadyOpen = tiktokEmbed.classList.contains('active');
+                closeAllEmbeds();
+                if (!isAlreadyOpen) {
+                    tiktokEmbed.classList.add('active');
+                    tiktokBtn.classList.add('active-btn'); // Keeps the glow active while open!
+                }
+            });
+
+            // Twitch Click
+            twitchBtn.addEventListener('click', () => {
+                const isAlreadyOpen = twitchEmbed.classList.contains('active');
+                closeAllEmbeds();
+                if (!isAlreadyOpen) {
+                    twitchEmbed.classList.add('active');
+                    twitchBtn.classList.add('active-btn'); // Keeps the glow active while open!
+                }
+            });
+
+            // --- 3. EASTER EGG LOGIC ---
+            const profilePic = document.getElementById('profile-pic');
+            let clickCount = 0;
+            let clickTimer;
+
+            const hornSound = new Audio('Party Horn sound effect.mp3');
+            hornSound.preload = 'auto';
+            hornSound.volume = 0.1;
+            
+            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
+            yippeeSound.preload = 'auto';
+            yippeeSound.volume = 0.1;
+
+            profilePic.addEventListener('click', () => {
+                clickCount++;
+                
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 2000);
+
+                if (clickCount === 5) {
+                    hornSound.currentTime = 0;
+                    yippeeSound.currentTime = 0;
+                    
+                    Promise.all([
+                        hornSound.play(),
+                        yippeeSound.play()
+                    ]).catch(err => console.error("Audio error:", err));
+
+                    profilePic.classList.add('easter-egg-bounce');
+                    
+                    const rect = profilePic.getBoundingClientRect();
+                    const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
+                    const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
+
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { x: xCenter, y: yCenter },
+                        zIndex: 9999,
+                        colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff']
+                    });
+
+                    setTimeout(() => {
+                        profilePic.classList.remove('easter-egg-bounce');
+                    }, 800);
+
+                    clickCount = 0;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
