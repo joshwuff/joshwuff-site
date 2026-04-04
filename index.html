@@ -147,20 +147,31 @@
         .embed-wrapper {
             display: flex;
             flex-direction: column;
-            gap: 8px;
         }
 
         .embed-container {
-            display: none; 
+            /* Instead of display: none, we shrink it to 0 height and hide it */
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            padding: 0 16px; /* No vertical padding when closed */
+            margin-top: 0;
             background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
+            border: 1px solid transparent;
             border-radius: 12px;
-            padding: 16px;
-            animation: fadeInDown 0.3s ease-out forwards;
+            pointer-events: none; /* Prevents accidentally clicking the hidden buttons */
+            /* This transition line is where the smooth magic happens! */
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
         }
 
         .embed-container.active {
-            display: block; 
+            /* When clicked, it expands! */
+            max-height: 800px; /* Big enough to fit the TikTok and Twitch embeds */
+            opacity: 1;
+            padding: 16px; /* Restores the inner spacing */
+            margin-top: 8px;
+            border-color: var(--glass-border);
+            pointer-events: auto; /* Makes it clickable again */
         }
 
         .direct-link-btn {
@@ -177,11 +188,6 @@
 
         .direct-link-btn:hover {
             opacity: 0.8;
-        }
-
-        @keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-10px); }
-            to { opacity: 1; transform: translateY(0); }
         }
 
         /* --- BRAND GLOW-UPS --- */
