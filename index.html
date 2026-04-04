@@ -203,42 +203,41 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const profilePic = document.getElementById('profile-pic');
-            let clickCount = 0;
-            let clickTimer;
+            document.addEventListener('DOMContentLoaded', () => {
+                const profilePic = document.getElementById('profile-pic');
+                let clickCount = 0;
+                let clickTimer;
 
-            // Pre-load the exact audio files provided
-            const hornSound = new Audio('Party Horn sound effect.mp3');
-            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
+                // Pre-load the exact audio files provided
+                const hornSound = new Audio('Party Horn sound effect.mp3');
+                const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
 
-            profilePic.addEventListener('click', () => {
-                clickCount++;
-                
-                clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 2000);
-
-                if (clickCount === 5) {
-                    hornSound.currentTime = 0;
-                    yippeeSound.currentTime = 0;
+                profilePic.addEventListener('click', () => {
+                    clickCount++;
                     
-                    hornSound.play();
-                    setTimeout(() => {
+                    clearTimeout(clickTimer);
+                    clickTimer = setTimeout(() => {
+                        clickCount = 0;
+                    }, 2000);
+
+                    if (clickCount === 5) {
+                        hornSound.currentTime = 0;
+                        yippeeSound.currentTime = 0;
+                        
+                        // PLAY BOTH AT THE EXACT SAME TIME!
+                        hornSound.play();
                         yippeeSound.play();
-                    }, 150);
 
-                    profilePic.classList.add('easter-egg-bounce');
-                    
-                    setTimeout(() => {
-                        profilePic.classList.remove('easter-egg-bounce');
-                    }, 800);
+                        profilePic.classList.add('easter-egg-bounce');
+                        
+                        setTimeout(() => {
+                            profilePic.classList.remove('easter-egg-bounce');
+                        }, 800);
 
-                    clickCount = 0;
-                }
+                        clickCount = 0;
+                    }
+                });
             });
-        });
-    </script>
+        </script>
 </body>
 </html>
