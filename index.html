@@ -208,9 +208,12 @@
                 let clickCount = 0;
                 let clickTimer;
 
-                // Pre-load the exact audio files provided
+                // Force the browser to fully load the audio into memory immediately
                 const hornSound = new Audio('Party Horn sound effect.mp3');
+                hornSound.preload = 'auto';
+                
                 const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
+                yippeeSound.preload = 'auto';
 
                 profilePic.addEventListener('click', () => {
                     clickCount++;
@@ -224,9 +227,11 @@
                         hornSound.currentTime = 0;
                         yippeeSound.currentTime = 0;
                         
-                        // PLAY BOTH AT THE EXACT SAME TIME!
-                        hornSound.play();
-                        yippeeSound.play();
+                        // Use Promise.all to force the browser to execute both play events simultaneously
+                        Promise.all([
+                            hornSound.play(),
+                            yippeeSound.play()
+                        ]).catch(err => console.error("Audio error:", err));
 
                         profilePic.classList.add('easter-egg-bounce');
                         
