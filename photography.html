@@ -222,13 +222,13 @@
 
             selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
             
-            // Re-targeted the scroll directly to the top pagination buttons with a 90px buffer
+            // Reduced the offset buffer from 90 down to 70 so it scrolls just a tiny bit lower!
             prevBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
-                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 90;
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
                     window.scrollTo({ top: targetY, behavior: 'smooth' });
                 }
             }));
@@ -238,7 +238,7 @@
                     currentPage++;
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
-                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 90;
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
                     window.scrollTo({ top: targetY, behavior: 'smooth' });
                 }
             }));
