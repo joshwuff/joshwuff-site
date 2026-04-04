@@ -114,7 +114,7 @@
                 <select id="itemsPerPage">
                     <option value="8">8</option>
                     <option value="24">24</option>
-                    <option value="48" selected>48</option>
+                    <option value="48">48</option>
                     <option value="96">96</option>
                 </select>
             </div>
@@ -165,8 +165,25 @@
                 ]);
                 allPhotos = (await photosRes.json()).filter(photo => photo.src !== undefined);
                 thumbnailMap = await thumbsRes.json();
-                filteredPhotos = [...allPhotos];
-                renderGallery();
+                
+                // --- LOCAL STORAGE LOGIC ---
+                // Load saved filters (or default to 'all')
+                const savedFilters = JSON.parse(localStorage.getItem('joshwuff_filters')) || ['all'];
+                // Load saved items per page (or default to '48')
+                const savedPerPage = localStorage.getItem('joshwuff_perPage') || '48';
+
+                // Update the visual dropdown
+                selectPerPage.value = savedPerPage;
+                itemsPerPage = parseInt(savedPerPage);
+
+                // Update the visual checkboxes
+                checkboxes.forEach(cb => {
+                    cb.checked = savedFilters.includes(cb.value);
+                });
+
+                // Apply the saved filters immediately on load
+                applyFilters();
+
             } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
@@ -205,6 +222,10 @@
 
             function applyFilters() {
                 const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+                
+                // Save the newly checked boxes to Local Storage
+                localStorage.setItem('joshwuff_filters', JSON.stringify(checkedValues));
+
                 filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0)
                     ? [...allPhotos] : allPhotos.filter(photo => checkedValues.includes(photo.category));
                 currentPage = 1;
@@ -220,9 +241,14 @@
                 });
             });
 
-            selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
+            selectPerPage.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                // Save the newly selected amount to Local Storage
+                localStorage.setItem('joshwuff_perPage', itemsPerPage);
+                currentPage = 1;
+                renderGallery();
+            });
             
-            // Reduced the offset buffer from 90 down to 70 so it scrolls just a tiny bit lower!
             prevBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
