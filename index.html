@@ -8,6 +8,8 @@
     <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     
     <style>
@@ -122,7 +124,10 @@
         }
 
         .social-link {
-            display: block;
+            /* Upgraded to Flexbox for perfect icon alignment! */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             padding: 18px 24px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -143,6 +148,18 @@
             transform: translateY(-2px);
         }
 
+        /* Icon styling */
+        .social-link i {
+            font-size: 1.3rem;
+            opacity: 0.7;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        .social-link:hover i {
+            opacity: 1;
+            transform: scale(1.15);
+        }
+
         /* --- ACCORDION EMBED STYLES --- */
         .embed-wrapper {
             display: flex;
@@ -150,28 +167,25 @@
         }
 
         .embed-container {
-            /* Instead of display: none, we shrink it to 0 height and hide it */
             max-height: 0;
             opacity: 0;
             overflow: hidden;
-            padding: 0 16px; /* No vertical padding when closed */
+            padding: 0 16px;
             margin-top: 0;
             background: var(--glass-bg);
             border: 1px solid transparent;
             border-radius: 12px;
-            pointer-events: none; /* Prevents accidentally clicking the hidden buttons */
-            /* This transition line is where the smooth magic happens! */
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            pointer-events: none;
+            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
 
         .embed-container.active {
-            /* When clicked, it expands! */
-            max-height: 800px; /* Big enough to fit the TikTok and Twitch embeds */
+            max-height: 800px;
             opacity: 1;
-            padding: 16px; /* Restores the inner spacing */
+            padding: 16px;
             margin-top: 8px;
             border-color: var(--glass-border);
-            pointer-events: auto; /* Makes it clickable again */
+            pointer-events: auto;
         }
 
         .direct-link-btn {
@@ -198,12 +212,12 @@
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
 
-        footer { 
-            margin-top: 64px; 
-            padding-top: 32px; 
-            border-top: 1px solid var(--glass-border); 
-            font-size: 0.85rem; 
-            color: var(--text-secondary); 
+        footer {
+            margin-top: 64px;
+            padding-top: 32px;
+            border-top: 1px solid var(--glass-border);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
         }
 
     </style>
@@ -224,25 +238,46 @@
         <p class="bio">Digital creator, gaming enthusiast, and photographer.<br>Welcome to the official home of everything joshwuff! :3</p>
 
         <div class="links-container">
-            <a href="#" class="social-link">Fursuit maker: Kings Kostumes</a>
-            <a href="https://discord.com" class="social-link social-discord">Discord Community</a>
-            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">Bluesky</a>
-            <a href="https://furtrack.com" class="social-link social-furtrack">Furtrack Profile</a>
-            <a href="https://x.com/joshwuff_" class="social-link social-x">Follow on X (@joshwuff_)</a>
+            <a href="#" class="social-link">
+                <span>Fursuit maker: Kings Kostumes</span>
+                <i class="fa-solid fa-crown"></i>
+            </a>
+            <a href="https://discord.com" class="social-link social-discord">
+                <span>Discord Community</span>
+                <i class="fa-brands fa-discord"></i>
+            </a>
+            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">
+                <span>Bluesky</span>
+                <i class="fa-brands fa-bluesky"></i>
+            </a>
+            <a href="https://furtrack.com" class="social-link social-furtrack">
+                <span>Furtrack Profile</span>
+                <i class="fa-solid fa-paw"></i>
+            </a>
+            <a href="https://x.com/joshwuff_" class="social-link social-x">
+                <span>Follow on X (@joshwuff_)</span>
+                <i class="fa-brands fa-x-twitter"></i>
+            </a>
             
             <div class="embed-wrapper">
-                <a class="social-link social-tiktok" id="tiktok-btn">TikTok</a>
+                <a class="social-link social-tiktok" id="tiktok-btn">
+                    <span>TikTok</span>
+                    <i class="fa-brands fa-tiktok"></i>
+                </a>
                 <div id="tiktok-embed" class="embed-container">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > 
-                        <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> 
-                    </blockquote> 
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" >
+                        <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section>
+                    </blockquote>
                     <script async src="https://www.tiktok.com/embed.js"></script>
                     <a href="https://tiktok.com/@joshwuff" class="direct-link-btn" style="background: #fe2c55;">Visit TikTok Profile</a>
                 </div>
             </div>
 
             <div class="embed-wrapper">
-                <a class="social-link social-twitch" id="twitch-btn">Twitch</a>
+                <a class="social-link social-twitch" id="twitch-btn">
+                    <span>Twitch</span>
+                    <i class="fa-brands fa-twitch"></i>
+                </a>
                 <div id="twitch-embed" class="embed-container">
                     <div id="twitch-interactive-frame"></div>
                     <br>
@@ -266,7 +301,7 @@
                 width: "100%",
                 height: 300,
                 channel: "joshwuff",
-                parent: ["joshwuff.com", "www.joshwuff.com"], 
+                parent: ["joshwuff.com", "www.joshwuff.com"],
                 layout: "video",
                 autoplay: false
             });
@@ -292,7 +327,7 @@
                 closeAllEmbeds();
                 if (!isAlreadyOpen) {
                     tiktokEmbed.classList.add('active');
-                    tiktokBtn.classList.add('active-btn'); // Keeps the glow active while open!
+                    tiktokBtn.classList.add('active-btn');
                 }
             });
 
@@ -302,7 +337,7 @@
                 closeAllEmbeds();
                 if (!isAlreadyOpen) {
                     twitchEmbed.classList.add('active');
-                    twitchBtn.classList.add('active-btn'); // Keeps the glow active while open!
+                    twitchBtn.classList.add('active-btn');
                 }
             });
 
