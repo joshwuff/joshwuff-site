@@ -124,10 +124,11 @@
         }
 
         .social-link {
-            /* Upgraded to Flexbox for perfect icon alignment! */
+            /* Flexbox ensures the button handles layout properly */
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Centers the text perfectly */
             align-items: center;
+            position: relative; /* Allows the icon to float on the right edge */
             padding: 18px 24px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -148,14 +149,18 @@
             transform: translateY(-2px);
         }
 
-        /* Icon styling */
-        .social-link i {
+        /* Icon styling (Absolute positioning anchors it to the right) */
+        .social-link i, .social-link .custom-icon {
+            position: absolute;
+            right: 24px;
             font-size: 1.3rem;
+            width: 1.3rem;
+            height: 1.3rem;
             opacity: 0.7;
             transition: transform 0.3s ease, opacity 0.3s ease;
         }
 
-        .social-link:hover i {
+        .social-link:hover i, .social-link:hover .custom-icon {
             opacity: 1;
             transform: scale(1.15);
         }
@@ -246,10 +251,14 @@
                 <span>Discord Community</span>
                 <i class="fa-brands fa-discord"></i>
             </a>
+            
             <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">
                 <span>Bluesky</span>
-                <i class="fa-brands fa-bluesky"></i>
+                <svg class="custom-icon" viewBox="0 0 320 286" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M69.364 19.146c36.687 27.806 76.147 84.186 90.636 114.439 14.489-30.253 53.949-86.633 90.636-114.439C277.151-1.12 320-9.845 320 25.87c0 15.656-3.526 73.18-5.32 80.528-6.177 25.322-35.316 34.025-61.94 30.686 44.137 6.305 60.108 26.656 46.168 59.83-20.916 49.771-92.486 46.549-115.118 10.457-11.83-18.868-23.79-51.523-23.79-51.523s-11.96 32.655-23.79 51.523c-22.632 36.092-94.202 39.314-115.118-10.457-13.94-33.174 2.031-53.525 46.168-59.83-26.624 3.339-55.763-5.364-61.94-30.686C3.526 99.05 0 41.526 0 25.87 0-9.845 42.849-1.12 69.364 19.146Z"/>
+                </svg>
             </a>
+            
             <a href="https://furtrack.com" class="social-link social-furtrack">
                 <span>Furtrack Profile</span>
                 <i class="fa-solid fa-paw"></i>
