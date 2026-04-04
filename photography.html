@@ -222,13 +222,14 @@
 
             selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
             
-            // Re-added the smooth scroll with a better offset to account for the sticky navbar!
+            // Re-targeted the scroll directly to the top pagination buttons with a 90px buffer
             prevBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
                     renderGallery();
-                    // Lowered the scroll target from the top buttons down to just above the photo grid!
-                    window.scrollTo({ top: gallery.offsetTop - 70, behavior: 'smooth' });
+                    const topPagination = document.querySelector('.top-pagination');
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 90;
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
                 }
             }));
             
@@ -236,8 +237,9 @@
                 if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) {
                     currentPage++;
                     renderGallery();
-                    // Lowered the scroll target from the top buttons down to just above the photo grid!
-                    window.scrollTo({ top: gallery.offsetTop - 70, behavior: 'smooth' });
+                    const topPagination = document.querySelector('.top-pagination');
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 90;
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
                 }
             }));
 
