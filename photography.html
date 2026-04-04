@@ -147,6 +147,11 @@
     </div>
 
     <script>
+        // --- SAVE SCROLL POSITION BEFORE REFRESH ---
+        window.addEventListener('beforeunload', () => {
+            sessionStorage.setItem('joshwuff_scrollPosition', window.scrollY);
+        });
+
         document.addEventListener('DOMContentLoaded', async () => {
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
@@ -156,7 +161,9 @@
             const pageInfos = document.querySelectorAll('.page-info-display');
 
             let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
-            let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
+            // Start by grabbing the saved page, default to 1 if it doesn't exist
+            let currentPage = parseInt(localStorage.getItem('joshwuff_currentPage')) || 1;
+            let itemsPerPage = 48, currentLightboxIndex = 0;
 
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
@@ -166,7 +173,6 @@
                 allPhotos = (await photosRes.json()).filter(photo => photo.src !== undefined);
                 thumbnailMap = await thumbsRes.json();
                 
-                // --- LOCAL STORAGE LOGIC ---
                 // Load saved filters (or default to 'all')
                 const savedFilters = JSON.parse(localStorage.getItem('joshwuff_filters')) || ['all'];
                 // Load saved items per page (or default to '48')
@@ -184,6 +190,16 @@
                 // Apply the saved filters immediately on load
                 applyFilters();
 
+                // --- RESTORE SCROLL POSITION ---
+                // After the grid is built, check if we have a saved scroll spot and jump to it
+                const savedScrollPos = sessionStorage.getItem('joshwuff_scrollPosition');
+                if (savedScrollPos) {
+                    // We use a tiny delay (100ms) to let the browser draw the dynamic grid images first
+                    setTimeout(() => {
+                        window.scrollTo(0, parseInt(savedScrollPos));
+                    }, 100);
+                }
+
             } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
@@ -196,7 +212,16 @@
             function renderGallery() {
                 gallery.innerHTML = '';
                 const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
-                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
+                
+                // Smart fallback: If filters changed and our saved page no longer exists, safely reset to the last available page (or page 1)
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                } else if (totalPages === 0) {
+                    currentPage = 1;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                }
+
                 const startIndex = (currentPage - 1) * itemsPerPage;
                 const photosToShow = filteredPhotos.slice(startIndex, startIndex + itemsPerPage);
 
@@ -228,12 +253,18 @@
 
                 filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0)
                     ? [...allPhotos] : allPhotos.filter(photo => checkedValues.includes(photo.category));
-                currentPage = 1;
+                
+                // Reset to page 1 ONLY when actively changing filters, otherwise respect the saved page
+                if (event && event.type === 'change') {
+                    currentPage = 1;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                }
+                
                 renderGallery();
             }
 
             checkboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', () => {
+                checkbox.addEventListener('change', (event) => {
                     if (checkbox.value !== 'all' && checkbox.checked) document.querySelector('input[value="all"]').checked = false;
                     else if (checkbox.value === 'all' && checkbox.checked) checkboxes.forEach(cb => { if (cb.value !== 'all') cb.checked = false; });
                     if (!Array.from(checkboxes).some(cb => cb.checked)) document.querySelector('input[value="all"]').checked = true;
@@ -243,15 +274,18 @@
 
             selectPerPage.addEventListener('change', (e) => {
                 itemsPerPage = parseInt(e.target.value);
-                // Save the newly selected amount to Local Storage
                 localStorage.setItem('joshwuff_perPage', itemsPerPage);
+                // Reset page to 1 when changing the amount of items to prevent empty pages
                 currentPage = 1;
+                localStorage.setItem('joshwuff_currentPage', currentPage);
                 renderGallery();
             });
             
             prevBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
+                    // Save new page
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
                     const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
@@ -262,6 +296,8 @@
             nextBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) {
                     currentPage++;
+                    // Save new page
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
                     const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
