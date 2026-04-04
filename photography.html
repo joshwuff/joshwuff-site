@@ -221,8 +221,23 @@
             });
 
             selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
-            prevBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
-            nextBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { currentPage++; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
+            
+            // Re-added the smooth scroll with a better offset to account for the sticky navbar!
+            prevBtns.forEach(btn => btn.addEventListener('click', () => { 
+                if (currentPage > 1) { 
+                    currentPage--; 
+                    renderGallery(); 
+                    window.scrollTo({ top: document.querySelector('.gallery-controls-wrapper').offsetTop - 100, behavior: 'smooth' });
+                } 
+            }));
+            
+            nextBtns.forEach(btn => btn.addEventListener('click', () => { 
+                if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { 
+                    currentPage++; 
+                    renderGallery(); 
+                    window.scrollTo({ top: document.querySelector('.gallery-controls-wrapper').offsetTop - 100, behavior: 'smooth' });
+                } 
+            }));
 
             const lightbox = document.getElementById('lightbox');
             document.querySelector('.lightbox-close').addEventListener('click', () => lightbox.classList.remove('active'));
