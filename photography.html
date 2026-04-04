@@ -156,7 +156,7 @@
             const pageInfos = document.querySelectorAll('.page-info-display');
 
             let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
-            let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0; 
+            let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
 
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
@@ -165,8 +165,8 @@
                 ]);
                 allPhotos = (await photosRes.json()).filter(photo => photo.src !== undefined);
                 thumbnailMap = await thumbsRes.json();
-                filteredPhotos = [...allPhotos]; 
-                renderGallery(); 
+                filteredPhotos = [...allPhotos];
+                renderGallery();
             } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
@@ -177,7 +177,7 @@
             }
 
             function renderGallery() {
-                gallery.innerHTML = ''; 
+                gallery.innerHTML = '';
                 const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
                 if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
                 const startIndex = (currentPage - 1) * itemsPerPage;
@@ -193,7 +193,7 @@
                     photoDiv.addEventListener('click', () => {
                         currentLightboxIndex = globalIndex;
                         updateLightboxImage();
-                        document.getElementById('lightbox').classList.add('active'); 
+                        document.getElementById('lightbox').classList.add('active');
                     });
                     gallery.appendChild(photoDiv);
                 });
@@ -205,9 +205,9 @@
 
             function applyFilters() {
                 const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-                filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0) 
+                filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0)
                     ? [...allPhotos] : allPhotos.filter(photo => checkedValues.includes(photo.category));
-                currentPage = 1; 
+                currentPage = 1;
                 renderGallery();
             }
 
@@ -223,20 +223,22 @@
             selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
             
             // Re-added the smooth scroll with a better offset to account for the sticky navbar!
-            prevBtns.forEach(btn => btn.addEventListener('click', () => { 
-                if (currentPage > 1) { 
-                    currentPage--; 
-                    renderGallery(); 
-                    window.scrollTo({ top: document.querySelector('.gallery-controls-wrapper').offsetTop - 100, behavior: 'smooth' });
-                } 
+            prevBtns.forEach(btn => btn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderGallery();
+                    // Lowered the scroll target from the top buttons down to just above the photo grid!
+                    window.scrollTo({ top: gallery.offsetTop - 70, behavior: 'smooth' });
+                }
             }));
             
-            nextBtns.forEach(btn => btn.addEventListener('click', () => { 
-                if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { 
-                    currentPage++; 
-                    renderGallery(); 
-                    window.scrollTo({ top: document.querySelector('.gallery-controls-wrapper').offsetTop - 100, behavior: 'smooth' });
-                } 
+            nextBtns.forEach(btn => btn.addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) {
+                    currentPage++;
+                    renderGallery();
+                    // Lowered the scroll target from the top buttons down to just above the photo grid!
+                    window.scrollTo({ top: gallery.offsetTop - 70, behavior: 'smooth' });
+                }
             }));
 
             const lightbox = document.getElementById('lightbox');
