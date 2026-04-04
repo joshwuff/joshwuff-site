@@ -143,28 +143,28 @@
 
         /* --- BRAND GLOW-UPS --- */
         
-        /* Discord - Updated New Blurple */
+        /* Discord - Darker Official Blurple */
         .social-link[href*="discord"]:hover {
             border-color: #5865F2 !important;
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.4) !important;
+            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important;
             color: #5865F2 !important;
         }
 
-        /* Bluesky - Official Blue */
+        /* Bluesky - Sky Blue */
         .social-link[href*="bsky.app"]:hover {
             border-color: #0085ff !important;
             box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important;
             color: #0085ff !important;
         }
 
-        /* X / Twitter - Pure White */
+        /* X / Twitter - White */
         .social-link[href*="x.com"]:hover, .social-link[href*="twitter"]:hover {
             border-color: #ffffff !important;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important;
             color: #ffffff !important;
         }
 
-        /* TikTok - Cyan & Pink */
+        /* TikTok - Dual Glow */
         .social-link[href*="tiktok"]:hover {
             border-color: #fe2c55 !important;
             box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important;
@@ -233,11 +233,11 @@
 
             const hornSound = new Audio('Party Horn sound effect.mp3');
             hornSound.preload = 'auto';
-            hornSound.volume = 0.2;
+            hornSound.volume = 0.1; // Reduced to 10% volume as requested
             
             const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
             yippeeSound.preload = 'auto';
-            yippeeSound.volume = 0.2;
+            yippeeSound.volume = 0.1; // Reduced to 10% volume as requested
 
             profilePic.addEventListener('click', () => {
                 clickCount++;
