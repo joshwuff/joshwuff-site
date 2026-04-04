@@ -124,11 +124,10 @@
         }
 
         .social-link {
-            /* Flexbox ensures the button handles layout properly */
             display: flex;
-            justify-content: center; /* Centers the text perfectly */
+            justify-content: center;
             align-items: center;
-            position: relative; /* Allows the icon to float on the right edge */
+            position: relative;
             padding: 18px 24px;
             background: var(--glass-bg);
             border: 1px solid var(--glass-border);
@@ -149,7 +148,6 @@
             transform: translateY(-2px);
         }
 
-        /* Icon styling (Absolute positioning anchors it to the right) */
         .social-link i, .social-link .custom-icon {
             position: absolute;
             right: 24px;
@@ -216,6 +214,14 @@
         .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
+        
+        /* Your Instagram Color Scheme */
+        .social-joshinsta:hover {
+            border-color: #f09433 !important;
+            box-shadow: 0 0 20px rgba(188, 42, 141, 0.5) !important;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
+            color: #fff !important;
+        }
 
         footer {
             margin-top: 64px;
@@ -243,11 +249,17 @@
         <p class="bio">Digital creator, gaming enthusiast, and photographer.<br>Welcome to the official home of everything joshwuff! :3</p>
 
         <div class="links-container">
-            <a href="#" class="social-link">
+            <a href="https://www.instagram.com/kingskostumes/" class="social-link">
                 <span>Fursuit maker: Kings Kostumes</span>
                 <i class="fa-solid fa-crown"></i>
             </a>
-            <a href="https://discord.com" class="social-link social-discord">
+
+            <a href="https://www.instagram.com/joshwuff_/" class="social-link social-joshinsta">
+                <span>Joshwuff on Instagram</span>
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+
+            <a href="https://discord.gg/fnqvg7dyhR" class="social-link social-discord">
                 <span>Discord Community</span>
                 <i class="fa-brands fa-discord"></i>
             </a>
@@ -259,7 +271,7 @@
                 </svg>
             </a>
             
-            <a href="https://furtrack.com" class="social-link social-furtrack">
+            <a href="https://www.furtrack.com/index/joshwuff" class="social-link social-furtrack">
                 <span>Furtrack Profile</span>
                 <i class="fa-solid fa-paw"></i>
             </a>
@@ -322,7 +334,6 @@
             const twitchBtn = document.getElementById('twitch-btn');
             const twitchEmbed = document.getElementById('twitch-embed');
 
-            // Function to close all embeds
             function closeAllEmbeds() {
                 tiktokEmbed.classList.remove('active');
                 tiktokBtn.classList.remove('active-btn');
@@ -330,7 +341,6 @@
                 twitchBtn.classList.remove('active-btn');
             }
 
-            // TikTok Click
             tiktokBtn.addEventListener('click', () => {
                 const isAlreadyOpen = tiktokEmbed.classList.contains('active');
                 closeAllEmbeds();
@@ -340,7 +350,6 @@
                 }
             });
 
-            // Twitch Click
             twitchBtn.addEventListener('click', () => {
                 const isAlreadyOpen = twitchEmbed.classList.contains('active');
                 closeAllEmbeds();
