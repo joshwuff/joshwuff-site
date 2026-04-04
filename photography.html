@@ -3,226 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Photography | Joshwuff</title>
+    <title>Joshwuff | Official</title>
     <link rel="icon" type="image/png" href="favicon.png?v=2">
     <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=1">
+    
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444;
+            --accent-glow: rgba(239, 68, 68, 0.25);
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            background-image:
+                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-y: scroll;
+            background-size: 100% 100%;
+            animation: breathe 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(13, 13, 18, 0.8);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            padding: 18px 0;
+            z-index: 1000;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 120px 24px 60px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .profile-img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow);
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.1s ease;
+        }
+
+        .profile-img:active { transform: scale(0.92); }
+
+        .easter-egg-bounce {
+            animation: yippeeBounce 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
+        }
+
+        @keyframes yippeeBounce {
+            0% { transform: scale(1) rotate(0deg); }
+            20% { transform: scale(1.4) rotate(-15deg); }
+            40% { transform: scale(1.4) rotate(15deg); }
+            60% { transform: scale(1.4) rotate(-15deg); }
+            80% { transform: scale(1.4) rotate(15deg); }
+            100% { transform: scale(1) rotate(0deg); }
+        }
+
+        h1 { font-size: 2.2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .subtitle { color: var(--accent); font-size: 1.1rem; margin-top: 8px; font-weight: 600; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
+
+        .links-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .social-link {
+            display: block;
+            padding: 18px 24px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.05rem;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease !important;
+            cursor: pointer;
+        }
+
+        .social-link:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 15px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        /* --- ACCORDION EMBED STYLES --- */
+        .embed-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .embed-container {
+            display: none; /* Hidden by default */
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 12px;
+            padding: 16px;
+            animation: fadeInDown 0.3s ease-out forwards;
+        }
+
+        .embed-container.active {
+            display: block; /* Shows when clicked */
+        }
+
+        .direct-link-btn {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: opacity 0.3s;
+        }
+
+        .direct-link-btn:hover {
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- BRAND GLOW-UPS --- */
+        .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; }
+        .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
+        .social-x:hover { border-color: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
+        .social-tiktok:hover { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
+        .social-twitch:hover { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
+        .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
+
+        footer { 
+            margin-top: 64px; 
+            padding-top: 32px; 
+            border-top: 1px solid var(--glass-border); 
+            font-size: 0.85rem; 
+            color: var(--text-secondary); 
+        }
+
+    </style>
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html" class="nav-link">Socials</a>
-        <a href="photography.html" class="nav-link active">Photography</a>
+        <a href="index.html" class="nav-link active">Socials</a>
+        <a href="photography.html" class="nav-link">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
     </nav>
 
-    <div class="container gallery-container">
-        <h1>Photography</h1>
-        <div class="subtitle">By joshwuff</div>
-        <p class="bio">Capturing moments all around Florida and beyond! Select a category below to filter my latest work.</p>
+    <div class="container">
+        <img src="main_icon_circle.jpg" id="profile-pic" alt="Joshwuff" class="profile-img">
+        
+        <h1>Joshwuff</h1>
+        <div class="subtitle">@joshwuff</div>
+        
+        <p class="bio">Digital creator, gaming enthusiast, and photographer.<br>Welcome to the official home of everything joshwuff! :3</p>
 
-        <div class="gallery-controls-wrapper">
-            <div class="filter-controls">
-                <label class="checkbox-label"><input type="checkbox" value="all" class="filter-checkbox" checked> All</label>
-                <label class="checkbox-label"><input type="checkbox" value="nature" class="filter-checkbox"> Nature</label>
-                <label class="checkbox-label"><input type="checkbox" value="furry" class="filter-checkbox"> Furry</label>
-                <label class="checkbox-label"><input type="checkbox" value="other" class="filter-checkbox"> Other</label>
-            </div>
+        <div class="links-container">
+            <a href="#" class="social-link">Fursuit maker: Kings Kostumes</a>
+            <a href="https://discord.com" class="social-link social-discord">Discord Community</a>
+            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">Bluesky</a>
+            <a href="https://furtrack.com" class="social-link social-furtrack">Furtrack Profile</a>
+            <a href="https://x.com/joshwuff_" class="social-link social-x">Follow on X (@joshwuff_)</a>
             
-            <div class="per-page-dropdown">
-                <label for="itemsPerPage">Photos per page:</label>
-                <select id="itemsPerPage">
-                    <option value="8">8</option>
-                    <option value="24">24</option>
-                    <option value="48" selected>48</option>
-                    <option value="96">96</option>
-                </select>
+            <div class="embed-wrapper">
+                <a href="javascript:void(0);" class="social-link social-tiktok" onclick="toggleEmbed('tiktok-embed')">TikTok ▼</a>
+                <div id="tiktok-embed" class="embed-container">
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > 
+                        <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> 
+                    </blockquote> 
+                    <script async src="https://www.tiktok.com/embed.js"></script>
+                    <a href="https://tiktok.com/@joshwuff" class="direct-link-btn" style="background: #fe2c55;">Visit TikTok Profile</a>
+                </div>
             </div>
 
-            <div class="pagination-controls top-pagination">
-                <button class="page-btn prev-page-btn">Back</button>
-                <span class="page-info-display page-info">Page 1 of 1</span>
-                <button class="page-btn next-page-btn">Next</button>
+            <div class="embed-wrapper">
+                <a href="javascript:void(0);" class="social-link social-twitch" onclick="toggleEmbed('twitch-embed')">Twitch ▼</a>
+                <div id="twitch-embed" class="embed-container">
+                    <iframe src="https://player.twitch.tv/?channel=joshwuff&parent=joshwuff.com" frameborder="0" allowfullscreen="true" scrolling="no" height="300" width="100%" style="border-radius: 8px;"></iframe>
+                    <br>
+                    <a href="https://twitch.tv/joshwuff" class="direct-link-btn" style="background: #9146FF;">Go to Twitch</a>
+                </div>
             </div>
         </div>
 
-        <div class="photo-grid" id="gallery"></div>
-
-        <div class="pagination-controls">
-            <button class="page-btn prev-page-btn">Back</button>
-            <span class="page-info-display page-info">Page 1 of 1</span>
-            <button class="page-btn next-page-btn">Next</button>
-        </div>
-
-        <footer><p>&copy; 2026 Joshwuff. All rights reserved.</p></footer>
-    </div>
-
-    <div id="lightbox" class="lightbox">
-        <span class="lightbox-close">&times;</span>
-        <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
-        <img id="lightbox-img" src="" alt="Fullscreen Photography">
-        <span class="lightbox-next" id="lightbox-next">&#10095;</span>
+        <footer>
+            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+        </footer>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Page Transitions
-            const navLinks = document.querySelectorAll('.nav-link');
-            const container = document.querySelector('.container');
-            let isTransitioning = false;
-            navLinks.forEach(link => {
-                link.addEventListener('click', function(e) {
-                    if (this.href !== window.location.href) {
-                        e.preventDefault();
-                        if (isTransitioning) return;
-                        isTransitioning = true;
-                        container.classList.add('fade-out');
-                        setTimeout(() => { window.location.href = this.href; }, 400);
-                    }
-                });
-            });
-
-            // Gallery Logic
-            const gallery = document.getElementById('gallery');
-            const checkboxes = document.querySelectorAll('.filter-checkbox');
-            const selectPerPage = document.getElementById('itemsPerPage');
-            const prevBtns = document.querySelectorAll('.prev-page-btn');
-            const nextBtns = document.querySelectorAll('.next-page-btn');
-            const pageInfos = document.querySelectorAll('.page-info-display');
-
-            let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
-            let currentPage = 1, itemsPerPage = 48, currentLightboxIndex = 0;
-
-            try {
-                const [photosRes, thumbsRes] = await Promise.all([
-                    fetch('photos.json?v=2'), fetch('thumbnails.json?v=2')
-                ]);
-                allPhotos = (await photosRes.json()).filter(p => p.src !== undefined);
-                thumbnailMap = await thumbsRes.json();
+        // --- EMBED TOGGLE LOGIC ---
+        function toggleEmbed(id) {
+            const element = document.getElementById(id);
+            
+            // If it is already open, close it
+            if (element.classList.contains('active')) {
+                element.classList.remove('active');
+            } else {
+                // Optional: Close any other open embeds first so only one is open at a time
+                document.querySelectorAll('.embed-container').forEach(el => el.classList.remove('active'));
                 
-                // Ensure filters apply immediately on load or refresh
-                applyFilters();
-            } catch (error) {
-                gallery.innerHTML = "<p>Failed to load gallery data.</p>";
+                // Open the one we clicked
+                element.classList.add('active');
             }
+        }
 
-            function updateLightboxImage() {
-                if (filteredPhotos.length === 0) return;
-                const lightboxImg = document.getElementById('lightbox-img');
-                
-                // Hide the image temporarily to prevent the "ghost" effect
-                lightboxImg.style.opacity = '0';
-                
-                // Only reveal the image once the new high-res file is fully downloaded
-                lightboxImg.onload = () => {
-                    lightboxImg.style.opacity = '1';
-                };
-                
-                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
-            }
+        // --- EASTER EGG LOGIC ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const profilePic = document.getElementById('profile-pic');
+            let clickCount = 0;
+            let clickTimer;
 
-            function renderGallery() {
-                gallery.innerHTML = '';
-                const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
-                if (currentPage > totalPages && totalPages > 0) currentPage = totalPages;
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const photosToShow = filteredPhotos.slice(startIndex, startIndex + itemsPerPage);
+            const hornSound = new Audio('Party Horn sound effect.mp3');
+            hornSound.preload = 'auto';
+            hornSound.volume = 0.1;
+            
+            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
+            yippeeSound.preload = 'auto';
+            yippeeSound.volume = 0.1;
 
-                photosToShow.forEach((photo, localIndex) => {
-                    const photoDiv = document.createElement('div');
-                    photoDiv.className = `photo-item ${photo.category}`;
-                    const thumbSrc = thumbnailMap[photo.src] || photo.src;
-                    photoDiv.innerHTML = `<img src="${thumbSrc}" alt="${photo.alt}" loading="lazy"><div class="photo-overlay">${photo.title}</div>`;
+            profilePic.addEventListener('click', () => {
+                clickCount++;
+                
+                clearTimeout(clickTimer);
+                clickTimer = setTimeout(() => {
+                    clickCount = 0;
+                }, 2000);
+
+                if (clickCount === 5) {
+                    hornSound.currentTime = 0;
+                    yippeeSound.currentTime = 0;
                     
-                    const globalIndex = startIndex + localIndex;
-                    photoDiv.addEventListener('click', () => {
-                        currentLightboxIndex = globalIndex;
-                        updateLightboxImage();
-                        document.getElementById('lightbox').classList.add('active');
-                        document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                    Promise.all([
+                        hornSound.play(),
+                        yippeeSound.play()
+                    ]).catch(err => console.error("Audio error:", err));
+
+                    profilePic.classList.add('easter-egg-bounce');
+                    
+                    const rect = profilePic.getBoundingClientRect();
+                    const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
+                    const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
+
+                    confetti({
+                        particleCount: 150,
+                        spread: 100,
+                        origin: { x: xCenter, y: yCenter },
+                        zIndex: 9999,
+                        colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff']
                     });
-                    gallery.appendChild(photoDiv);
-                });
 
-                pageInfos.forEach(info => info.innerText = `Page ${currentPage} of ${totalPages || 1}`);
-                prevBtns.forEach(btn => btn.disabled = currentPage === 1);
-                nextBtns.forEach(btn => btn.disabled = currentPage >= totalPages || totalPages === 0);
-            }
+                    setTimeout(() => {
+                        profilePic.classList.remove('easter-egg-bounce');
+                    }, 800);
 
-            function applyFilters() {
-                const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-                if (checkedValues.includes('all') || checkedValues.length === 0) { filteredPhotos = [...allPhotos]; }
-                else { filteredPhotos = allPhotos.filter(photo => checkedValues.includes(photo.category)); }
-                currentPage = 1; renderGallery();
-            }
-
-            checkboxes.forEach(cb => {
-                cb.addEventListener('change', () => {
-                    if (cb.value !== 'all' && cb.checked) { document.querySelector('input[value="all"]').checked = false; }
-                    else if (cb.value === 'all' && cb.checked) { checkboxes.forEach(c => { if (c.value !== 'all') c.checked = false; }); }
-                    if (!Array.from(checkboxes).some(c => c.checked)) document.querySelector('input[value="all"]').checked = true;
-                    applyFilters();
-                });
-            });
-
-            selectPerPage.addEventListener('change', (e) => { itemsPerPage = parseInt(e.target.value); currentPage = 1; renderGallery(); });
-            prevBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage > 1) { currentPage--; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
-            nextBtns.forEach(btn => btn.addEventListener('click', () => { if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) { currentPage++; renderGallery(); window.scrollTo({ top: gallery.offsetTop - 150, behavior: 'smooth' }); } }));
-
-            // Lightbox
-            const lightbox = document.getElementById('lightbox');
-            const lightboxImg = document.getElementById('lightbox-img');
-
-            // Function to cleanly close the lightbox and restore scrolling
-            function closeLightbox() {
-                lightbox.classList.remove('active');
-                document.body.style.overflow = ''; // Restore background scrolling
-                resetZoom();
-            }
-
-            // Function to reset the zoom state
-            function resetZoom() {
-                lightboxImg.style.transform = 'scale(1)';
-                lightboxImg.style.cursor = 'zoom-in';
-                lightboxImg.classList.remove('zoomed');
-            }
-
-            // Desktop click-to-zoom feature
-            lightboxImg.style.transition = 'transform 0.3s ease';
-            lightboxImg.style.cursor = 'zoom-in';
-            lightboxImg.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent the click from closing the lightbox
-                if (lightboxImg.classList.contains('zoomed')) {
-                    resetZoom();
-                } else {
-                    lightboxImg.style.transform = 'scale(2)'; // Zoom in 2x
-                    lightboxImg.style.cursor = 'zoom-out';
-                    lightboxImg.classList.add('zoomed');
+                    clickCount = 0;
                 }
-            });
-
-            // Close listeners
-            document.querySelector('.lightbox-close').addEventListener('click', closeLightbox);
-            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) closeLightbox(); });
-            
-            // Navigation listeners (Reset zoom when changing photos)
-            document.getElementById('lightbox-prev').addEventListener('click', (e) => {
-                e.stopPropagation();
-                resetZoom();
-                if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
-            });
-            
-            document.getElementById('lightbox-next').addEventListener('click', (e) => {
-                e.stopPropagation();
-                resetZoom();
-                if (filteredPhotos.length) { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
-            });
-            
-            document.addEventListener('keydown', (e) => {
-                if (!lightbox.classList.contains('active')) return;
-                if (e.key === 'ArrowLeft') { resetZoom(); currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
-                else if (e.key === 'ArrowRight') { resetZoom(); currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
-                else if (e.key === 'Escape') closeLightbox();
             });
         });
     </script>
