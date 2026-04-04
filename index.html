@@ -208,12 +208,14 @@
                 let clickCount = 0;
                 let clickTimer;
 
-                // Force the browser to fully load the audio into memory immediately
+                // Audio setup with volume dropped to 20%
                 const hornSound = new Audio('Party Horn sound effect.mp3');
                 hornSound.preload = 'auto';
+                hornSound.volume = 0.2;
                 
                 const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
                 yippeeSound.preload = 'auto';
+                yippeeSound.volume = 0.2;
 
                 profilePic.addEventListener('click', () => {
                     clickCount++;
@@ -227,7 +229,7 @@
                         hornSound.currentTime = 0;
                         yippeeSound.currentTime = 0;
                         
-                        // Use Promise.all to force the browser to execute both play events simultaneously
+                        // Play sounds simultaneously
                         Promise.all([
                             hornSound.play(),
                             yippeeSound.play()
@@ -235,6 +237,22 @@
 
                         profilePic.classList.add('easter-egg-bounce');
                         
+                        // --- THE CONFETTI EXPLOSION ---
+                        // Find exactly where the picture is on the screen
+                        const rect = profilePic.getBoundingClientRect();
+                        const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
+                        const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
+
+                        // Fire the confetti from the nose!
+                        confetti({
+                            particleCount: 150,
+                            spread: 100,
+                            origin: { x: xCenter, y: yCenter },
+                            zIndex: 9999,
+                            colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b']
+                        });
+                        // ------------------------------
+
                         setTimeout(() => {
                             profilePic.classList.remove('easter-egg-bounce');
                         }, 800);
