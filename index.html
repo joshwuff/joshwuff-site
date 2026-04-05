@@ -3,327 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Joshwuff | Official</title>
+    <title>Photography | Joshwuff</title>
     <link rel="icon" type="image/png" href="favicon.png?v=2">
     <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
-    
     <style>
+        /* LIGHTBOX */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(15px);
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        
+        #lightbox-img {
+            max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        /* This class is applied via JS while dragging/zooming so the image doesn't lag behind the mouse */
+        #lightbox-img.no-transition {
+            transition: none !important;
+        }
+
+        .lightbox.active #lightbox-img { transform: scale(1); }
+        
+        .lightbox-close {
+            position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001; transition: color 0.3s ease;
+        }
+        .lightbox-close:hover { color: var(--accent); }
+        .lightbox-prev, .lightbox-next {
+            position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 50px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; z-index: 2001; padding: 20px; user-select: none; opacity: 0.7;
+        }
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+        .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
+        .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
+
+        /* THEME & LAYOUT */
         :root {
-            --bg-color: #0d0d12;
-            --glass-bg: rgba(255, 255, 255, 0.03);
-            --glass-border: rgba(255, 255, 255, 0.08);
-            --text-primary: #f8fafc;
-            --text-secondary: #94a3b8;
-            --accent: #ef4444;
-            --accent-glow: rgba(239, 68, 68, 0.25);
+            --bg-color: #0d0d12; --glass-bg: rgba(255, 255, 255, 0.03); --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc; --text-secondary: #94a3b8; --accent: #ef4444; --accent-glow: rgba(239, 68, 68, 0.25);
         }
-
         * { box-sizing: border-box; }
-
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            background-image:
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-y: scroll;
-            background-size: 100% 100%;
-            animation: breathe 10s infinite alternate ease-in-out;
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif; background-color: var(--bg-color); color: var(--text-primary);
+            display: flex; justify-content: center; min-height: 100vh; overflow-y: scroll;
+            background-image: radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%), radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
         }
-
-        @keyframes breathe {
-            0% { background-size: 100% 100%; background-position: 0% 0%; }
-            100% { background-size: 130% 130%; background-position: 5% 5%; }
-        }
-
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(13, 13, 18, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 18px 0;
-            z-index: 1000;
+            position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
         }
-
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+        .container { width: 100%; max-width: 1280px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px auto 40px; line-height: 1.6; max-width: 500px; }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 120px 24px 60px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
+        /* CONTROLS */
+        .gallery-controls-wrapper { display: flex; flex-direction: column; align-items: center; gap: 15px; margin-bottom: 40px; }
+        .filter-controls { background: var(--glass-bg); border: 1px solid var(--glass-border); backdrop-filter: blur(16px); padding: 15px 25px; border-radius: 16px; display: flex; gap: 20px; justify-content: center; flex-wrap: wrap; }
+        .checkbox-label { color: var(--text-secondary); font-size: 0.95rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: color 0.3s ease; }
+        .checkbox-label:hover { color: var(--text-primary); }
+        .filter-checkbox { accent-color: var(--accent); cursor: pointer; width: 16px; height: 16px; }
+        .per-page-dropdown { color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .per-page-dropdown select { background: var(--bg-color); color: var(--text-primary); border: 1px solid var(--glass-border); border-radius: 8px; padding: 6px 12px; font-family: 'Inter', sans-serif; font-weight: 600; outline: none; cursor: pointer; }
+        .per-page-dropdown select:focus { border-color: var(--accent); }
+        .pagination-controls { display: flex; justify-content: center; align-items: center; gap: 20px; margin-top: 40px; }
+        .pagination-controls.top-pagination { margin-top: 10px; margin-bottom: 20px; }
+        .page-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .page-btn:hover:not(:disabled) { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+        .page-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+        .page-info { color: var(--text-secondary); font-weight: 600; font-size: 0.95rem; }
+
+        /* GRID */
+        .photo-grid { display: grid; grid-template-columns: repeat(auto-fit, 280px); justify-content: center; gap: 24px; width: 100%; }
+        .photo-item { position: relative; border-radius: 16px; overflow: hidden; aspect-ratio: 1/1; background: var(--glass-bg); border: 1px solid var(--glass-border); transition: all 0.3s ease; cursor: pointer; opacity: 0; animation: popIn 0.5s ease-out forwards; animation-delay: 0.15s; }
+        @keyframes popIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; display: block; opacity: 0.85; transition: all 0.5s ease; }
+        .photo-item:hover { transform: translateY(-6px); box-shadow: 0 12px 24px var(--accent-glow); border-color: var(--accent); }
+        .photo-item:hover img { opacity: 1; transform: scale(1.05); }
+        .photo-overlay { position: absolute; bottom: 0; left: 0; width: 100%; background: linear-gradient(transparent, rgba(13, 13, 18, 0.95)); color: var(--text-primary); padding: 30px 20px 20px; font-weight: 600; font-size: 1rem; text-align: left; transform: translateY(100%); transition: transform 0.3s ease; pointer-events: none; }
+        .photo-item:hover .photo-overlay { transform: translateY(0); }
+        footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
+
+        @media (max-width: 600px) {
+            .photo-grid { grid-template-columns: 1fr; }
+            .photo-item .photo-overlay { transform: translateY(0); font-size: 0.9rem; padding: 25px 12px 12px; background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); }
         }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: transform 0.1s ease;
-        }
-
-        .profile-img:active { transform: scale(0.92); }
-
-        .easter-egg-bounce {
-            animation: yippeeBounce 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
-        }
-
-        @keyframes yippeeBounce {
-            0% { transform: scale(1) rotate(0deg); }
-            20% { transform: scale(1.4) rotate(-15deg); }
-            40% { transform: scale(1.4) rotate(-15deg); }
-            60% { transform: scale(1.4) rotate(-15deg); }
-            80% { transform: scale(1.4) rotate(15deg); }
-            100% { transform: scale(1) rotate(0deg); }
-        }
-
-        h1 { font-size: 2.2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
-        .subtitle { color: var(--accent); font-size: 1.1rem; margin-top: 8px; font-weight: 600; }
-        .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
-
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
-
-        .social-link {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            padding: 18px 24px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.05rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease !important;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .social-link:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
-
-        /* Icon styling */
-        .social-link i, .social-link .custom-icon {
-            position: absolute;
-            right: 24px;
-            font-size: 1.3rem;
-            width: 1.3rem;
-            height: 1.3rem;
-            opacity: 0.7;
-            transition: transform 0.3s ease, opacity 0.3s ease;
-        }
-
-        .social-link:hover i, .social-link:hover .custom-icon {
-            opacity: 1;
-            transform: scale(1.15);
-        }
-
-        /* --- ACCORDION EMBED STYLES --- */
-        .embed-wrapper {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .embed-container {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            padding: 0 16px;
-            margin-top: 0;
-            background: var(--glass-bg);
-            border: 1px solid transparent;
-            border-radius: 12px;
-            pointer-events: none;
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
-        }
-
-        .embed-container.active {
-            max-height: 800px;
-            opacity: 1;
-            padding: 16px;
-            margin-top: 8px;
-            border-color: var(--glass-border);
-            pointer-events: auto;
-        }
-
-        .direct-link-btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: opacity 0.3s;
-        }
-
-        .direct-link-btn:hover {
-            opacity: 0.8;
-        }
-
-        /* --- BRAND GLOW-UPS --- */
-        .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; }
-        .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
-        .social-x:hover { border-color: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
-        .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
-        .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
-        .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
-        
-        /* Your Upgraded Instagram Dual-Glow hover effect (Image 1 Style!) */
-        .social-joshinsta:hover {
-            /* Replace flat orange with dual glow border logic */
-            border-color: #bc1888 !important; /* Base border becomes pink-purple */
-            
-            /* Apply dual box-shadow (Bottom-Left Orange, Top-Right Pink/Purple) */
-            box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important;
-            
-            /* Keep background and text default, maintaining the image:2 standard button look */
-            background: var(--glass-bg) !important;
-            color: var(--text-primary) !important;
-            transform: translateY(-2px);
-        }
-
-        /* Explicitly target the icon inside the button on hover */
-        .social-joshinsta:hover i {
-            opacity: 1; /* Ensure icon is fully visible */
-            transform: scale(1.15); /* Keep the icon scale effect */
-            
-            /* Keep the full gradient on the icon itself for that multi-color pop! */
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent !important;
-        }
-
-        footer {
-            margin-top: 64px;
-            padding-top: 32px;
-            border-top: 1px solid var(--glass-border);
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-        }
-
     </style>
 </head>
 <body>
     <nav class="navbar">
-        <a href="index.html" class="nav-link active">Socials</a>
-        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="index.html" class="nav-link">Socials</a>
+        <a href="photography.html" class="nav-link active">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
     </nav>
 
     <div class="container">
-        <img src="main_icon_circle.jpg" id="profile-pic" alt="Joshwuff" class="profile-img">
-        
-        <h1>Joshwuff</h1>
-        <div class="subtitle">@joshwuff</div>
-        
-        <p class="bio">Digital creator, gaming enthusiast, and photographer.<br>Welcome to the official home of everything joshwuff! :3</p>
+        <h1>Photography</h1>
+        <div class="subtitle">By joshwuff</div>
+        <p class="bio">Capturing moments all around the country and beyond! Select a category below to filter my latest work.</p>
 
-        <div class="links-container">
-            <a href="https://www.instagram.com/kingskostumes/" class="social-link">
-                <span>Fursuit maker: Kings Kostumes</span>
-                <i class="fa-solid fa-crown"></i>
-            </a>
-
-            <a href="https://www.instagram.com/joshwuff_/" class="social-link social-joshinsta">
-                <span>Joshwuff on Instagram</span>
-                <i class="fa-brands fa-instagram"></i>
-            </a>
-
-            <a href="https://discord.gg/fnqvg7dyhR" class="social-link social-discord">
-                <span>Discord Community</span>
-                <i class="fa-brands fa-discord"></i>
-            </a>
+        <div class="gallery-controls-wrapper">
+            <div class="filter-controls">
+                <label class="checkbox-label"><input type="checkbox" value="all" class="filter-checkbox" checked> All</label>
+                <label class="checkbox-label"><input type="checkbox" value="nature" class="filter-checkbox"> Nature</label>
+                <label class="checkbox-label"><input type="checkbox" value="furry" class="filter-checkbox"> Furry</label>
+                <label class="checkbox-label"><input type="checkbox" value="other" class="filter-checkbox"> Other</label>
+            </div>
             
-            <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">
-                <span>Bluesky</span>
-                <svg class="custom-icon" viewBox="0 0 320 286" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M69.364 19.146c36.687 27.806 76.147 84.186 90.636 114.439 14.489-30.253 53.949-86.633 90.636-114.439C277.151-1.12 320-9.845 320 25.87c0 15.656-3.526 73.18-5.32 80.528-6.177 25.322-35.316 34.025-61.94 30.686 44.137 6.305 60.108 26.656 46.168 59.83-20.916 49.771-92.486 46.549-115.118 10.457-11.83-18.868-23.79-51.523-23.79-51.523s-11.96 32.655-23.79 51.523c-22.632 36.092-94.202 39.314-115.118-10.457-13.94-33.174 2.031-53.525 46.168-59.83-26.624 3.339-55.763-5.364-61.94-30.686C3.526 99.05 0 41.526 0 25.87 0-9.845 42.849-1.12 69.364 19.146Z"/>
-                </svg>
-            </a>
-            
-            <a href="https://www.furtrack.com/index/joshwuff" class="social-link social-furtrack">
-                <span>Furtrack Profile</span>
-                <i class="fa-solid fa-paw"></i>
-            </a>
-            <a href="https://x.com/joshwuff_" class="social-link social-x">
-                <span>Follow on X (@joshwuff_)</span>
-                <i class="fa-brands fa-x-twitter"></i>
-            </a>
-            
-            <div class="embed-wrapper">
-                <a class="social-link social-tiktok" id="tiktok-btn">
-                    <span>TikTok</span>
-                    <i class="fa-brands fa-tiktok"></i>
-                </a>
-                <div id="tiktok-embed" class="embed-container">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" >
-                        <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section>
-                    </blockquote>
-                    <script async src="https://www.tiktok.com/embed.js"></script>
-                    <a href="https://tiktok.com/@joshwuff" class="direct-link-btn" style="background: #fe2c55;">Visit TikTok Profile</a>
-                </div>
+            <div class="per-page-dropdown">
+                <label for="itemsPerPage">Photos per page:</label>
+                <select id="itemsPerPage">
+                    <option value="8">8</option>
+                    <option value="24">24</option>
+                    <option value="48">48</option>
+                    <option value="96">96</option>
+                </select>
             </div>
 
-            <div class="embed-wrapper">
-                <a class="social-link social-twitch" id="twitch-btn">
-                    <span>Twitch</span>
-                    <i class="fa-brands fa-twitch"></i>
-                </a>
-                <div id="twitch-embed" class="embed-container">
-                    <div id="twitch-interactive-frame"></div>
-                    <br>
-                    <a href="https://twitch.tv/joshwuff" class="direct-link-btn" style="background: #9146FF;">Go to Twitch</a>
-                </div>
+            <div class="pagination-controls top-pagination">
+                <button class="page-btn prev-page-btn">Back</button>
+                <span class="page-info-display page-info">Page 1 of 1</span>
+                <button class="page-btn next-page-btn">Next</button>
             </div>
+        </div>
+
+        <div class="photo-grid" id="gallery"></div>
+
+        <div class="pagination-controls">
+            <button class="page-btn prev-page-btn">Back</button>
+            <span class="page-info-display page-info">Page 1 of 1</span>
+            <button class="page-btn next-page-btn">Next</button>
         </div>
 
         <footer>
@@ -331,104 +149,277 @@
         </footer>
     </div>
 
-    <script src="https://embed.twitch.tv/embed/v1.js"></script>
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
+        <img id="lightbox-img" src="" alt="Fullscreen Photography">
+        <span class="lightbox-next" id="lightbox-next">&#10095;</span>
+    </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- 1. INITIALIZE TWITCH LINKTREE PLAYER ---
-            new Twitch.Embed("twitch-interactive-frame", {
-                width: "100%",
-                height: 300,
-                channel: "joshwuff",
-                parent: ["joshwuff.com", "www.joshwuff.com"],
-                layout: "video",
-                autoplay: false
-            });
+        document.addEventListener('DOMContentLoaded', async () => {
+            const gallery = document.getElementById('gallery');
+            const checkboxes = document.querySelectorAll('.filter-checkbox');
+            const selectPerPage = document.getElementById('itemsPerPage');
+            const prevBtns = document.querySelectorAll('.prev-page-btn');
+            const nextBtns = document.querySelectorAll('.next-page-btn');
+            const pageInfos = document.querySelectorAll('.page-info-display');
 
-            // --- 2. ACCORDION TOGGLE LOGIC ---
-            const tiktokBtn = document.getElementById('tiktok-btn');
-            const tiktokEmbed = document.getElementById('tiktok-embed');
-            
-            const twitchBtn = document.getElementById('twitch-btn');
-            const twitchEmbed = document.getElementById('twitch-embed');
+            let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
+            let currentPage = parseInt(localStorage.getItem('joshwuff_currentPage')) || 1;
+            let itemsPerPage = 48, currentLightboxIndex = 0;
 
-            function closeAllEmbeds() {
-                tiktokEmbed.classList.remove('active');
-                tiktokBtn.classList.remove('active-btn');
-                twitchEmbed.classList.remove('active');
-                twitchBtn.classList.remove('active-btn');
+            // --- ZOOM & PAN VARIABLES ---
+            const lightboxImg = document.getElementById('lightbox-img');
+            let imgScale = 1;
+            let isPanning = false;
+            let pointX = 0, pointY = 0;
+            let startDragX = 0, startDragY = 0;
+
+            // Simple Black Paw Print SVG in a Data URI
+            const pawCursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="black" d="M256 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 32c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm256 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 64c-26.5 0-48-21.5-48-48s21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48z"/></svg>'), auto`;
+
+            try {
+                const [photosRes, thumbsRes] = await Promise.all([
+                    fetch('photos.json?v=2'),
+                    fetch('thumbnails.json?v=2')
+                ]);
+                allPhotos = (await photosRes.json()).filter(photo => photo.src !== undefined);
+                thumbnailMap = await thumbsRes.json();
+                
+                const savedFilters = JSON.parse(localStorage.getItem('joshwuff_filters')) || ['all'];
+                const savedPerPage = localStorage.getItem('joshwuff_perPage') || '48';
+
+                selectPerPage.value = savedPerPage;
+                itemsPerPage = parseInt(savedPerPage);
+
+                checkboxes.forEach(cb => {
+                    cb.checked = savedFilters.includes(cb.value);
+                });
+
+                applyFilters();
+
+                const savedScrollPos = localStorage.getItem('joshwuff_scrollPos');
+                if (savedScrollPos) {
+                    setTimeout(() => {
+                        window.scrollTo(0, parseInt(savedScrollPos));
+                    }, 10);
+                }
+
+            } catch (error) {
+                gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
-            tiktokBtn.addEventListener('click', () => {
-                const isAlreadyOpen = tiktokEmbed.classList.contains('active');
-                closeAllEmbeds();
-                if (!isAlreadyOpen) {
-                    tiktokEmbed.classList.add('active');
-                    tiktokBtn.classList.add('active-btn');
-                }
-            });
+            // --- ZOOM & PAN FUNCTIONS ---
+            function applyTransform() {
+                lightboxImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${imgScale})`;
+            }
 
-            twitchBtn.addEventListener('click', () => {
-                const isAlreadyOpen = twitchEmbed.classList.contains('active');
-                closeAllEmbeds();
-                if (!isAlreadyOpen) {
-                    twitchEmbed.classList.add('active');
-                    twitchBtn.classList.add('active-btn');
-                }
-            });
+            function resetZoom() {
+                imgScale = 1;
+                pointX = 0;
+                pointY = 0;
+                lightboxImg.classList.remove('no-transition'); // Restore CSS transition
+                lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
+                lightboxImg.style.cursor = 'default';
+            }
 
-            // --- 3. EASTER EGG LOGIC ---
-            const profilePic = document.getElementById('profile-pic');
-            let clickCount = 0;
-            let clickTimer;
-
-            const hornSound = new Audio('Party Horn sound effect.mp3');
-            hornSound.preload = 'auto';
-            hornSound.volume = 0.1;
-            
-            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
-            yippeeSound.preload = 'auto';
-            yippeeSound.volume = 0.1;
-
-            profilePic.addEventListener('click', () => {
-                clickCount++;
+            // 1. Scroll to Zoom
+            lightboxImg.addEventListener('wheel', (e) => {
+                e.preventDefault(); // Prevent page scrolling while hovering the image
                 
-                clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 2000);
+                lightboxImg.classList.add('no-transition'); // Make zoom snappy
+                
+                const zoomSpeed = 0.15;
+                if (e.deltaY < 0) {
+                    imgScale += zoomSpeed; // scroll up = zoom in
+                } else {
+                    imgScale -= zoomSpeed; // scroll down = zoom out
+                }
+                
+                // Limit zoom between 1x (normal) and 5x (close up)
+                imgScale = Math.min(Math.max(1, imgScale), 5);
+                
+                if (imgScale === 1) {
+                    pointX = 0;
+                    pointY = 0;
+                    lightboxImg.style.cursor = 'default';
+                } else {
+                    // Apply custom paw print cursor when zoomed in
+                    lightboxImg.style.cursor = pawCursor;
+                }
+                
+                applyTransform();
 
-                if (clickCount === 5) {
-                    hornSound.currentTime = 0;
-                    yippeeSound.currentTime = 0;
+                // Re-enable smooth transitions slightly after scrolling stops
+                clearTimeout(lightboxImg.wheelTimeout);
+                lightboxImg.wheelTimeout = setTimeout(() => {
+                    lightboxImg.classList.remove('no-transition');
+                }, 150);
+            });
+
+            // 2. Click to Drag
+            lightboxImg.addEventListener('mousedown', (e) => {
+                if (imgScale > 1) {
+                    e.preventDefault(); // Prevent the browser from trying to "save" the image
+                    isPanning = true;
+                    lightboxImg.classList.add('no-transition'); // Disable smoothing so it drags perfectly with mouse
+                    startDragX = e.clientX - pointX;
+                    startDragY = e.clientY - pointY;
                     
-                    Promise.all([
-                        hornSound.play(),
-                        yippeeSound.play()
-                    ]).catch(err => console.error("Audio error:", err));
-
-                    profilePic.classList.add('easter-egg-bounce');
-                    
-                    const rect = profilePic.getBoundingClientRect();
-                    const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
-                    const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
-
-                    confetti({
-                        particleCount: 150,
-                        spread: 100,
-                        origin: { x: xCenter, y: yCenter },
-                        zIndex: 9999,
-                        colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff']
-                    });
-
-                    setTimeout(() => {
-                        profilePic.classList.remove('easter-egg-bounce');
-                    }, 800);
-
-                    clickCount = 0;
+                    // Maintain custom paw print cursor while grabbing
+                    lightboxImg.style.cursor = pawCursor;
                 }
             });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                pointX = e.clientX - startDragX;
+                pointY = e.clientY - startDragY;
+                applyTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    lightboxImg.classList.remove('no-transition'); // Restore smoothing
+                    
+                    // Restore custom paw print or default based on zoom state
+                    lightboxImg.style.cursor = imgScale > 1 ? pawCursor : 'default';
+                }
+            });
+
+            // --- GALLERY LOGIC ---
+            function updateLightboxImage() {
+                if (filteredPhotos.length === 0) return;
+                resetZoom(); // Always reset back to normal view when changing pictures!
+                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
+            }
+
+            function renderGallery() {
+                gallery.innerHTML = '';
+                const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
+                
+                if (currentPage > totalPages && totalPages > 0) {
+                    currentPage = totalPages;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                } else if (totalPages === 0) {
+                    currentPage = 1;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                }
+
+                const startIndex = (currentPage - 1) * itemsPerPage;
+                const photosToShow = filteredPhotos.slice(startIndex, startIndex + itemsPerPage);
+
+                photosToShow.forEach((photo, localIndex) => {
+                    const photoDiv = document.createElement('div');
+                    photoDiv.className = `photo-item ${photo.category}`;
+                    const thumbSrc = thumbnailMap[photo.src] || photo.src;
+                    photoDiv.innerHTML = `<img src="${thumbSrc}" alt="${photo.alt}" loading="lazy"><div class="photo-overlay">${photo.title}</div>`;
+                    
+                    const globalIndex = startIndex + localIndex;
+                    photoDiv.addEventListener('click', () => {
+                        currentLightboxIndex = globalIndex;
+                        updateLightboxImage();
+                        document.getElementById('lightbox').classList.add('active');
+                    });
+                    gallery.appendChild(photoDiv);
+                });
+
+                pageInfos.forEach(info => info.innerText = `Page ${currentPage} of ${totalPages || 1}`);
+                prevBtns.forEach(btn => btn.disabled = currentPage === 1);
+                nextBtns.forEach(btn => btn.disabled = currentPage >= totalPages || totalPages === 0);
+            }
+
+            function applyFilters() {
+                const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
+                localStorage.setItem('joshwuff_filters', JSON.stringify(checkedValues));
+                filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0)
+                    ? [...allPhotos] : allPhotos.filter(photo => checkedValues.includes(photo.category));
+                
+                if (event && event.type === 'change') {
+                    currentPage = 1;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                }
+                renderGallery();
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', (event) => {
+                    if (checkbox.value !== 'all' && checkbox.checked) document.querySelector('input[value="all"]').checked = false;
+                    else if (checkbox.value === 'all' && checkbox.checked) checkboxes.forEach(cb => { if (cb.value !== 'all') cb.checked = false; });
+                    if (!Array.from(checkboxes).some(cb => cb.checked)) document.querySelector('input[value="all"]').checked = true;
+                    applyFilters();
+                });
+            });
+
+            selectPerPage.addEventListener('change', (e) => {
+                itemsPerPage = parseInt(e.target.value);
+                localStorage.setItem('joshwuff_perPage', itemsPerPage);
+                currentPage = 1;
+                localStorage.setItem('joshwuff_currentPage', currentPage);
+                renderGallery();
+            });
+            
+            prevBtns.forEach(btn => btn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                    renderGallery();
+                    const topPagination = document.querySelector('.top-pagination');
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                }
+            }));
+            
+            nextBtns.forEach(btn => btn.addEventListener('click', () => {
+                if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) {
+                    currentPage++;
+                    localStorage.setItem('joshwuff_currentPage', currentPage);
+                    renderGallery();
+                    const topPagination = document.querySelector('.top-pagination');
+                    const targetY = topPagination.getBoundingClientRect().top + window.scrollY - 70;
+                    window.scrollTo({ top: targetY, behavior: 'smooth' });
+                }
+            }));
+
+            const lightbox = document.getElementById('lightbox');
+            
+            // Closing Lightbox logic with reset included
+            document.querySelector('.lightbox-close').addEventListener('click', () => {
+                lightbox.classList.remove('active');
+                setTimeout(resetZoom, 300); // Give it time to fade out before resetting
+            });
+            
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                    setTimeout(resetZoom, 300);
+                }
+            });
+
+            document.getElementById('lightbox-prev').addEventListener('click', (e) => {
+                e.stopPropagation(); if (filteredPhotos.length === 0) return;
+                currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage();
+            });
+            document.getElementById('lightbox-next').addEventListener('click', (e) => {
+                e.stopPropagation(); if (filteredPhotos.length === 0) return;
+                currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (!lightbox.classList.contains('active')) return;
+                if (e.key === 'ArrowLeft') { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
+                else if (e.key === 'ArrowRight') { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
+                else if (e.key === 'Escape') {
+                    lightbox.classList.remove('active');
+                    setTimeout(resetZoom, 300);
+                }
+            });
+        });
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('joshwuff_scrollPos', window.scrollY);
         });
     </script>
 </body>
