@@ -176,8 +176,8 @@
             let pointX = 0, pointY = 0;
             let startDragX = 0, startDragY = 0;
 
-            // Simple Black Paw Print SVG in a Data URI
-            const pawCursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="black" d="M256 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 32c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm256 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 64c-26.5 0-48-21.5-48-48s21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48z"/></svg>'), auto`;
+            // URL-Encoded SVG Paw Print (32x32) with a White Stroke so it pops on dark photos
+            const pawCursor = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 512 512'%3E%3Cpath d='M256 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 32c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm256 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 64c-26.5 0-48-21.5-48-48s21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48z' fill='%23000000' stroke='%23ffffff' stroke-width='20'/%3E%3C/svg%3E\") 16 16, auto";
 
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
@@ -219,25 +219,23 @@
                 imgScale = 1;
                 pointX = 0;
                 pointY = 0;
-                lightboxImg.classList.remove('no-transition'); // Restore CSS transition
+                lightboxImg.classList.remove('no-transition');
                 lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
                 lightboxImg.style.cursor = 'default';
             }
 
-            // 1. Scroll to Zoom
             lightboxImg.addEventListener('wheel', (e) => {
-                e.preventDefault(); // Prevent page scrolling while hovering the image
+                e.preventDefault();
                 
-                lightboxImg.classList.add('no-transition'); // Make zoom snappy
+                lightboxImg.classList.add('no-transition');
                 
                 const zoomSpeed = 0.15;
                 if (e.deltaY < 0) {
-                    imgScale += zoomSpeed; // scroll up = zoom in
+                    imgScale += zoomSpeed;
                 } else {
-                    imgScale -= zoomSpeed; // scroll down = zoom out
+                    imgScale -= zoomSpeed;
                 }
                 
-                // Limit zoom between 1x (normal) and 5x (close up)
                 imgScale = Math.min(Math.max(1, imgScale), 5);
                 
                 if (imgScale === 1) {
@@ -245,25 +243,23 @@
                     pointY = 0;
                     lightboxImg.style.cursor = 'default';
                 } else {
-                    // Apply custom paw print cursor when zoomed in
+                    // Apply custom paw print cursor when zoomed in!
                     lightboxImg.style.cursor = pawCursor;
                 }
                 
                 applyTransform();
 
-                // Re-enable smooth transitions slightly after scrolling stops
                 clearTimeout(lightboxImg.wheelTimeout);
                 lightboxImg.wheelTimeout = setTimeout(() => {
                     lightboxImg.classList.remove('no-transition');
                 }, 150);
             });
 
-            // 2. Click to Drag
             lightboxImg.addEventListener('mousedown', (e) => {
                 if (imgScale > 1) {
-                    e.preventDefault(); // Prevent the browser from trying to "save" the image
+                    e.preventDefault();
                     isPanning = true;
-                    lightboxImg.classList.add('no-transition'); // Disable smoothing so it drags perfectly with mouse
+                    lightboxImg.classList.add('no-transition');
                     startDragX = e.clientX - pointX;
                     startDragY = e.clientY - pointY;
                     
@@ -282,9 +278,7 @@
             window.addEventListener('mouseup', () => {
                 if (isPanning) {
                     isPanning = false;
-                    lightboxImg.classList.remove('no-transition'); // Restore smoothing
-                    
-                    // Restore custom paw print or default based on zoom state
+                    lightboxImg.classList.remove('no-transition');
                     lightboxImg.style.cursor = imgScale > 1 ? pawCursor : 'default';
                 }
             });
@@ -292,7 +286,7 @@
             // --- GALLERY LOGIC ---
             function updateLightboxImage() {
                 if (filteredPhotos.length === 0) return;
-                resetZoom(); // Always reset back to normal view when changing pictures!
+                resetZoom();
                 lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
             }
 
@@ -385,10 +379,9 @@
 
             const lightbox = document.getElementById('lightbox');
             
-            // Closing Lightbox logic with reset included
             document.querySelector('.lightbox-close').addEventListener('click', () => {
                 lightbox.classList.remove('active');
-                setTimeout(resetZoom, 300); // Give it time to fade out before resetting
+                setTimeout(resetZoom, 300);
             });
             
             lightbox.addEventListener('click', (e) => {
