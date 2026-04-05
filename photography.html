@@ -176,6 +176,9 @@
             let pointX = 0, pointY = 0;
             let startDragX = 0, startDragY = 0;
 
+            // Simple Black Paw Print SVG in a Data URI
+            const pawCursor = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="black" d="M256 160c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 32c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm256 0c-26.5 0-48-21.5-48-48s21.5-48 48-48 48 21.5 48 48-21.5 48-48 48zm-128 64c-26.5 0-48-21.5-48-48s21.5-48 48-48s48 21.5 48 48s-21.5 48-48 48z"/></svg>'), auto`;
+
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
                     fetch('photos.json?v=2'),
@@ -242,7 +245,8 @@
                     pointY = 0;
                     lightboxImg.style.cursor = 'default';
                 } else {
-                    lightboxImg.style.cursor = 'grab';
+                    // Apply custom paw print cursor when zoomed in
+                    lightboxImg.style.cursor = pawCursor;
                 }
                 
                 applyTransform();
@@ -262,7 +266,9 @@
                     lightboxImg.classList.add('no-transition'); // Disable smoothing so it drags perfectly with mouse
                     startDragX = e.clientX - pointX;
                     startDragY = e.clientY - pointY;
-                    lightboxImg.style.cursor = 'grabbing';
+                    
+                    // Maintain custom paw print cursor while grabbing
+                    lightboxImg.style.cursor = pawCursor;
                 }
             });
 
@@ -277,7 +283,9 @@
                 if (isPanning) {
                     isPanning = false;
                     lightboxImg.classList.remove('no-transition'); // Restore smoothing
-                    lightboxImg.style.cursor = imgScale > 1 ? 'grab' : 'default';
+                    
+                    // Restore custom paw print or default based on zoom state
+                    lightboxImg.style.cursor = imgScale > 1 ? pawCursor : 'default';
                 }
             });
 
