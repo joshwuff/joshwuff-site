@@ -16,11 +16,21 @@
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .lightbox.active { opacity: 1; pointer-events: all; }
+        
         #lightbox-img {
             max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); transform: scale(0.95); transition: transform 0.3s ease;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
         }
+        
+        /* This class is applied via JS while dragging/zooming so the image doesn't lag behind the mouse */
+        #lightbox-img.no-transition {
+            transition: none !important;
+        }
+
         .lightbox.active #lightbox-img { transform: scale(1); }
+        
         .lightbox-close {
             position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001; transition: color 0.3s ease;
         }
@@ -147,11 +157,6 @@
     </div>
 
     <script>
-        // --- SAVE SCROLL POSITION BEFORE REFRESH ---
-        window.addEventListener('beforeunload', () => {
-            sessionStorage.setItem('joshwuff_scrollPosition', window.scrollY);
-        });
-
         document.addEventListener('DOMContentLoaded', async () => {
             const gallery = document.getElementById('gallery');
             const checkboxes = document.querySelectorAll('.filter-checkbox');
@@ -161,9 +166,15 @@
             const pageInfos = document.querySelectorAll('.page-info-display');
 
             let allPhotos = [], filteredPhotos = [], thumbnailMap = {};
-            // Start by grabbing the saved page, default to 1 if it doesn't exist
             let currentPage = parseInt(localStorage.getItem('joshwuff_currentPage')) || 1;
             let itemsPerPage = 48, currentLightboxIndex = 0;
+
+            // --- ZOOM & PAN VARIABLES ---
+            const lightboxImg = document.getElementById('lightbox-img');
+            let imgScale = 1;
+            let isPanning = false;
+            let pointX = 0, pointY = 0;
+            let startDragX = 0, startDragY = 0;
 
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
@@ -173,47 +184,114 @@
                 allPhotos = (await photosRes.json()).filter(photo => photo.src !== undefined);
                 thumbnailMap = await thumbsRes.json();
                 
-                // Load saved filters (or default to 'all')
                 const savedFilters = JSON.parse(localStorage.getItem('joshwuff_filters')) || ['all'];
-                // Load saved items per page (or default to '48')
                 const savedPerPage = localStorage.getItem('joshwuff_perPage') || '48';
 
-                // Update the visual dropdown
                 selectPerPage.value = savedPerPage;
                 itemsPerPage = parseInt(savedPerPage);
 
-                // Update the visual checkboxes
                 checkboxes.forEach(cb => {
                     cb.checked = savedFilters.includes(cb.value);
                 });
 
-                // Apply the saved filters immediately on load
                 applyFilters();
 
-                // --- RESTORE SCROLL POSITION ---
-                // After the grid is built, check if we have a saved scroll spot and jump to it
-                const savedScrollPos = sessionStorage.getItem('joshwuff_scrollPosition');
+                const savedScrollPos = localStorage.getItem('joshwuff_scrollPos');
                 if (savedScrollPos) {
-                    // We use a tiny delay (100ms) to let the browser draw the dynamic grid images first
                     setTimeout(() => {
                         window.scrollTo(0, parseInt(savedScrollPos));
-                    }, 100);
+                    }, 10);
                 }
 
             } catch (error) {
                 gallery.innerHTML = "<p>Failed to load gallery data.</p>";
             }
 
+            // --- ZOOM & PAN FUNCTIONS ---
+            function applyTransform() {
+                lightboxImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${imgScale})`;
+            }
+
+            function resetZoom() {
+                imgScale = 1;
+                pointX = 0;
+                pointY = 0;
+                lightboxImg.classList.remove('no-transition'); // Restore CSS transition
+                lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
+                lightboxImg.style.cursor = 'default';
+            }
+
+            // 1. Scroll to Zoom
+            lightboxImg.addEventListener('wheel', (e) => {
+                e.preventDefault(); // Prevent page scrolling while hovering the image
+                
+                lightboxImg.classList.add('no-transition'); // Make zoom snappy
+                
+                const zoomSpeed = 0.15;
+                if (e.deltaY < 0) {
+                    imgScale += zoomSpeed; // scroll up = zoom in
+                } else {
+                    imgScale -= zoomSpeed; // scroll down = zoom out
+                }
+                
+                // Limit zoom between 1x (normal) and 5x (close up)
+                imgScale = Math.min(Math.max(1, imgScale), 5);
+                
+                if (imgScale === 1) {
+                    pointX = 0;
+                    pointY = 0;
+                    lightboxImg.style.cursor = 'default';
+                } else {
+                    lightboxImg.style.cursor = 'grab';
+                }
+                
+                applyTransform();
+
+                // Re-enable smooth transitions slightly after scrolling stops
+                clearTimeout(lightboxImg.wheelTimeout);
+                lightboxImg.wheelTimeout = setTimeout(() => {
+                    lightboxImg.classList.remove('no-transition');
+                }, 150);
+            });
+
+            // 2. Click to Drag
+            lightboxImg.addEventListener('mousedown', (e) => {
+                if (imgScale > 1) {
+                    e.preventDefault(); // Prevent the browser from trying to "save" the image
+                    isPanning = true;
+                    lightboxImg.classList.add('no-transition'); // Disable smoothing so it drags perfectly with mouse
+                    startDragX = e.clientX - pointX;
+                    startDragY = e.clientY - pointY;
+                    lightboxImg.style.cursor = 'grabbing';
+                }
+            });
+
+            window.addEventListener('mousemove', (e) => {
+                if (!isPanning) return;
+                pointX = e.clientX - startDragX;
+                pointY = e.clientY - startDragY;
+                applyTransform();
+            });
+
+            window.addEventListener('mouseup', () => {
+                if (isPanning) {
+                    isPanning = false;
+                    lightboxImg.classList.remove('no-transition'); // Restore smoothing
+                    lightboxImg.style.cursor = imgScale > 1 ? 'grab' : 'default';
+                }
+            });
+
+            // --- GALLERY LOGIC ---
             function updateLightboxImage() {
                 if (filteredPhotos.length === 0) return;
-                document.getElementById('lightbox-img').src = filteredPhotos[currentLightboxIndex].src;
+                resetZoom(); // Always reset back to normal view when changing pictures!
+                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
             }
 
             function renderGallery() {
                 gallery.innerHTML = '';
                 const totalPages = Math.ceil(filteredPhotos.length / itemsPerPage);
                 
-                // Smart fallback: If filters changed and our saved page no longer exists, safely reset to the last available page (or page 1)
                 if (currentPage > totalPages && totalPages > 0) {
                     currentPage = totalPages;
                     localStorage.setItem('joshwuff_currentPage', currentPage);
@@ -247,19 +325,14 @@
 
             function applyFilters() {
                 const checkedValues = Array.from(checkboxes).filter(cb => cb.checked).map(cb => cb.value);
-                
-                // Save the newly checked boxes to Local Storage
                 localStorage.setItem('joshwuff_filters', JSON.stringify(checkedValues));
-
                 filteredPhotos = (checkedValues.includes('all') || checkedValues.length === 0)
                     ? [...allPhotos] : allPhotos.filter(photo => checkedValues.includes(photo.category));
                 
-                // Reset to page 1 ONLY when actively changing filters, otherwise respect the saved page
                 if (event && event.type === 'change') {
                     currentPage = 1;
                     localStorage.setItem('joshwuff_currentPage', currentPage);
                 }
-                
                 renderGallery();
             }
 
@@ -275,7 +348,6 @@
             selectPerPage.addEventListener('change', (e) => {
                 itemsPerPage = parseInt(e.target.value);
                 localStorage.setItem('joshwuff_perPage', itemsPerPage);
-                // Reset page to 1 when changing the amount of items to prevent empty pages
                 currentPage = 1;
                 localStorage.setItem('joshwuff_currentPage', currentPage);
                 renderGallery();
@@ -284,7 +356,6 @@
             prevBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage > 1) {
                     currentPage--;
-                    // Save new page
                     localStorage.setItem('joshwuff_currentPage', currentPage);
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
@@ -296,7 +367,6 @@
             nextBtns.forEach(btn => btn.addEventListener('click', () => {
                 if (currentPage < Math.ceil(filteredPhotos.length / itemsPerPage)) {
                     currentPage++;
-                    // Save new page
                     localStorage.setItem('joshwuff_currentPage', currentPage);
                     renderGallery();
                     const topPagination = document.querySelector('.top-pagination');
@@ -306,8 +376,19 @@
             }));
 
             const lightbox = document.getElementById('lightbox');
-            document.querySelector('.lightbox-close').addEventListener('click', () => lightbox.classList.remove('active'));
-            lightbox.addEventListener('click', (e) => { if (e.target === lightbox) lightbox.classList.remove('active'); });
+            
+            // Closing Lightbox logic with reset included
+            document.querySelector('.lightbox-close').addEventListener('click', () => {
+                lightbox.classList.remove('active');
+                setTimeout(resetZoom, 300); // Give it time to fade out before resetting
+            });
+            
+            lightbox.addEventListener('click', (e) => {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                    setTimeout(resetZoom, 300);
+                }
+            });
 
             document.getElementById('lightbox-prev').addEventListener('click', (e) => {
                 e.stopPropagation(); if (filteredPhotos.length === 0) return;
@@ -322,8 +403,15 @@
                 if (!lightbox.classList.contains('active')) return;
                 if (e.key === 'ArrowLeft') { currentLightboxIndex = (currentLightboxIndex > 0) ? currentLightboxIndex - 1 : filteredPhotos.length - 1; updateLightboxImage(); }
                 else if (e.key === 'ArrowRight') { currentLightboxIndex = (currentLightboxIndex < filteredPhotos.length - 1) ? currentLightboxIndex + 1 : 0; updateLightboxImage(); }
-                else if (e.key === 'Escape') lightbox.classList.remove('active');
+                else if (e.key === 'Escape') {
+                    lightbox.classList.remove('active');
+                    setTimeout(resetZoom, 300);
+                }
             });
+        });
+
+        window.addEventListener('beforeunload', () => {
+            localStorage.setItem('joshwuff_scrollPos', window.scrollY);
         });
     </script>
 </body>
