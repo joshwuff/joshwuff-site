@@ -107,7 +107,7 @@
         @keyframes yippeeBounce {
             0% { transform: scale(1) rotate(0deg); }
             20% { transform: scale(1.4) rotate(-15deg); }
-            40% { transform: scale(1.4) rotate(15deg); }
+            40% { transform: scale(1.4) rotate(-15deg); }
             60% { transform: scale(1.4) rotate(-15deg); }
             80% { transform: scale(1.4) rotate(15deg); }
             100% { transform: scale(1) rotate(0deg); }
@@ -148,6 +148,7 @@
             transform: translateY(-2px);
         }
 
+        /* Icon styling */
         .social-link i, .social-link .custom-icon {
             position: absolute;
             right: 24px;
@@ -215,12 +216,25 @@
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
         
-        /* Your Instagram Color Scheme */
+        /* Your Upgraded Instagram hover effect */
         .social-joshinsta:hover {
-            border-color: #f09433 !important;
-            box-shadow: 0 0 20px rgba(188, 42, 141, 0.5) !important;
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) !important;
-            color: #fff !important;
+            border-color: #f09433 !important; /* The border gets an orange highlight */
+            box-shadow: 0 0 20px rgba(228, 64, 95, 0.35) !important; /* Subtle brand shadow */
+            background: var(--glass-bg) !important; /* Explicitly keep the default glass background */
+            color: var(--text-primary) !important; /* Text stays white */
+            transform: translateY(-2px); /* Maintain slide-up on hover */
+        }
+
+        /* Explicitly target the icon inside the button on hover */
+        .social-joshinsta:hover i {
+            opacity: 1; /* Ensure icon is fully visible */
+            transform: scale(1.15); /* Keep the icon scale effect */
+            
+            /* Apply gradient color to the icon itself (image:2 style!) */
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent !important; /* Make the original white transparent so the gradient shows through */
         }
 
         footer {
