@@ -176,9 +176,7 @@
             let pointX = 0, pointY = 0;
             let startDragX = 0, startDragY = 0;
 
-            // Define the custom paw print cursor using your uploaded PNG file.
-            // Assuming standard cursor sizing, 16 16 centers the hotspot.
-            const pawCursor = "url('58aeffb2c869e092af51ee74.png') 16 16, auto";
+            const pawCursor = "url('58aeffb2c869e092af51ee74.png') 25 25, auto";
 
             try {
                 const [photosRes, thumbsRes] = await Promise.all([
@@ -244,7 +242,14 @@
                     pointY = 0;
                     lightboxImg.style.cursor = 'default';
                 } else {
-                    // Apply custom paw print cursor when zoomed in!
+                    // Boundary enforcement when zooming OUT
+                    // This pulls the image back into view if you zoomed out while dragging the edge
+                    const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
+                    const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
+                    
+                    pointX = Math.max(-limitX, Math.min(limitX, pointX));
+                    pointY = Math.max(-limitY, Math.min(limitY, pointY));
+
                     lightboxImg.style.cursor = pawCursor;
                 }
                 
@@ -264,15 +269,39 @@
                     startDragX = e.clientX - pointX;
                     startDragY = e.clientY - pointY;
                     
-                    // Maintain custom paw print cursor while grabbing
                     lightboxImg.style.cursor = pawCursor;
                 }
             });
 
             window.addEventListener('mousemove', (e) => {
                 if (!isPanning) return;
+                
                 pointX = e.clientX - startDragX;
                 pointY = e.clientY - startDragY;
+
+                // --- BOUNDARY ENFORCEMENT & ANTI-STICK LOGIC ---
+                // Stop dragging if they hit the edge of the image bounds
+                const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
+                const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
+
+                // Clamp the actual X/Y points
+                if (pointX > limitX) {
+                    pointX = limitX;
+                    startDragX = e.clientX - pointX; // Re-sync mouse to prevent "sticky edge"
+                }
+                if (pointX < -limitX) {
+                    pointX = -limitX;
+                    startDragX = e.clientX - pointX;
+                }
+                if (pointY > limitY) {
+                    pointY = limitY;
+                    startDragY = e.clientY - pointY;
+                }
+                if (pointY < -limitY) {
+                    pointY = -limitY;
+                    startDragY = e.clientY - pointY;
+                }
+
                 applyTransform();
             });
 
