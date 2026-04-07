@@ -21,7 +21,6 @@
     }
     </script>
 
-
     <link rel="icon" type="image/png" href="favicon.png?v=2">
     <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
@@ -166,7 +165,6 @@
             transform: translateY(-2px);
         }
 
-        /* Icon styling */
         .social-link i, .social-link .custom-icon {
             position: absolute;
             right: 24px;
@@ -182,7 +180,6 @@
             transform: scale(1.15);
         }
 
-        /* --- ACCORDION EMBED STYLES --- */
         .embed-wrapper {
             display: flex;
             flex-direction: column;
@@ -226,7 +223,6 @@
             opacity: 0.8;
         }
 
-        /* --- BRAND GLOW-UPS --- */
         .social-discord:hover { 
             border-color: #5865F2 !important; 
             box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; 
@@ -240,7 +236,6 @@
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
         
-        /* Your Upgraded Instagram Dual-Glow hover effect */
         .social-joshinsta:hover { 
             border-color: #bc1888 !important; 
             box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important;
@@ -351,8 +346,6 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            
-            // --- 1. INITIALIZE TWITCH LINKTREE PLAYER ---
             new Twitch.Embed("twitch-interactive-frame", {
                 width: "100%",
                 height: 300,
@@ -362,7 +355,6 @@
                 autoplay: false
             });
 
-            // --- 2. ACCORDION TOGGLE LOGIC ---
             const tiktokBtn = document.getElementById('tiktok-btn');
             const tiktokEmbed = document.getElementById('tiktok-embed');
             
@@ -394,7 +386,6 @@
                 }
             });
 
-            // --- 3. EASTER EGG LOGIC ---
             const profilePic = document.getElementById('profile-pic');
             let clickCount = 0;
             let clickTimer;
