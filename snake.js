@@ -1,15 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- SAFE STORAGE WRAPPER (Prevents Mobile Crashes) ---
-    const safeStorage = {
-        get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
-        set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage blocked"); } }
-    };
-
     // --- 1. INITIALIZE SUPABASE ---
     const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co'; 
     const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
-    
     let supabase = null;
     let highScores = [];
 
@@ -21,31 +14,39 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Supabase failed to load:", err);
     }
 
-    function updateLeaderboardUI() {
-        const leaderboardList = document.getElementById('leaderboard-list');
-        if (!leaderboardList) return;
+    // UI Elements
+    const screenLeaderboard = document.getElementById('screen-leaderboard');
+    const screenGame = document.getElementById('snake-game');
+    const screenGameover = document.getElementById('screen-gameover');
+    const leaderboardList = document.getElementById('leaderboard-list');
+    const scoreElem = document.getElementById('snake-score');
+    const finalScoreElem = document.getElementById('final-score');
+    const nameInput = document.getElementById('snake-player-name');
+    
+    // Buttons
+    const btnStart = document.getElementById('btn-start');
+    const btnSubmit = document.getElementById('btn-submit');
+    const btnMenu = document.getElementById('btn-menu');
+    const snakeClose = document.getElementById('snake-close');
+    const snakeModal = document.getElementById('snake-modal');
+
+    // Display Management
+    function switchScreen(screenElement) {
+        screenLeaderboard.style.display = 'none';
+        screenGame.style.display = 'none';
+        screenGameover.style.display = 'none';
         
-        leaderboardList.innerHTML = '';
-        if (highScores.length === 0) {
-            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
-        } else {
-            highScores.forEach((entry, index) => {
-                leaderboardList.innerHTML += `
-                    <li>
-                        <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
-                        <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
-                        <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
-                    </li>
-                `;
-            });
-        }
+        screenElement.style.display = (screenElement === screenGame) ? 'block' : 'flex';
     }
 
     async function fetchGlobalScores() {
         if (!supabase) {
-            updateLeaderboardUI();
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Database Offline</li>';
             return; 
         }
+        
+        leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Loading...</li>';
+        
         try {
             const { data, error } = await supabase
                 .from('snake_scores')
@@ -55,32 +56,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (error) throw error;
             highScores = data || [];
+            
+            leaderboardList.innerHTML = '';
+            if (highScores.length === 0) {
+                leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
+            } else {
+                highScores.forEach((entry, index) => {
+                    leaderboardList.innerHTML += `
+                        <li>
+                            <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
+                            <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
+                            <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
+                        </li>
+                    `;
+                });
+            }
         } catch (e) {
             console.error("Fetch failed:", e);
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Failed to load scores</li>';
         }
-        updateLeaderboardUI();
     }
 
-    // --- THE IOS SCROLL LOCK FIX ---
-    let scrollPosition = 0;
-    function lockScroll() {
-        scrollPosition = window.scrollY;
-        document.body.style.position = 'fixed';
-        document.body.style.top = `-${scrollPosition}px`;
-        document.body.style.width = '100%';
-    }
-    
-    function unlockScroll() {
-        document.body.style.position = '';
-        document.body.style.top = '';
-        document.body.style.width = '';
-        window.scrollTo(0, scrollPosition);
-    }
-
-    // --- 2. SNAKE MINIGAME TRIGGER ---
+    // --- 2. EASTER EGG TRIGGER ---
     const sTrigger = document.getElementById('snake-trigger');
-    const snakeModal = document.getElementById('snake-modal');
-    const snakeClose = document.getElementById('snake-close');
     let sClickCount = 0;
     let sClickTimer;
 
@@ -91,16 +89,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
-            lockScroll(); // This completely neutralizes the Apple scroll bug
             sClickCount = 0;
+            switchScreen(screenLeaderboard);
             fetchGlobalScores();
         }
     });
 
     // --- 3. SNAKE ENGINE ---
-    const canvas = document.getElementById('snake-game');
+    const canvas = screenGame;
     const ctx = canvas.getContext('2d');
-    
     const gameSize = 400;
     const scale = 20;
     const rows = gameSize / scale;
@@ -111,21 +108,10 @@ document.addEventListener('DOMContentLoaded', () => {
     let food;
     let gameLoop;
     let score = 0;
-    
-    const scoreElem = document.getElementById('snake-score');
-    const nameInput = document.getElementById('snake-player-name');
-    const startBtn = document.getElementById('snake-start');
 
-    nameInput.value = safeStorage.get('joshwuff_snakeCurrentName') || '';
-
+    // Force uppercase typing
     nameInput.addEventListener('input', () => {
-        nameInput.value = nameInput.value.toUpperCase(); 
-        safeStorage.set('joshwuff_snakeCurrentName', nameInput.value);
-    });
-    
-    // Fix iOS Hitbox Bug on Keyboard Close
-    nameInput.addEventListener('blur', () => {
-        window.scrollTo(0, 0); 
+        nameInput.value = nameInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
     });
 
     function setupSnake() {
@@ -133,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
         snakeDirection = 'Right';
         score = 0;
         scoreElem.innerText = score;
-        startBtn.innerText = "Restart Game";
+        switchScreen(screenGame);
         spawnFood();
         
         if (gameLoop) clearInterval(gameLoop);
@@ -147,6 +133,12 @@ document.addEventListener('DOMContentLoaded', () => {
         };
     }
 
+    function handleGameOver() {
+        clearInterval(gameLoop);
+        finalScoreElem.innerText = score;
+        switchScreen(screenGameover);
+    }
+
     function updateSnake() {
         let headX = snake[0].x;
         let headY = snake[0].y;
@@ -156,16 +148,16 @@ document.addEventListener('DOMContentLoaded', () => {
         if (snakeDirection === 'Up') headY -= scale;
         if (snakeDirection === 'Down') headY += scale;
 
-        if (headX >= gameSize) headX = 0;
-        if (headX < 0) headX = gameSize - scale;
-        if (headY >= gameSize) headY = 0;
-        if (headY < 0) headY = gameSize - scale;
+        // WALL COLLISION: Hitting the edge causes Game Over!
+        if (headX >= gameSize || headX < 0 || headY >= gameSize || headY < 0) {
+            handleGameOver();
+            return;
+        }
 
+        // SELF COLLISION: Hitting yourself causes Game Over!
         for (let i = 0; i < snake.length; i++) {
             if (snake[i].x === headX && snake[i].y === headY) {
-                clearInterval(gameLoop);
-                startBtn.innerText = "Game Over! Play Again?";
-                checkHighScore();
+                handleGameOver();
                 return;
             }
         }
@@ -173,6 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let newHead = { x: headX, y: headY };
         snake.unshift(newHead);
 
+        // Eating food
         if (headX === food.x && headY === food.y) {
             score += 10;
             scoreElem.innerText = score;
@@ -199,93 +192,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. CLOUD SAVE LOGIC ---
-    async function checkHighScore() {
-        if (score > 0) {
-            let currentName = nameInput.value.trim().substring(0, 6) || 'ANON';
-            
-            if (supabase) {
-                try {
-                    const { error } = await supabase
-                        .from('snake_scores')
-                        .insert([{ player_name: currentName, score: score }]);
-
-                    if (error) throw error;
-                    fetchGlobalScores(); 
-                } catch (e) {
-                    console.error("Cloud save failed:", e);
-                    fallbackLocalSave(currentName, score);
-                }
-            } else {
-                fallbackLocalSave(currentName, score);
+    // --- 4. SUBMIT SCORE LOGIC ---
+    btnSubmit.addEventListener('click', async () => {
+        let currentName = nameInput.value.trim() || 'ANON';
+        
+        if (score > 0 && supabase) {
+            btnSubmit.innerText = "Saving...";
+            try {
+                const { error } = await supabase
+                    .from('snake_scores')
+                    .insert([{ player_name: currentName, score: score }]);
+                if (error) throw error;
+            } catch (e) {
+                console.error("Cloud save failed:", e);
             }
+            btnSubmit.innerText = "Submit Score";
         }
-    }
+        
+        // Go back to leaderboard
+        switchScreen(screenLeaderboard);
+        fetchGlobalScores();
+    });
 
-    function fallbackLocalSave(name, scr) {
-        highScores.push({ player_name: name, score: scr });
-        highScores.sort((a, b) => b.score - a.score);
-        highScores = highScores.slice(0, 5);
-        updateLeaderboardUI();
-    }
+    btnMenu.addEventListener('click', () => {
+        switchScreen(screenLeaderboard);
+        fetchGlobalScores();
+    });
 
-    // --- 5. NATIVE UI CONTROLS ---
-    function closeGame() {
+    btnStart.addEventListener('click', setupSnake);
+
+    // --- 5. CLEAN UI CONTROLS ---
+    function closeModal() {
         snakeModal.classList.remove('active');
-        unlockScroll(); // Give control back to the website
         clearInterval(gameLoop);
-        checkHighScore();
     }
 
-    // Hard-bind native clicks
-    snakeClose.onclick = closeGame;
-    startBtn.onclick = setupSnake;
-    
+    snakeClose.addEventListener('click', closeModal);
     snakeModal.addEventListener('click', (e) => { 
-        if (e.target === snakeModal) closeGame(); 
+        if (e.target === snakeModal) closeModal(); 
     });
 
+    // Desktop Keyboard Arrow Controls
     window.addEventListener('keydown', (e) => {
-        if (!snakeModal.classList.contains('active')) return;
-        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
-        const direction = e.key.replace('Arrow', '');
-        triggerDirection(direction);
-    });
-
-    // Swipe controls
-    let touchStartX = 0; let touchStartY = 0;
-    canvas.addEventListener('touchstart', (e) => { 
-        touchStartX = e.touches[0].clientX; 
-        touchStartY = e.touches[0].clientY; 
-    }, {passive: true});
-    
-    canvas.addEventListener('touchend', (e) => {
-        let touchEndX = e.changedTouches[0].clientX; 
-        let touchEndY = e.changedTouches[0].clientY;
-        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
-    }, {passive: true});
-
-    function handleSwipe(startX, startY, endX, endY) {
-        let dx = endX - startX; let dy = endY - startY;
-        if (Math.max(Math.abs(dx), Math.abs(dy)) > 30) {
-            if (Math.abs(dx) > Math.abs(dy)) { triggerDirection(dx > 0 ? 'Right' : 'Left'); } 
-            else { triggerDirection(dy > 0 ? 'Down' : 'Up'); }
-        }
-    }
-
-    function triggerDirection(dir) {
-        if (dir === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
-        else if (dir === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
-        else if (dir === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
-        else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
-    }
-
-    // D-Pad controls
-    const dpadBtns = document.querySelectorAll('.d-btn');
-    dpadBtns.forEach(btn => {
-        btn.onpointerdown = (e) => { 
+        if (screenGame.style.display === 'none') return; // Only steer if game is active
+        
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { 
             e.preventDefault(); 
-            triggerDirection(btn.getAttribute('data-dir')); 
-        };
+        }
+
+        const direction = e.key.replace('Arrow', '');
+        if (direction === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
+        else if (direction === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
+        else if (direction === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
+        else if (direction === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     });
 });
