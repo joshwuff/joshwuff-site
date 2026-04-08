@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Lock background
+            document.body.style.overflow = 'hidden'; // Lock background scroll properly
             sClickCount = 0;
             fetchGlobalScores();
         }
@@ -82,7 +82,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('snake-start');
     const leaderboardList = document.getElementById('leaderboard-list');
 
-    // Safely load name
     nameInput.value = safeStorage.get('joshwuff_snakeCurrentName') || '';
 
     nameInput.addEventListener('input', () => {
@@ -239,8 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
         touchStartY = e.changedTouches[0].screenY; 
     }, {passive: true});
     
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); }, {passive: false});
-    
     canvas.addEventListener('touchend', (e) => {
         let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
         handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
@@ -261,10 +258,9 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
-    // Mobile D-Pad 
+    // Mobile D-Pad
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
-        // pointerdown is faster than click on mobile and highly reliable
         btn.addEventListener('pointerdown', (e) => { 
             e.preventDefault(); 
             triggerDirection(btn.getAttribute('data-dir')); 
