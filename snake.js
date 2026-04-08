@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- SAFE STORAGE WRAPPER ---
+    // --- SAFE STORAGE WRAPPER (Prevents Mobile Crashes) ---
     const safeStorage = {
         get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
         set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage blocked"); } }
@@ -21,8 +21,31 @@ document.addEventListener('DOMContentLoaded', () => {
         console.warn("Supabase failed to load:", err);
     }
 
+    function updateLeaderboardUI() {
+        const leaderboardList = document.getElementById('leaderboard-list');
+        if (!leaderboardList) return;
+        
+        leaderboardList.innerHTML = '';
+        if (highScores.length === 0) {
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
+        } else {
+            highScores.forEach((entry, index) => {
+                leaderboardList.innerHTML += `
+                    <li>
+                        <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
+                        <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
+                        <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
+                    </li>
+                `;
+            });
+        }
+    }
+
     async function fetchGlobalScores() {
-        if (!supabase) return; 
+        if (!supabase) {
+            updateLeaderboardUI();
+            return; 
+        }
         try {
             const { data, error } = await supabase
                 .from('snake_scores')
@@ -30,16 +53,28 @@ document.addEventListener('DOMContentLoaded', () => {
                 .order('score', { ascending: false })
                 .limit(5);
 
-            if (error) {
-                console.error("Error fetching scores:", error);
-                return;
-            }
-            
-            highScores = data;
-            updateLeaderboardUI();
+            if (error) throw error;
+            highScores = data || [];
         } catch (e) {
             console.error("Fetch failed:", e);
         }
+        updateLeaderboardUI();
+    }
+
+    // --- THE IOS SCROLL LOCK FIX ---
+    let scrollPosition = 0;
+    function lockScroll() {
+        scrollPosition = window.scrollY;
+        document.body.style.position = 'fixed';
+        document.body.style.top = `-${scrollPosition}px`;
+        document.body.style.width = '100%';
+    }
+    
+    function unlockScroll() {
+        document.body.style.position = '';
+        document.body.style.top = '';
+        document.body.style.width = '';
+        window.scrollTo(0, scrollPosition);
     }
 
     // --- 2. SNAKE MINIGAME TRIGGER ---
@@ -56,8 +91,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
-            // This class physically stops the background from scrolling on mobile
-            document.body.classList.add('modal-open'); 
+            lockScroll(); // This completely neutralizes the Apple scroll bug
             sClickCount = 0;
             fetchGlobalScores();
         }
@@ -81,13 +115,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreElem = document.getElementById('snake-score');
     const nameInput = document.getElementById('snake-player-name');
     const startBtn = document.getElementById('snake-start');
-    const leaderboardList = document.getElementById('leaderboard-list');
 
     nameInput.value = safeStorage.get('joshwuff_snakeCurrentName') || '';
 
     nameInput.addEventListener('input', () => {
         nameInput.value = nameInput.value.toUpperCase(); 
         safeStorage.set('joshwuff_snakeCurrentName', nameInput.value);
+    });
+    
+    // Fix iOS Hitbox Bug on Keyboard Close
+    nameInput.addEventListener('blur', () => {
+        window.scrollTo(0, 0); 
     });
 
     function setupSnake() {
@@ -191,40 +229,22 @@ document.addEventListener('DOMContentLoaded', () => {
         updateLeaderboardUI();
     }
 
-    function updateLeaderboardUI() {
-        leaderboardList.innerHTML = '';
-        if (highScores.length === 0) {
-            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
-        } else {
-            highScores.forEach((entry, index) => {
-                leaderboardList.innerHTML += `
-                    <li>
-                        <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
-                        <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
-                        <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
-                    </li>
-                `;
-            });
-        }
-    }
-
-    // --- 5. UNIVERSAL UI CONTROLS ---
+    // --- 5. NATIVE UI CONTROLS ---
     function closeGame() {
         snakeModal.classList.remove('active');
-        document.body.classList.remove('modal-open'); // Unlock background
+        unlockScroll(); // Give control back to the website
         clearInterval(gameLoop);
         checkHighScore();
     }
 
-    // PURE STANDARD CLICKS. No TouchStart to mess with the browser.
-    snakeClose.addEventListener('click', closeGame);
-    startBtn.addEventListener('click', setupSnake);
+    // Hard-bind native clicks
+    snakeClose.onclick = closeGame;
+    startBtn.onclick = setupSnake;
     
     snakeModal.addEventListener('click', (e) => { 
         if (e.target === snakeModal) closeGame(); 
     });
 
-    // Desktop Keyboard
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
@@ -232,15 +252,16 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerDirection(direction);
     });
 
-    // Mobile Swipe
+    // Swipe controls
     let touchStartX = 0; let touchStartY = 0;
     canvas.addEventListener('touchstart', (e) => { 
-        touchStartX = e.changedTouches[0].screenX; 
-        touchStartY = e.changedTouches[0].screenY; 
+        touchStartX = e.touches[0].clientX; 
+        touchStartY = e.touches[0].clientY; 
     }, {passive: true});
     
     canvas.addEventListener('touchend', (e) => {
-        let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
+        let touchEndX = e.changedTouches[0].clientX; 
+        let touchEndY = e.changedTouches[0].clientY;
         handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
     }, {passive: true});
 
@@ -259,11 +280,12 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
-    // Mobile D-Pad (Pure Click)
+    // D-Pad controls
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
-        btn.addEventListener('click', (e) => { 
+        btn.onpointerdown = (e) => { 
+            e.preventDefault(); 
             triggerDirection(btn.getAttribute('data-dir')); 
-        });
+        };
     });
 });
