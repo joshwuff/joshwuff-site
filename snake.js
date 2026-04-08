@@ -35,7 +35,6 @@ document.addEventListener('DOMContentLoaded', () => {
         screenLeaderboard.style.display = 'none';
         screenGame.style.display = 'none';
         screenGameover.style.display = 'none';
-        
         screenElement.style.display = (screenElement === screenGame) ? 'block' : 'flex';
     }
 
@@ -44,19 +43,15 @@ document.addEventListener('DOMContentLoaded', () => {
             leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Database Offline</li>';
             return; 
         }
-        
         leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Loading...</li>';
-        
         try {
             const { data, error } = await supabase
                 .from('snake_scores')
                 .select('player_name, score')
                 .order('score', { ascending: false })
                 .limit(5);
-
             if (error) throw error;
             highScores = data || [];
-            
             leaderboardList.innerHTML = '';
             if (highScores.length === 0) {
                 leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
@@ -72,7 +67,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 });
             }
         } catch (e) {
-            console.error("Fetch failed:", e);
             leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Failed to load scores</li>';
         }
     }
@@ -86,7 +80,6 @@ document.addEventListener('DOMContentLoaded', () => {
         sClickCount++;
         clearTimeout(sClickTimer);
         sClickTimer = setTimeout(() => { sClickCount = 0; }, 2000);
-
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
             sClickCount = 0;
@@ -109,7 +102,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoop;
     let score = 0;
 
-    // Force uppercase typing
     nameInput.addEventListener('input', () => {
         nameInput.value = nameInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
     });
@@ -121,7 +113,6 @@ document.addEventListener('DOMContentLoaded', () => {
         scoreElem.innerText = score;
         switchScreen(screenGame);
         spawnFood();
-        
         if (gameLoop) clearInterval(gameLoop);
         gameLoop = setInterval(updateSnake, 100);
     }
@@ -142,30 +133,22 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateSnake() {
         let headX = snake[0].x;
         let headY = snake[0].y;
-
         if (snakeDirection === 'Right') headX += scale;
         if (snakeDirection === 'Left') headX -= scale;
         if (snakeDirection === 'Up') headY -= scale;
         if (snakeDirection === 'Down') headY += scale;
-
-        // WALL COLLISION: Hitting the edge causes Game Over!
         if (headX >= gameSize || headX < 0 || headY >= gameSize || headY < 0) {
             handleGameOver();
             return;
         }
-
-        // SELF COLLISION: Hitting yourself causes Game Over!
         for (let i = 0; i < snake.length; i++) {
             if (snake[i].x === headX && snake[i].y === headY) {
                 handleGameOver();
                 return;
             }
         }
-
         let newHead = { x: headX, y: headY };
         snake.unshift(newHead);
-
-        // Eating food
         if (headX === food.x && headY === food.y) {
             score += 10;
             scoreElem.innerText = score;
@@ -173,17 +156,14 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             snake.pop(); 
         }
-
         drawSnake();
     }
 
     function drawSnake() {
         ctx.fillStyle = '#000000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        
         ctx.fillStyle = '#ef4444'; 
         ctx.fillRect(food.x, food.y, scale, scale);
-
         for (let i = 0; i < snake.length; i++) {
             ctx.fillStyle = (i === 0) ? '#f8fafc' : '#94a3b8'; 
             ctx.fillRect(snake[i].x, snake[i].y, scale, scale);
@@ -192,58 +172,70 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. SUBMIT SCORE LOGIC ---
+    // --- 4. INPUT CONTROLS (KEYBOARD + TOUCH + BUTTONS) ---
+    
+    // Change direction helper (prevents 180 turns)
+    function changeDirection(newDir) {
+        if (newDir === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
+        else if (newDir === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
+        else if (newDir === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
+        else if (newDir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
+    }
+
+    // Desktop Keyboard
+    window.addEventListener('keydown', (e) => {
+        if (screenGame.style.display === 'none') return;
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) e.preventDefault();
+        changeDirection(e.key.replace('Arrow', ''));
+    });
+
+    // Mobile Buttons (Tap)
+    const buttonMap = { 'ctrl-up': 'Up', 'ctrl-down': 'Down', 'ctrl-left': 'Left', 'ctrl-right': 'Right' };
+    Object.keys(buttonMap).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                changeDirection(buttonMap[id]);
+            });
+        }
+    });
+
+    // Mobile Swipe Logic
+    let touchStartX = 0;
+    let touchStartY = 0;
+    screenGame.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    screenGame.addEventListener('touchend', (e) => {
+        if (screenGame.style.display === 'none') return;
+        let dx = e.changedTouches[0].screenX - touchStartX;
+        let dy = e.changedTouches[0].screenY - touchStartY;
+        if (Math.abs(dx) > 30 || Math.abs(dy) > 30) {
+            if (Math.abs(dx) > Math.abs(dy)) changeDirection(dx > 0 ? 'Right' : 'Left');
+            else changeDirection(dy > 0 ? 'Down' : 'Up');
+        }
+    });
+
+    // --- 5. SUBMIT & CLEANUP ---
     btnSubmit.addEventListener('click', async () => {
         let currentName = nameInput.value.trim() || 'ANON';
-        
         if (score > 0 && supabase) {
             btnSubmit.innerText = "Saving...";
             try {
-                const { error } = await supabase
-                    .from('snake_scores')
-                    .insert([{ player_name: currentName, score: score }]);
-                if (error) throw error;
-            } catch (e) {
-                console.error("Cloud save failed:", e);
-            }
+                await supabase.from('snake_scores').insert([{ player_name: currentName, score: score }]);
+            } catch (e) { console.error(e); }
             btnSubmit.innerText = "Submit Score";
         }
-        
-        // Go back to leaderboard
         switchScreen(screenLeaderboard);
         fetchGlobalScores();
     });
 
-    btnMenu.addEventListener('click', () => {
-        switchScreen(screenLeaderboard);
-        fetchGlobalScores();
-    });
-
+    btnMenu.addEventListener('click', () => { switchScreen(screenLeaderboard); fetchGlobalScores(); });
     btnStart.addEventListener('click', setupSnake);
-
-    // --- 5. CLEAN UI CONTROLS ---
-    function closeModal() {
-        snakeModal.classList.remove('active');
-        clearInterval(gameLoop);
-    }
-
+    function closeModal() { snakeModal.classList.remove('active'); clearInterval(gameLoop); }
     snakeClose.addEventListener('click', closeModal);
-    snakeModal.addEventListener('click', (e) => { 
-        if (e.target === snakeModal) closeModal(); 
-    });
-
-    // Desktop Keyboard Arrow Controls
-    window.addEventListener('keydown', (e) => {
-        if (screenGame.style.display === 'none') return; // Only steer if game is active
-        
-        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { 
-            e.preventDefault(); 
-        }
-
-        const direction = e.key.replace('Arrow', '');
-        if (direction === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
-        else if (direction === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
-        else if (direction === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
-        else if (direction === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
-    });
+    snakeModal.addEventListener('click', (e) => { if (e.target === snakeModal) closeModal(); });
 });
