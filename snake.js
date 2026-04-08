@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. INITIALIZE SUPABASE ---
     // PASTE YOUR PROJECT URL RIGHT HERE:
-    const supabaseUrl = 'YOUR_PROJECT_URL_HERE'; 
+    const supabaseUrl = 'https://supabase.com/dashboard/project/uxajnyzyjzmlxooybbxi'; 
     const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
     const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
