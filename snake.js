@@ -20,9 +20,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- SNAKE ENGINE & SCOREBOARD ---
     const canvas = document.getElementById('snake-game');
     const ctx = canvas.getContext('2d');
+    
+    const gameSize = 400;
     const scale = 20;
-    const rows = canvas.height / scale;
-    const columns = canvas.width / scale;
+    const rows = gameSize / scale;
+    const columns = gameSize / scale;
     
     let snake = [];
     let snakeDirection = 'Right';
@@ -30,15 +32,23 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoop;
     let score = 0;
     
-    // Load High Score from Local Storage
-    let highScore = localStorage.getItem('joshwuff_snakeHighScore') || 0;
+    // Load Top 5 High Scores from Local Storage
+    let highScores = JSON.parse(localStorage.getItem('joshwuff_snakeHighScores')) || [];
     
     const scoreElem = document.getElementById('snake-score');
-    const highScoreElem = document.getElementById('snake-highscore');
+    const nameInput = document.getElementById('snake-player-name');
     const startBtn = document.getElementById('snake-start');
+    const leaderboardList = document.getElementById('leaderboard-list');
 
-    // Display initial high score
-    highScoreElem.innerText = highScore;
+    // Display initial high scores
+    nameInput.value = localStorage.getItem('joshwuff_snakeCurrentName') || '';
+    updateLeaderboardUI();
+
+    // Save current name typing
+    nameInput.addEventListener('input', () => {
+        nameInput.value = nameInput.value.toUpperCase(); // Force uppercase
+        localStorage.setItem('joshwuff_snakeCurrentName', nameInput.value);
+    });
 
     function setupSnake() {
         snake = [{ x: 5 * scale, y: 5 * scale }];
@@ -68,13 +78,11 @@ document.addEventListener('DOMContentLoaded', () => {
         if (snakeDirection === 'Up') headY -= scale;
         if (snakeDirection === 'Down') headY += scale;
 
-        // Screen wrapping
-        if (headX >= canvas.width) headX = 0;
-        if (headX < 0) headX = canvas.width - scale;
-        if (headY >= canvas.height) headY = 0;
-        if (headY < 0) headY = canvas.height - scale;
+        if (headX >= gameSize) headX = 0;
+        if (headX < 0) headX = gameSize - scale;
+        if (headY >= gameSize) headY = 0;
+        if (headY < 0) headY = gameSize - scale;
 
-        // Collision with self
         for (let i = 0; i < snake.length; i++) {
             if (snake[i].x === headX && snake[i].y === headY) {
                 clearInterval(gameLoop);
@@ -87,7 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let newHead = { x: headX, y: headY };
         snake.unshift(newHead);
 
-        // Eating food
         if (headX === food.x && headY === food.y) {
             score += 10;
             scoreElem.innerText = score;
@@ -100,7 +107,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function drawSnake() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
         
         ctx.fillStyle = '#ef4444'; 
         ctx.fillRect(food.x, food.y, scale, scale);
@@ -114,10 +122,34 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function checkHighScore() {
-        if (score > highScore) {
-            highScore = score;
-            localStorage.setItem('joshwuff_snakeHighScore', highScore);
-            highScoreElem.innerText = highScore;
+        // Only save if they actually scored points!
+        if (score > 0) {
+            let currentName = nameInput.value.trim().substring(0, 6) || 'ANON';
+            
+            // Add new score, sort the array highest to lowest, and keep only the top 5
+            highScores.push({ name: currentName, score: score });
+            highScores.sort((a, b) => b.score - a.score);
+            highScores = highScores.slice(0, 5);
+            
+            localStorage.setItem('joshwuff_snakeHighScores', JSON.stringify(highScores));
+            updateLeaderboardUI();
+        }
+    }
+
+    function updateLeaderboardUI() {
+        leaderboardList.innerHTML = '';
+        if (highScores.length === 0) {
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No scores yet!</li>';
+        } else {
+            highScores.forEach((entry, index) => {
+                leaderboardList.innerHTML += `
+                    <li>
+                        <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
+                        <span style="flex-grow: 1; color: var(--text-primary);">${entry.name}</span>
+                        <span style="color: var(--accent);">${entry.score}</span>
+                    </li>
+                `;
+            });
         }
     }
 
@@ -137,18 +169,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
+    // --- CONTROLS (Desktop & Mobile) ---
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
-        
-        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) {
-            e.preventDefault();
-        }
-
+        if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
         const direction = e.key.replace('Arrow', '');
-        
-        if (direction === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
-        else if (direction === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
-        else if (direction === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
-        else if (direction === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
+        triggerDirection(direction);
+    });
+
+    let touchStartX = 0; let touchStartY = 0;
+    canvas.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: true});
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); }, {passive: false});
+    canvas.addEventListener('touchend', (e) => {
+        let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
+        handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
+    }, {passive: true});
+
+    function handleSwipe(startX, startY, endX, endY) {
+        let dx = endX - startX; let dy = endY - startY;
+        if (Math.max(Math.abs(dx), Math.abs(dy)) > 30) {
+            if (Math.abs(dx) > Math.abs(dy)) { triggerDirection(dx > 0 ? 'Right' : 'Left'); } 
+            else { triggerDirection(dy > 0 ? 'Down' : 'Up'); }
+        }
+    }
+
+    function triggerDirection(dir) {
+        if (dir === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
+        else if (dir === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
+        else if (dir === 'Left' && snakeDirection !== 'Right') snakeDirection = 'Left';
+        else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
+    }
+
+    const dpadBtns = document.querySelectorAll('.d-btn');
+    dpadBtns.forEach(btn => {
+        btn.addEventListener('touchstart', (e) => { e.preventDefault(); triggerDirection(btn.getAttribute('data-dir')); }, {passive: false});
+        btn.addEventListener('mousedown', (e) => { e.preventDefault(); triggerDirection(btn.getAttribute('data-dir')); });
     });
 });
