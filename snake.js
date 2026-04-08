@@ -36,8 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    fetchGlobalScores();
-
     // --- 2. SNAKE MINIGAME TRIGGER ---
     const sTrigger = document.getElementById('snake-trigger');
     const snakeModal = document.getElementById('snake-modal');
@@ -52,8 +50,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
+            // LOCK THE BACKGROUND SCROLL
+            document.body.style.overflow = 'hidden'; 
             sClickCount = 0;
-            // Fetch fresh scores every time they open the cabinet
             fetchGlobalScores();
         }
     });
@@ -174,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     fetchGlobalScores(); 
                 }
             } else {
-                // Fallback if offline
                 highScores.push({ player_name: currentName, score: score });
                 highScores.sort((a, b) => b.score - a.score);
                 highScores = highScores.slice(0, 5);
@@ -200,34 +198,24 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. BULLETPROOF MOBILE UI CONTROLS ---
-    
+    // --- 5. CLEAN, NATIVE UI CONTROLS ---
     function closeGame() {
         snakeModal.classList.remove('active');
+        // UNLOCK THE BACKGROUND SCROLL
+        document.body.style.overflow = ''; 
         clearInterval(gameLoop);
         checkHighScore();
     }
 
-    // Bind both click and touchstart for absolute reliability on the buttons
+    // Simple native clicks for UI buttons
     snakeClose.addEventListener('click', closeGame);
-    snakeClose.addEventListener('touchstart', (e) => { e.preventDefault(); closeGame(); }, {passive: false});
-
     startBtn.addEventListener('click', setupSnake);
-    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); setupSnake(); }, {passive: false});
+    
+    snakeModal.addEventListener('click', (e) => { 
+        if (e.target === snakeModal) closeGame(); 
+    });
 
-    // Close if they tap the background
-    snakeModal.addEventListener('mousedown', (e) => { if (e.target === snakeModal) closeGame(); });
-    snakeModal.addEventListener('touchstart', (e) => { if (e.target === snakeModal) { e.preventDefault(); closeGame(); } }, {passive: false});
-
-    // CRITICAL: Prevent the screen from scrolling AT ALL while the modal is open!
-    snakeModal.addEventListener('touchmove', (e) => {
-        // Allow normal behavior ONLY if they are typing their name, block everything else
-        if (e.target.tagName !== 'INPUT') {
-            e.preventDefault();
-        }
-    }, {passive: false});
-
-    // Desktop Arrows
+    // Desktop Keyboard Arrows
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
@@ -235,9 +223,15 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerDirection(direction);
     });
 
-    // Mobile Swipe Canvas
+    // Mobile Swipe (preventing default ONLY on the canvas to stop pull-to-refresh)
     let touchStartX = 0; let touchStartY = 0;
-    canvas.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: true});
+    canvas.addEventListener('touchstart', (e) => { 
+        touchStartX = e.changedTouches[0].screenX; 
+        touchStartY = e.changedTouches[0].screenY; 
+    }, {passive: true});
+    
+    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); }, {passive: false});
+    
     canvas.addEventListener('touchend', (e) => {
         let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
         handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
@@ -258,10 +252,12 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
-    // Mobile D-Pad Buttons
+    // Mobile D-Pad (Using pointerdown to cleanly handle both mouse and touch)
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
-        btn.addEventListener('touchstart', (e) => { e.preventDefault(); triggerDirection(btn.getAttribute('data-dir')); }, {passive: false});
-        btn.addEventListener('mousedown', (e) => { e.preventDefault(); triggerDirection(btn.getAttribute('data-dir')); });
+        btn.addEventListener('pointerdown', (e) => { 
+            e.preventDefault(); 
+            triggerDirection(btn.getAttribute('data-dir')); 
+        });
     });
 });
