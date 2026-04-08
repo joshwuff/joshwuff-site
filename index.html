@@ -219,17 +219,9 @@
             transition: opacity 0.3s;
         }
 
-        .direct-link-btn:hover {
-            opacity: 0.8;
-        }
+        .direct-link-btn:hover { opacity: 0.8; }
 
-        .social-discord:hover { 
-            border-color: #5865F2 !important; 
-            box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; 
-            color: #5865F2 !important; 
-            transform: translateY(-2px);
-        }
-        
+        .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; transform: translateY(-2px); }
         .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
         .social-x:hover { border-color: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
         .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
@@ -245,23 +237,14 @@
         }
 
         .social-joshinsta:hover i {
-            opacity: 1; 
-            transform: scale(1.15); 
+            opacity: 1; transform: scale(1.15); 
             background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent !important; 
+            -webkit-background-clip: text; background-clip: text; color: transparent !important; 
         }
 
-        footer { 
-            margin-top: 64px; 
-            padding-top: 32px; 
-            border-top: 1px solid var(--glass-border); 
-            font-size: 0.85rem; 
-            color: var(--text-secondary); 
-        }
+        footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
 
-        /* --- SNAKE MODAL STYLES --- */
+        /* --- SNAKE MODAL & TOP 5 LEADERBOARD --- */
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
             background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(15px);
@@ -274,24 +257,56 @@
             background: var(--glass-bg); border: 1px solid var(--accent); border-radius: 16px;
             padding: 24px; text-align: center; position: relative; box-shadow: 0 0 30px var(--accent-glow);
             color: var(--text-primary); display: flex; flex-direction: column; align-items: center;
+            max-width: 95vw; max-height: 95vh; overflow-y: auto;
         }
         
-        .snake-close {
-            position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease;
-        }
+        .snake-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
         .snake-close:hover { color: var(--accent); }
+
+        .leaderboard {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border);
+            border-radius: 8px; padding: 10px 15px; margin: 15px 0; width: 100%; max-width: 250px;
+        }
+        
+        .leaderboard-title {
+            color: var(--accent); font-size: 0.85rem; letter-spacing: 2px;
+            margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; font-weight: bold;
+        }
+
+        #leaderboard-list {
+            list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 1.1rem; text-align: left;
+        }
+
+        #leaderboard-list li { display: flex; justify-content: space-between; margin-bottom: 6px; }
+
+        .snake-input {
+            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border); color: var(--text-primary);
+            padding: 8px 12px; border-radius: 8px; width: 120px; text-align: center; text-transform: uppercase;
+            font-family: monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; outline: none; transition: border 0.3s ease;
+        }
+        .snake-input:focus { border-color: var(--accent); }
         
         #snake-game {
-            background-color: #000; border: 2px solid var(--glass-border); border-radius: 8px; margin-top: 15px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8);
+            background-color: #000; border: 2px solid var(--glass-border); border-radius: 8px; 
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.8); width: 100%; max-width: 400px; aspect-ratio: 1 / 1;
         }
 
         .snake-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-top: 20px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-top: 15px;
         }
         .snake-btn:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
         
+        .d-pad { display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 15px; }
+        .d-pad-row { display: flex; gap: 40px; }
+        .d-btn { 
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); 
+            width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; 
+            align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: background 0.1s;
+        }
+        .d-btn:active { background: var(--accent); border-color: var(--accent); }
+        
+        @media (max-width: 768px) { .d-pad { display: flex; } }
         #snake-trigger { cursor: default; }
-
     </style>
 </head>
 <body>
@@ -377,16 +392,36 @@
         <div class="snake-container">
             <span class="snake-close" id="snake-close">&times;</span>
             <h2 style="margin: 0; font-size: 1.8rem; letter-spacing: 2px;">SNAKE</h2>
-            <div style="color: var(--accent); font-weight: bold; margin-top: 5px; font-size: 1.1rem;">
-                Score: <span id="snake-score">0</span> | High Score: <span id="snake-highscore">0</span>
+            
+            <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+                <input type="text" id="snake-player-name" class="snake-input" placeholder="NAME" maxlength="6">
+                <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-primary);">
+                    Score: <span id="snake-score" style="color: var(--accent);">0</span>
+                </div>
             </div>
+
+            <div class="leaderboard">
+                <div class="leaderboard-title">TOP 5 SCORES</div>
+                <ul id="leaderboard-list">
+                    </ul>
+            </div>
+            
             <canvas id="snake-game" width="400" height="400"></canvas>
+            
+            <div class="d-pad" id="d-pad">
+                <button class="d-btn" data-dir="Up"><i class="fa-solid fa-chevron-up"></i></button>
+                <div class="d-pad-row">
+                    <button class="d-btn" data-dir="Left"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="d-btn" data-dir="Right"><i class="fa-solid fa-chevron-right"></i></button>
+                </div>
+                <button class="d-btn" data-dir="Down"><i class="fa-solid fa-chevron-down"></i></button>
+            </div>
+
             <button class="snake-btn" id="snake-start">Start Game</button>
         </div>
     </div>
 
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
-    
     <script src="snake.js"></script>
 
     <script>
@@ -402,7 +437,6 @@
 
             const tiktokBtn = document.getElementById('tiktok-btn');
             const tiktokEmbed = document.getElementById('tiktok-embed');
-            
             const twitchBtn = document.getElementById('twitch-btn');
             const twitchEmbed = document.getElementById('twitch-embed');
 
@@ -432,52 +466,26 @@
             });
 
             const profilePic = document.getElementById('profile-pic');
-            let clickCount = 0;
-            let clickTimer;
-
-            const hornSound = new Audio('Party Horn sound effect.mp3');
-            hornSound.preload = 'auto';
-            hornSound.volume = 0.1;
-            
-            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3');
-            yippeeSound.preload = 'auto';
-            yippeeSound.volume = 0.1;
+            let clickCount = 0; let clickTimer;
+            const hornSound = new Audio('Party Horn sound effect.mp3'); hornSound.volume = 0.1;
+            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3'); yippeeSound.volume = 0.1;
 
             profilePic.addEventListener('click', () => {
                 clickCount++;
-                
                 clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => {
-                    clickCount = 0;
-                }, 2000);
+                clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
 
                 if (clickCount === 5) {
-                    hornSound.currentTime = 0;
-                    yippeeSound.currentTime = 0;
-                    
-                    Promise.all([
-                        hornSound.play(),
-                        yippeeSound.play()
-                    ]).catch(err => console.error("Audio error:", err));
-
+                    hornSound.currentTime = 0; yippeeSound.currentTime = 0;
+                    Promise.all([hornSound.play(), yippeeSound.play()]).catch(err => console.error(err));
                     profilePic.classList.add('easter-egg-bounce');
                     
                     const rect = profilePic.getBoundingClientRect();
                     const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
                     const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
 
-                    confetti({
-                        particleCount: 150,
-                        spread: 100,
-                        origin: { x: xCenter, y: yCenter },
-                        zIndex: 9999,
-                        colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff']
-                    });
-
-                    setTimeout(() => {
-                        profilePic.classList.remove('easter-egg-bounce');
-                    }, 800);
-
+                    confetti({ particleCount: 150, spread: 100, origin: { x: xCenter, y: yCenter }, zIndex: 9999, colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff'] });
+                    setTimeout(() => { profilePic.classList.remove('easter-egg-bounce'); }, 800);
                     clickCount = 0;
                 }
             });
