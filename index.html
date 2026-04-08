@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Joshwuff | Official</title>
     
     <script type="application/ld+json">
@@ -24,7 +24,6 @@
     <link rel="icon" type="image/png" href="favicon.png?v=2">
     <link rel="apple-touch-icon" href="favicon.png?v=2">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     
@@ -49,14 +48,6 @@
             background-size: 100% 100%; animation: breathe 10s infinite alternate ease-in-out;
         }
 
-        /* The True Mobile Scroll Lock */
-        body.modal-open {
-            overflow: hidden !important;
-            position: fixed;
-            width: 100%;
-            height: 100vh;
-        }
-
         @keyframes breathe {
             0% { background-size: 100% 100%; background-position: 0% 0%; }
             100% { background-size: 130% 130%; background-position: 5% 5%; }
@@ -77,7 +68,6 @@
         .profile-img {
             width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent);
             box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 20px; cursor: pointer; transition: transform 0.1s ease;
-            touch-action: manipulation;
         }
         .profile-img:active { transform: scale(0.92); }
 
@@ -98,7 +88,7 @@
             display: flex; justify-content: center; align-items: center; position: relative; padding: 18px 24px;
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary);
             text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s ease !important; 
-            cursor: pointer; user-select: none; touch-action: manipulation;
+            cursor: pointer; user-select: none;
         }
 
         .social-link:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
@@ -115,7 +105,7 @@
         }
         .embed-container.active { max-height: 800px; opacity: 1; padding: 16px; margin-top: 8px; border-color: var(--glass-border); pointer-events: auto; }
 
-        .direct-link-btn { display: inline-block; margin-top: 12px; padding: 10px 20px; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: opacity 0.3s; touch-action: manipulation; }
+        .direct-link-btn { display: inline-block; margin-top: 12px; padding: 10px 20px; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: opacity 0.3s; }
         .direct-link-btn:hover { opacity: 0.8; }
 
         .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; transform: translateY(-2px); }
@@ -130,99 +120,60 @@
 
         footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
 
-        /* --- SNAKE MODAL --- */
+        /* --- NEW ARCADE MODAL --- */
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 13, 18, 0.95);
-            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            z-index: 99999; /* Insanely high to guarantee it covers everything */
-            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
-        
-        /* Forces the modal to capture all clicks */
         .lightbox.active { opacity: 1; pointer-events: auto; }
         
         .snake-container {
             background: var(--glass-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 24px;
-            text-align: center; position: relative; box-shadow: 0 0 30px var(--accent-glow); color: var(--text-primary);
+            text-align: center; position: relative; box-shadow: 0 0 40px var(--accent-glow); color: var(--text-primary);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            width: 100%; max-width: 500px; max-height: 95vh; overflow-y: auto;
-            
-            /* Prevents the blue ghost-highlighting on mobile */
-            -webkit-user-select: none;
-            user-select: none; 
         }
         
-        .snake-close { 
-            position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 32px; 
-            font-weight: bold; cursor: pointer; transition: color 0.3s ease; z-index: 100000; 
-            touch-action: manipulation;
-        }
+        .snake-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 32px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; z-index: 10; }
         .snake-close:hover { color: var(--accent); }
 
-        .snake-stats { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px; width: 100%; }
-
-        .snake-input {
-            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border); color: var(--text-primary);
-            padding: 8px 12px; border-radius: 8px; width: 110px; text-align: center; text-transform: uppercase;
-            font-family: monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; outline: none; transition: border 0.3s ease;
-            -webkit-user-select: text; /* Allow typing in the input box */
-            user-select: text;
+        /* The Black Monitor Box */
+        .arcade-display {
+            width: 400px; height: 400px; background-color: #000; border: 2px solid var(--glass-border); 
+            border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); margin-top: 15px;
+            position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column;
+            overflow: hidden;
         }
-        .snake-input:focus { border-color: var(--accent); }
 
-        .leaderboard { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px; padding: 10px 15px; margin: 15px 0; width: 100%; max-width: 250px; }
-        .leaderboard-title { color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; font-weight: bold; }
-        #leaderboard-list { list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 1.1rem; text-align: left; }
-        #leaderboard-list li { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        #snake-game { background-color: #000; display: none; }
+
+        /* Shared Screen Styles */
+        .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         
-        #snake-game { background-color: #000; border: 2px solid var(--glass-border); border-radius: 8px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); width: 100%; max-width: 400px; aspect-ratio: 1 / 1; touch-action: none; }
+        /* Leaderboard Screen */
+        #leaderboard-list { list-style: none; padding: 0; margin: 0 0 20px 0; font-family: monospace; font-size: 1.2rem; width: 80%; }
+        #leaderboard-list li { display: flex; justify-content: space-between; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 4px; }
+        
+        /* Game Over Screen */
+        .snake-input {
+            background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: var(--text-primary);
+            padding: 10px 15px; border-radius: 8px; width: 150px; text-align: center; font-family: monospace; 
+            font-size: 1.5rem; font-weight: bold; letter-spacing: 4px; margin: 15px 0; outline: none;
+        }
 
         .snake-btn { 
             background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); 
-            padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; 
-            font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-top: 15px; 
-            touch-action: manipulation; z-index: 100000;
+            padding: 12px 30px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 700; 
+            font-size: 1rem; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
         }
-        .snake-btn:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+        .snake-btn:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: rgba(239, 68, 68, 0.1); transform: translateY(-2px); }
         
-        .d-pad { display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 15px; }
-        .d-pad-row { display: flex; gap: 40px; }
-        .d-btn { 
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); 
-            width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; 
-            align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: background 0.1s; 
-            touch-action: manipulation; z-index: 100000;
-        }
-        .d-btn:active { background: var(--accent); border-color: var(--accent); }
-        
-        #snake-trigger { cursor: pointer; touch-action: manipulation; }
+        #snake-trigger { cursor: pointer; }
 
-        /* --- MOBILE LAYOUT REPAIRS --- */
-        @media (max-width: 600px) {
-            .snake-container { 
-                padding: 20px 15px; 
-                border-radius: 16px; 
-                height: auto; 
-                max-height: 95vh;
-            }
-            .snake-close { top: 5px; right: 15px; font-size: 38px; padding: 10px; }
-            h2 { font-size: 1.5rem !important; margin-bottom: 5px !important; }
-            
-            .snake-stats { margin-top: 5px; gap: 10px; }
-            .snake-input { width: 90px; padding: 6px 10px; font-size: 0.9rem; }
-            
-            .leaderboard { margin: 8px 0; padding: 6px 12px; max-width: 100%; }
-            .leaderboard-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 0.75rem; }
-            #leaderboard-list { font-size: 0.85rem; }
-            
-            #snake-game { max-width: 280px; width: 100%; height: auto; aspect-ratio: 1 / 1; } 
-            
-            .d-pad { display: flex; margin-top: 10px; gap: 5px; }
-            .d-pad-row { gap: 40px; }
-            .d-btn { width: 45px; height: 45px; font-size: 1rem; }
-            
-            .snake-btn { margin-top: 10px; padding: 12px 24px; }
+        /* Ensure it scales nicely on smaller laptops/tablets if needed */
+        @media (max-width: 500px) {
+            .arcade-display { width: 300px; height: 300px; }
+            #snake-game { width: 300px; height: 300px; }
         }
     </style>
 </head>
@@ -299,32 +250,34 @@
     <div id="snake-modal" class="lightbox">
         <div class="snake-container">
             <span class="snake-close" id="snake-close">&times;</span>
-            <h2 style="margin: 0; font-size: 1.8rem; letter-spacing: 2px;">SNAKE</h2>
+            <h2 style="margin: 0; font-size: 2rem; letter-spacing: 4px; color: var(--text-primary);">SNAKE</h2>
             
-            <div class="snake-stats">
-                <input type="text" id="snake-player-name" class="snake-input" placeholder="NAME" maxlength="6">
-                <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-primary);">
-                    Score: <span id="snake-score" style="color: var(--accent);">0</span>
-                </div>
+            <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-primary); margin-top: 5px;">
+                Score: <span id="snake-score" style="color: var(--accent);">0</span>
             </div>
 
-            <div class="leaderboard">
-                <div class="leaderboard-title">TOP 5 SCORES</div>
-                <ul id="leaderboard-list"></ul>
-            </div>
-            
-            <canvas id="snake-game" width="400" height="400"></canvas>
-            
-            <div class="d-pad" id="d-pad">
-                <button class="d-btn" data-dir="Up"><i class="fa-solid fa-chevron-up"></i></button>
-                <div class="d-pad-row">
-                    <button class="d-btn" data-dir="Left"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="d-btn" data-dir="Right"><i class="fa-solid fa-chevron-right"></i></button>
+            <div class="arcade-display">
+                
+                <div id="screen-leaderboard" class="screen" style="display: flex;">
+                    <h3 style="color: var(--accent); letter-spacing: 2px; margin-top: 0;">TOP 5 SCORES</h3>
+                    <ul id="leaderboard-list">
+                        </ul>
+                    <button class="snake-btn" id="btn-start">INSERT COIN (Start)</button>
                 </div>
-                <button class="d-btn" data-dir="Down"><i class="fa-solid fa-chevron-down"></i></button>
-            </div>
 
-            <button class="snake-btn" id="snake-start">Start Game</button>
+                <canvas id="snake-game" width="400" height="400"></canvas>
+
+                <div id="screen-gameover" class="screen">
+                    <h2 style="color: var(--accent); font-size: 2.5rem; margin: 0;">CRASH!</h2>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin: 10px 0;">Final Score: <span id="final-score" style="color: var(--accent);">0</span></p>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">ENTER INITIALS</p>
+                    <input type="text" id="snake-player-name" class="snake-input" placeholder="AAA" maxlength="6">
+                    
+                    <button class="snake-btn" id="btn-submit" style="width: 200px;">Submit Score</button>
+                    <button class="snake-btn" id="btn-menu" style="width: 200px; background: transparent; margin-top: 10px; padding: 8px;">Main Menu</button>
+                </div>
+
+            </div>
         </div>
     </div>
 
