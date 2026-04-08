@@ -1,5 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     
+    // --- SAFE STORAGE WRAPPER (Prevents Mobile Crashes) ---
+    const safeStorage = {
+        get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+        set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage blocked"); } }
+    };
+
     // --- 1. INITIALIZE SUPABASE ---
     const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co'; 
     const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
@@ -7,12 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     let supabase = null;
     let highScores = [];
 
-    if (supabaseUrl.startsWith('https://')) {
-        try {
+    try {
+        if (window.supabase) {
             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-        } catch (err) {
-            console.warn("Supabase failed to initialize:", err);
         }
+    } catch (err) {
+        console.warn("Supabase failed to load:", err);
     }
 
     async function fetchGlobalScores() {
@@ -50,8 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
-            // LOCK THE BACKGROUND SCROLL
-            document.body.style.overflow = 'hidden'; 
+            document.body.style.overflow = 'hidden'; // Lock background
             sClickCount = 0;
             fetchGlobalScores();
         }
@@ -77,11 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const startBtn = document.getElementById('snake-start');
     const leaderboardList = document.getElementById('leaderboard-list');
 
-    nameInput.value = localStorage.getItem('joshwuff_snakeCurrentName') || '';
+    // Safely load name
+    nameInput.value = safeStorage.get('joshwuff_snakeCurrentName') || '';
 
     nameInput.addEventListener('input', () => {
         nameInput.value = nameInput.value.toUpperCase(); 
-        localStorage.setItem('joshwuff_snakeCurrentName', nameInput.value);
+        safeStorage.set('joshwuff_snakeCurrentName', nameInput.value);
     });
 
     function setupSnake() {
@@ -161,24 +167,28 @@ document.addEventListener('DOMContentLoaded', () => {
             let currentName = nameInput.value.trim().substring(0, 6) || 'ANON';
             
             if (supabase) {
-                const { error } = await supabase
-                    .from('snake_scores')
-                    .insert([
-                        { player_name: currentName, score: score }
-                    ]);
+                try {
+                    const { error } = await supabase
+                        .from('snake_scores')
+                        .insert([{ player_name: currentName, score: score }]);
 
-                if (error) {
-                    console.error("Error saving score:", error);
-                } else {
+                    if (error) throw error;
                     fetchGlobalScores(); 
+                } catch (e) {
+                    console.error("Cloud save failed:", e);
+                    fallbackLocalSave(currentName, score);
                 }
             } else {
-                highScores.push({ player_name: currentName, score: score });
-                highScores.sort((a, b) => b.score - a.score);
-                highScores = highScores.slice(0, 5);
-                updateLeaderboardUI();
+                fallbackLocalSave(currentName, score);
             }
         }
+    }
+
+    function fallbackLocalSave(name, scr) {
+        highScores.push({ player_name: name, score: scr });
+        highScores.sort((a, b) => b.score - a.score);
+        highScores = highScores.slice(0, 5);
+        updateLeaderboardUI();
     }
 
     function updateLeaderboardUI() {
@@ -198,16 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. CLEAN, NATIVE UI CONTROLS ---
+    // --- 5. CLEAN UI CONTROLS ---
     function closeGame() {
         snakeModal.classList.remove('active');
-        // UNLOCK THE BACKGROUND SCROLL
-        document.body.style.overflow = ''; 
+        document.body.style.overflow = ''; // Unlock background
         clearInterval(gameLoop);
         checkHighScore();
     }
 
-    // Simple native clicks for UI buttons
+    // Simple, reliable click events
     snakeClose.addEventListener('click', closeGame);
     startBtn.addEventListener('click', setupSnake);
     
@@ -215,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (e.target === snakeModal) closeGame(); 
     });
 
-    // Desktop Keyboard Arrows
+    // Desktop Keyboard
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
@@ -223,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerDirection(direction);
     });
 
-    // Mobile Swipe (preventing default ONLY on the canvas to stop pull-to-refresh)
+    // Mobile Swipe
     let touchStartX = 0; let touchStartY = 0;
     canvas.addEventListener('touchstart', (e) => { 
         touchStartX = e.changedTouches[0].screenX; 
@@ -252,9 +261,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
-    // Mobile D-Pad (Using pointerdown to cleanly handle both mouse and touch)
+    // Mobile D-Pad 
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
+        // pointerdown is faster than click on mobile and highly reliable
         btn.addEventListener('pointerdown', (e) => { 
             e.preventDefault(); 
             triggerDirection(btn.getAttribute('data-dir')); 
