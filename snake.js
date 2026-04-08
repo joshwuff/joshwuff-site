@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co'; 
     const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
     let supabase = null;
-    let highScores = [];
 
     try {
         if (window.supabase) {
@@ -23,14 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const finalScoreElem = document.getElementById('final-score');
     const nameInput = document.getElementById('snake-player-name');
     
-    // Buttons
     const btnStart = document.getElementById('btn-start');
     const btnSubmit = document.getElementById('btn-submit');
     const btnMenu = document.getElementById('btn-menu');
     const snakeClose = document.getElementById('snake-close');
     const snakeModal = document.getElementById('snake-modal');
 
-    // Display Management
     function switchScreen(screenElement) {
         screenLeaderboard.style.display = 'none';
         screenGame.style.display = 'none';
@@ -51,23 +48,23 @@ document.addEventListener('DOMContentLoaded', () => {
                 .order('score', { ascending: false })
                 .limit(5);
             if (error) throw error;
-            highScores = data || [];
+            
             leaderboardList.innerHTML = '';
-            if (highScores.length === 0) {
+            if (!data || data.length === 0) {
                 leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
             } else {
-                highScores.forEach((entry, index) => {
+                data.forEach((entry, index) => {
                     leaderboardList.innerHTML += `
                         <li>
                             <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
                             <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
                             <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
-                        </li>
-                    `;
+                        </li>`;
                 });
             }
         } catch (e) {
-            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Failed to load scores</li>';
+            console.error(e);
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">Error loading scores</li>';
         }
     }
 
@@ -102,10 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoop;
     let score = 0;
 
-    nameInput.addEventListener('input', () => {
-        nameInput.value = nameInput.value.toUpperCase().replace(/[^A-Z0-9]/g, ''); 
-    });
-
     function setupSnake() {
         snake = [{ x: 5 * scale, y: 5 * scale }];
         snakeDirection = 'Right';
@@ -134,19 +127,15 @@ document.addEventListener('DOMContentLoaded', () => {
         let headX = snake[0].x;
         let headY = snake[0].y;
         if (snakeDirection === 'Right') headX += scale;
-        if (snakeDirection === 'Left') headX -= scale;
-        if (snakeDirection === 'Up') headY -= scale;
-        if (snakeDirection === 'Down') headY += scale;
-        if (headX >= gameSize || headX < 0 || headY >= gameSize || headY < 0) {
-            handleGameOver();
-            return;
-        }
+        else if (snakeDirection === 'Left') headX -= scale;
+        else if (snakeDirection === 'Up') headY -= scale;
+        else if (snakeDirection === 'Down') headY += scale;
+
+        if (headX >= gameSize || headX < 0 || headY >= gameSize || headY < 0) return handleGameOver();
         for (let i = 0; i < snake.length; i++) {
-            if (snake[i].x === headX && snake[i].y === headY) {
-                handleGameOver();
-                return;
-            }
+            if (snake[i].x === headX && snake[i].y === headY) return handleGameOver();
         }
+
         let newHead = { x: headX, y: headY };
         snake.unshift(newHead);
         if (headX === food.x && headY === food.y) {
@@ -172,9 +161,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 4. INPUT CONTROLS (KEYBOARD + TOUCH + BUTTONS) ---
+    // --- 4. INPUT CONTROLS ---
     
-    // Change direction helper (prevents 180 turns)
     function changeDirection(newDir) {
         if (newDir === 'Up' && snakeDirection !== 'Down') snakeDirection = 'Up';
         else if (newDir === 'Down' && snakeDirection !== 'Up') snakeDirection = 'Down';
@@ -189,19 +177,19 @@ document.addEventListener('DOMContentLoaded', () => {
         changeDirection(e.key.replace('Arrow', ''));
     });
 
-    // Mobile Buttons (Tap)
+    // Mobile Buttons (Using pointerdown for better touch response)
     const buttonMap = { 'ctrl-up': 'Up', 'ctrl-down': 'Down', 'ctrl-left': 'Left', 'ctrl-right': 'Right' };
     Object.keys(buttonMap).forEach(id => {
         const el = document.getElementById(id);
         if (el) {
-            el.addEventListener('touchstart', (e) => {
+            el.addEventListener('pointerdown', (e) => {
                 e.preventDefault();
                 changeDirection(buttonMap[id]);
-            });
+            }, { passive: false });
         }
     });
 
-    // Mobile Swipe Logic
+    // Mobile Swiping on Canvas
     let touchStartX = 0;
     let touchStartY = 0;
     screenGame.addEventListener('touchstart', (e) => {
@@ -219,9 +207,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- 5. SUBMIT & CLEANUP ---
+    // --- 5. SYSTEM HANDLERS ---
     btnSubmit.addEventListener('click', async () => {
-        let currentName = nameInput.value.trim() || 'ANON';
+        let currentName = nameInput.value.trim().toUpperCase() || 'ANON';
         if (score > 0 && supabase) {
             btnSubmit.innerText = "Saving...";
             try {
@@ -235,7 +223,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
     btnMenu.addEventListener('click', () => { switchScreen(screenLeaderboard); fetchGlobalScores(); });
     btnStart.addEventListener('click', setupSnake);
-    function closeModal() { snakeModal.classList.remove('active'); clearInterval(gameLoop); }
+    
+    function closeModal() { 
+        snakeModal.classList.remove('active'); 
+        clearInterval(gameLoop); 
+    }
+    
     snakeClose.addEventListener('click', closeModal);
     snakeModal.addEventListener('click', (e) => { if (e.target === snakeModal) closeModal(); });
 });
