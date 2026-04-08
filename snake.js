@@ -1,5 +1,32 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // --- SNAKE MINIGAME TRIGGER ---
+    
+    // --- 1. INITIALIZE SUPABASE ---
+    // PASTE YOUR PROJECT URL RIGHT HERE:
+    const supabaseUrl = 'YOUR_PROJECT_URL_HERE'; 
+    const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    let highScores = [];
+
+    async function fetchGlobalScores() {
+        const { data, error } = await supabase
+            .from('snake_scores')
+            .select('player_name, score')
+            .order('score', { ascending: false })
+            .limit(5);
+
+        if (error) {
+            console.error("Error fetching scores:", error);
+            return;
+        }
+        
+        highScores = data;
+        updateLeaderboardUI();
+    }
+
+    fetchGlobalScores();
+
+    // --- 2. SNAKE MINIGAME TRIGGER ---
     const sTrigger = document.getElementById('snake-trigger');
     const snakeModal = document.getElementById('snake-modal');
     const snakeClose = document.getElementById('snake-close');
@@ -17,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- SNAKE ENGINE & SCOREBOARD ---
+    // --- 3. SNAKE ENGINE ---
     const canvas = document.getElementById('snake-game');
     const ctx = canvas.getContext('2d');
     
@@ -32,21 +59,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let gameLoop;
     let score = 0;
     
-    // Load Top 5 High Scores from Local Storage
-    let highScores = JSON.parse(localStorage.getItem('joshwuff_snakeHighScores')) || [];
-    
     const scoreElem = document.getElementById('snake-score');
     const nameInput = document.getElementById('snake-player-name');
     const startBtn = document.getElementById('snake-start');
     const leaderboardList = document.getElementById('leaderboard-list');
 
-    // Display initial high scores
     nameInput.value = localStorage.getItem('joshwuff_snakeCurrentName') || '';
-    updateLeaderboardUI();
 
-    // Save current name typing
     nameInput.addEventListener('input', () => {
-        nameInput.value = nameInput.value.toUpperCase(); // Force uppercase
+        nameInput.value = nameInput.value.toUpperCase(); 
         localStorage.setItem('joshwuff_snakeCurrentName', nameInput.value);
     });
 
@@ -121,31 +142,35 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function checkHighScore() {
-        // Only save if they actually scored points!
+    // --- 4. CLOUD SAVE LOGIC ---
+    async function checkHighScore() {
         if (score > 0) {
             let currentName = nameInput.value.trim().substring(0, 6) || 'ANON';
             
-            // Add new score, sort the array highest to lowest, and keep only the top 5
-            highScores.push({ name: currentName, score: score });
-            highScores.sort((a, b) => b.score - a.score);
-            highScores = highScores.slice(0, 5);
-            
-            localStorage.setItem('joshwuff_snakeHighScores', JSON.stringify(highScores));
-            updateLeaderboardUI();
+            const { error } = await supabase
+                .from('snake_scores')
+                .insert([
+                    { player_name: currentName, score: score }
+                ]);
+
+            if (error) {
+                console.error("Error saving score:", error);
+            } else {
+                fetchGlobalScores(); 
+            }
         }
     }
 
     function updateLeaderboardUI() {
         leaderboardList.innerHTML = '';
         if (highScores.length === 0) {
-            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No scores yet!</li>';
+            leaderboardList.innerHTML = '<li style="justify-content:center; color: var(--text-secondary);">No Scores Yet!</li>';
         } else {
             highScores.forEach((entry, index) => {
                 leaderboardList.innerHTML += `
                     <li>
                         <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
-                        <span style="flex-grow: 1; color: var(--text-primary);">${entry.name}</span>
+                        <span style="flex-grow: 1; color: var(--text-primary);">${entry.player_name}</span>
                         <span style="color: var(--accent);">${entry.score}</span>
                     </li>
                 `;
@@ -169,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // --- CONTROLS (Desktop & Mobile) ---
+    // --- 5. CONTROLS ---
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
