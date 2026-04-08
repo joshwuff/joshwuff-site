@@ -1,27 +1,39 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- 1. INITIALIZE SUPABASE ---
-    // PASTE YOUR PROJECT URL RIGHT HERE:
     const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co'; 
     const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
+    
+    let supabase = null;
     let highScores = [];
 
-    async function fetchGlobalScores() {
-        const { data, error } = await supabase
-            .from('snake_scores')
-            .select('player_name, score')
-            .order('score', { ascending: false })
-            .limit(5);
-
-        if (error) {
-            console.error("Error fetching scores:", error);
-            return;
+    if (supabaseUrl.startsWith('https://')) {
+        try {
+            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        } catch (err) {
+            console.warn("Supabase failed to initialize:", err);
         }
-        
-        highScores = data;
-        updateLeaderboardUI();
+    }
+
+    async function fetchGlobalScores() {
+        if (!supabase) return; 
+        try {
+            const { data, error } = await supabase
+                .from('snake_scores')
+                .select('player_name, score')
+                .order('score', { ascending: false })
+                .limit(5);
+
+            if (error) {
+                console.error("Error fetching scores:", error);
+                return;
+            }
+            
+            highScores = data;
+            updateLeaderboardUI();
+        } catch (e) {
+            console.error("Fetch failed:", e);
+        }
     }
 
     fetchGlobalScores();
@@ -41,6 +53,8 @@ document.addEventListener('DOMContentLoaded', () => {
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
             sClickCount = 0;
+            // Fetch fresh scores every time they open the cabinet
+            fetchGlobalScores();
         }
     });
 
@@ -147,16 +161,24 @@ document.addEventListener('DOMContentLoaded', () => {
         if (score > 0) {
             let currentName = nameInput.value.trim().substring(0, 6) || 'ANON';
             
-            const { error } = await supabase
-                .from('snake_scores')
-                .insert([
-                    { player_name: currentName, score: score }
-                ]);
+            if (supabase) {
+                const { error } = await supabase
+                    .from('snake_scores')
+                    .insert([
+                        { player_name: currentName, score: score }
+                    ]);
 
-            if (error) {
-                console.error("Error saving score:", error);
+                if (error) {
+                    console.error("Error saving score:", error);
+                } else {
+                    fetchGlobalScores(); 
+                }
             } else {
-                fetchGlobalScores(); 
+                // Fallback if offline
+                highScores.push({ player_name: currentName, score: score });
+                highScores.sort((a, b) => b.score - a.score);
+                highScores = highScores.slice(0, 5);
+                updateLeaderboardUI();
             }
         }
     }
@@ -170,31 +192,42 @@ document.addEventListener('DOMContentLoaded', () => {
                 leaderboardList.innerHTML += `
                     <li>
                         <span style="color: var(--text-secondary); width: 25px;">#${index + 1}</span>
-                        <span style="flex-grow: 1; color: var(--text-primary);">${entry.player_name}</span>
-                        <span style="color: var(--accent);">${entry.score}</span>
+                        <span style="flex-grow: 1; color: var(--text-primary); text-align: left;">${entry.player_name}</span>
+                        <span style="color: var(--accent); font-weight: bold;">${entry.score}</span>
                     </li>
                 `;
             });
         }
     }
 
-    startBtn.addEventListener('click', setupSnake);
-
-    snakeClose.addEventListener('click', () => {
+    // --- 5. BULLETPROOF MOBILE UI CONTROLS ---
+    
+    function closeGame() {
         snakeModal.classList.remove('active');
         clearInterval(gameLoop);
         checkHighScore();
-    });
+    }
 
-    snakeModal.addEventListener('click', (e) => {
-        if (e.target === snakeModal) {
-            snakeModal.classList.remove('active');
-            clearInterval(gameLoop);
-            checkHighScore();
+    // Bind both click and touchstart for absolute reliability on the buttons
+    snakeClose.addEventListener('click', closeGame);
+    snakeClose.addEventListener('touchstart', (e) => { e.preventDefault(); closeGame(); }, {passive: false});
+
+    startBtn.addEventListener('click', setupSnake);
+    startBtn.addEventListener('touchstart', (e) => { e.preventDefault(); setupSnake(); }, {passive: false});
+
+    // Close if they tap the background
+    snakeModal.addEventListener('mousedown', (e) => { if (e.target === snakeModal) closeGame(); });
+    snakeModal.addEventListener('touchstart', (e) => { if (e.target === snakeModal) { e.preventDefault(); closeGame(); } }, {passive: false});
+
+    // CRITICAL: Prevent the screen from scrolling AT ALL while the modal is open!
+    snakeModal.addEventListener('touchmove', (e) => {
+        // Allow normal behavior ONLY if they are typing their name, block everything else
+        if (e.target.tagName !== 'INPUT') {
+            e.preventDefault();
         }
-    });
+    }, {passive: false});
 
-    // --- 5. CONTROLS ---
+    // Desktop Arrows
     window.addEventListener('keydown', (e) => {
         if (!snakeModal.classList.contains('active')) return;
         if(["ArrowUp","ArrowDown","ArrowLeft","ArrowRight"," "].indexOf(e.key) > -1) { e.preventDefault(); }
@@ -202,9 +235,9 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerDirection(direction);
     });
 
+    // Mobile Swipe Canvas
     let touchStartX = 0; let touchStartY = 0;
     canvas.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; touchStartY = e.changedTouches[0].screenY; }, {passive: true});
-    canvas.addEventListener('touchmove', (e) => { e.preventDefault(); }, {passive: false});
     canvas.addEventListener('touchend', (e) => {
         let touchEndX = e.changedTouches[0].screenX; let touchEndY = e.changedTouches[0].screenY;
         handleSwipe(touchStartX, touchStartY, touchEndX, touchEndY);
@@ -225,6 +258,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
+    // Mobile D-Pad Buttons
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
         btn.addEventListener('touchstart', (e) => { e.preventDefault(); triggerDirection(btn.getAttribute('data-dir')); }, {passive: false});
