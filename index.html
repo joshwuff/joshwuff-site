@@ -26,7 +26,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
     
     <style>
@@ -43,20 +42,11 @@
         * { box-sizing: border-box; }
 
         body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
-            background-image:
-                radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
-                radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
-            color: var(--text-primary);
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            overflow-y: scroll;
-            background-size: 100% 100%;
-            animation: breathe 10s infinite alternate ease-in-out;
+            background-image: radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%), radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            color: var(--text-primary); display: flex; justify-content: center; min-height: 100vh; overflow-y: scroll;
+            background-size: 100% 100%; animation: breathe 10s infinite alternate ease-in-out;
         }
 
         @keyframes breathe {
@@ -65,160 +55,57 @@
         }
 
         .navbar {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(13, 13, 18, 0.8);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border);
-            display: flex;
-            justify-content: center;
-            gap: 30px;
-            padding: 18px 0;
-            z-index: 1000;
+            position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
         }
 
-        .nav-link {
-            text-decoration: none;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            transition: color 0.3s;
-        }
-
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
         .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 120px 24px 60px;
-            text-align: center;
-            animation: fadeIn 0.8s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        .container { width: 100%; max-width: 600px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .profile-img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 3px solid var(--accent);
-            box-shadow: 0 0 20px var(--accent-glow);
-            margin-bottom: 20px;
-            cursor: pointer;
-            transition: transform 0.1s ease;
+            width: 150px; height: 150px; border-radius: 50%; object-fit: cover; border: 3px solid var(--accent);
+            box-shadow: 0 0 20px var(--accent-glow); margin-bottom: 20px; cursor: pointer; transition: transform 0.1s ease;
         }
-
         .profile-img:active { transform: scale(0.92); }
 
-        .easter-egg-bounce {
-            animation: yippeeBounce 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important;
-        }
-
+        .easter-egg-bounce { animation: yippeeBounce 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both !important; }
         @keyframes yippeeBounce {
-            0% { transform: scale(1) rotate(0deg); }
-            20% { transform: scale(1.4) rotate(-15deg); }
-            40% { transform: scale(1.4) rotate(-15deg); }
-            60% { transform: scale(1.4) rotate(-15deg); }
-            80% { transform: scale(1.4) rotate(15deg); }
-            100% { transform: scale(1) rotate(0deg); }
+            0% { transform: scale(1) rotate(0deg); } 20% { transform: scale(1.4) rotate(-15deg); }
+            40% { transform: scale(1.4) rotate(-15deg); } 60% { transform: scale(1.4) rotate(-15deg); }
+            80% { transform: scale(1.4) rotate(15deg); } 100% { transform: scale(1) rotate(0deg); }
         }
 
         h1 { font-size: 2.2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
         .subtitle { color: var(--accent); font-size: 1.1rem; margin-top: 8px; font-weight: 600; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
 
-        .links-container {
-            display: flex;
-            flex-direction: column;
-            gap: 16px;
-        }
+        .links-container { display: flex; flex-direction: column; gap: 16px; }
 
         .social-link {
-            display: flex;
-            justify-content: center; 
-            align-items: center;
-            position: relative; 
-            padding: 18px 24px;
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: 12px;
-            color: var(--text-primary);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1.05rem;
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease !important;
-            cursor: pointer;
-            user-select: none;
+            display: flex; justify-content: center; align-items: center; position: relative; padding: 18px 24px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary);
+            text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s ease !important; cursor: pointer; user-select: none;
         }
 
-        .social-link:hover {
-            border-color: var(--accent);
-            box-shadow: 0 0 15px var(--accent-glow);
-            transform: translateY(-2px);
-        }
+        .social-link:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
 
         .social-link i, .social-link .custom-icon {
-            position: absolute;
-            right: 24px;
-            font-size: 1.3rem;
-            width: 1.3rem;
-            height: 1.3rem;
-            opacity: 0.7;
-            transition: transform 0.3s ease, opacity 0.3s ease;
+            position: absolute; right: 24px; font-size: 1.3rem; width: 1.3rem; height: 1.3rem; opacity: 0.7; transition: transform 0.3s ease, opacity 0.3s ease;
         }
+        .social-link:hover i, .social-link:hover .custom-icon { opacity: 1; transform: scale(1.15); }
 
-        .social-link:hover i, .social-link:hover .custom-icon {
-            opacity: 1;
-            transform: scale(1.15);
-        }
-
-        .embed-wrapper {
-            display: flex;
-            flex-direction: column;
-        }
-
+        .embed-wrapper { display: flex; flex-direction: column; }
         .embed-container {
-            max-height: 0;
-            opacity: 0;
-            overflow: hidden;
-            padding: 0 16px; 
-            margin-top: 0;
-            background: var(--glass-bg);
-            border: 1px solid transparent;
-            border-radius: 12px;
-            pointer-events: none; 
-            transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            max-height: 0; opacity: 0; overflow: hidden; padding: 0 16px; margin-top: 0; background: var(--glass-bg);
+            border: 1px solid transparent; border-radius: 12px; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
         }
+        .embed-container.active { max-height: 800px; opacity: 1; padding: 16px; margin-top: 8px; border-color: var(--glass-border); pointer-events: auto; }
 
-        .embed-container.active {
-            max-height: 800px; 
-            opacity: 1;
-            padding: 16px; 
-            margin-top: 8px;
-            border-color: var(--glass-border);
-            pointer-events: auto; 
-        }
-
-        .direct-link-btn {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 10px 20px;
-            color: white;
-            text-decoration: none;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 0.95rem;
-            transition: opacity 0.3s;
-        }
-
+        .direct-link-btn { display: inline-block; margin-top: 12px; padding: 10px 20px; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: opacity 0.3s; }
         .direct-link-btn:hover { opacity: 0.8; }
 
         .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; transform: translateY(-2px); }
@@ -228,85 +115,82 @@
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
         
-        .social-joshinsta:hover { 
-            border-color: #bc1888 !important; 
-            box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important;
-            background: var(--glass-bg) !important;
-            color: var(--text-primary) !important;
-            transform: translateY(-2px);
-        }
-
-        .social-joshinsta:hover i {
-            opacity: 1; transform: scale(1.15); 
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            -webkit-background-clip: text; background-clip: text; color: transparent !important; 
-        }
+        .social-joshinsta:hover { border-color: #bc1888 !important; box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important; background: var(--glass-bg) !important; color: var(--text-primary) !important; transform: translateY(-2px); }
+        .social-joshinsta:hover i { opacity: 1; transform: scale(1.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
 
         footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
 
-        /* --- SNAKE MODAL & TOP 5 LEADERBOARD --- */
+        /* --- SNAKE MODAL --- */
         .lightbox {
-            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-            background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(15px);
-            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 13, 18, 0.95);
+            backdrop-filter: blur(15px); z-index: 2000; display: flex; justify-content: center; align-items: center;
             opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         .lightbox.active { opacity: 1; pointer-events: all; }
         
         .snake-container {
-            background: var(--glass-bg); border: 1px solid var(--accent); border-radius: 16px;
-            padding: 24px; text-align: center; position: relative; box-shadow: 0 0 30px var(--accent-glow);
-            color: var(--text-primary); display: flex; flex-direction: column; align-items: center;
-            max-width: 95vw; max-height: 95vh; overflow-y: auto;
+            background: var(--glass-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 24px;
+            text-align: center; position: relative; box-shadow: 0 0 30px var(--accent-glow); color: var(--text-primary);
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            width: 100%; max-width: 500px;
         }
         
-        .snake-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 28px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; }
+        .snake-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 32px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; z-index: 10; }
         .snake-close:hover { color: var(--accent); }
 
-        .leaderboard {
-            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border);
-            border-radius: 8px; padding: 10px 15px; margin: 15px 0; width: 100%; max-width: 250px;
-        }
-        
-        .leaderboard-title {
-            color: var(--accent); font-size: 0.85rem; letter-spacing: 2px;
-            margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; font-weight: bold;
-        }
-
-        #leaderboard-list {
-            list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 1.1rem; text-align: left;
-        }
-
-        #leaderboard-list li { display: flex; justify-content: space-between; margin-bottom: 6px; }
+        .snake-stats { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 10px; width: 100%; }
 
         .snake-input {
             background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border); color: var(--text-primary);
-            padding: 8px 12px; border-radius: 8px; width: 120px; text-align: center; text-transform: uppercase;
+            padding: 8px 12px; border-radius: 8px; width: 110px; text-align: center; text-transform: uppercase;
             font-family: monospace; font-size: 1.1rem; font-weight: bold; letter-spacing: 2px; outline: none; transition: border 0.3s ease;
         }
         .snake-input:focus { border-color: var(--accent); }
-        
-        #snake-game {
-            background-color: #000; border: 2px solid var(--glass-border); border-radius: 8px; 
-            box-shadow: inset 0 0 15px rgba(0,0,0,0.8); width: 100%; max-width: 400px; aspect-ratio: 1 / 1;
-        }
 
-        .snake-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-top: 15px;
-        }
+        .leaderboard { background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px; padding: 10px 15px; margin: 15px 0; width: 100%; max-width: 250px; }
+        .leaderboard-title { color: var(--accent); font-size: 0.85rem; letter-spacing: 2px; margin-bottom: 8px; border-bottom: 1px solid var(--glass-border); padding-bottom: 6px; font-weight: bold; }
+        #leaderboard-list { list-style: none; padding: 0; margin: 0; font-family: monospace; font-size: 1.1rem; text-align: left; }
+        #leaderboard-list li { display: flex; justify-content: space-between; margin-bottom: 4px; }
+        
+        #snake-game { background-color: #000; border: 2px solid var(--glass-border); border-radius: 8px; box-shadow: inset 0 0 15px rgba(0,0,0,0.8); width: 100%; max-width: 400px; aspect-ratio: 1 / 1; }
+
+        .snake-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); padding: 10px 24px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 600; font-size: 0.95rem; cursor: pointer; backdrop-filter: blur(10px); transition: all 0.3s ease; margin-top: 15px; }
         .snake-btn:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
         
         .d-pad { display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 15px; }
         .d-pad-row { display: flex; gap: 40px; }
-        .d-btn { 
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); 
-            width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; 
-            align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: background 0.1s;
-        }
+        .d-btn { background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); width: 50px; height: 50px; border-radius: 50%; font-size: 1.2rem; display: flex; justify-content: center; align-items: center; cursor: pointer; backdrop-filter: blur(10px); transition: background 0.1s; }
         .d-btn:active { background: var(--accent); border-color: var(--accent); }
         
-        @media (max-width: 768px) { .d-pad { display: flex; } }
         #snake-trigger { cursor: default; }
+
+        /* --- MOBILE SPECIFIC OVERRIDES TO FIX LAYOUT --- */
+        @media (max-width: 600px) {
+            .snake-container { 
+                padding: 15px; 
+                border-radius: 0; 
+                border: none;
+                height: 100vh; /* Force container to be exact screen size */
+                justify-content: flex-start; /* Stack from the top down */
+            }
+            .snake-close { top: 10px; right: 15px; font-size: 38px; }
+            h2 { font-size: 1.5rem !important; margin-bottom: 5px !important; }
+            
+            .snake-stats { margin-top: 5px; gap: 10px; }
+            .snake-input { width: 90px; padding: 6px 10px; font-size: 0.9rem; }
+            
+            .leaderboard { margin: 8px 0; padding: 6px 12px; }
+            .leaderboard-title { margin-bottom: 4px; padding-bottom: 4px; font-size: 0.75rem; }
+            #leaderboard-list { font-size: 0.85rem; }
+            
+            #snake-game { max-width: 280px; } /* Shrink canvas significantly */
+            
+            .d-pad { display: flex; margin-top: 8px; gap: 4px; }
+            .d-pad-row { gap: 30px; }
+            .d-btn { width: 45px; height: 45px; font-size: 1rem; }
+            
+            .snake-btn { margin-top: 10px; padding: 8px 18px; }
+        }
     </style>
 </head>
 <body>
@@ -329,24 +213,18 @@
                 <span>Fursuit maker: Kings Kostumes</span>
                 <i class="fa-solid fa-crown"></i>
             </a>
-
             <a href="https://www.instagram.com/joshwuff_/" class="social-link social-joshinsta">
                 <span>Joshwuff on Instagram</span>
                 <i class="fa-brands fa-instagram"></i>
             </a>
-
             <a href="https://discord.gg/fnqvg7dyhR" class="social-link social-discord">
                 <span>Discord Community</span>
                 <i class="fa-brands fa-discord"></i>
             </a>
-            
             <a href="https://bsky.app/profile/joshwuff.bsky.social" class="social-link social-bsky">
                 <span>Bluesky</span>
-                <svg class="custom-icon" viewBox="0 0 320 286" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M69.364 19.146c36.687 27.806 76.147 84.186 90.636 114.439 14.489-30.253 53.949-86.633 90.636-114.439C277.151-1.12 320-9.845 320 25.87c0 15.656-3.526 73.18-5.32 80.528-6.177 25.322-35.316 34.025-61.94 30.686 44.137 6.305 60.108 26.656 46.168 59.83-20.916 49.771-92.486 46.549-115.118 10.457-11.83-18.868-23.79-51.523-23.79-51.523s-11.96 32.655-23.79 51.523c-22.632 36.092-94.202 39.314-115.118-10.457-13.94-33.174 2.031-53.525 46.168-59.83-26.624 3.339-55.763-5.364-61.94-30.686C3.526 99.05 0 41.526 0 25.87 0-9.845 42.849-1.12 69.364 19.146Z"/>
-                </svg>
+                <svg class="custom-icon" viewBox="0 0 320 286" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M69.364 19.146c36.687 27.806 76.147 84.186 90.636 114.439 14.489-30.253 53.949-86.633 90.636-114.439C277.151-1.12 320-9.845 320 25.87c0 15.656-3.526 73.18-5.32 80.528-6.177 25.322-35.316 34.025-61.94 30.686 44.137 6.305 60.108 26.656 46.168 59.83-20.916 49.771-92.486 46.549-115.118 10.457-11.83-18.868-23.79-51.523-23.79-51.523s-11.96 32.655-23.79 51.523c-22.632 36.092-94.202 39.314-115.118-10.457-13.94-33.174 2.031-53.525 46.168-59.83-26.624 3.339-55.763-5.364-61.94-30.686C3.526 99.05 0 41.526 0 25.87 0-9.845 42.849-1.12 69.364 19.146Z"/></svg>
             </a>
-            
             <a href="https://www.furtrack.com/index/joshwuff" class="social-link social-furtrack">
                 <span>Furtrack Profile</span>
                 <i class="fa-solid fa-paw"></i>
@@ -362,9 +240,7 @@
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
                 <div id="tiktok-embed" class="embed-container">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > 
-                        <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> 
-                    </blockquote> 
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> </blockquote> 
                     <script async src="https://www.tiktok.com/embed.js"></script>
                     <a href="https://tiktok.com/@joshwuff" class="direct-link-btn" style="background: #fe2c55;">Visit TikTok Profile</a>
                 </div>
@@ -376,8 +252,7 @@
                     <i class="fa-brands fa-twitch"></i>
                 </a>
                 <div id="twitch-embed" class="embed-container">
-                    <div id="twitch-interactive-frame"></div>
-                    <br>
+                    <div id="twitch-interactive-frame"></div><br>
                     <a href="https://twitch.tv/joshwuff" class="direct-link-btn" style="background: #9146FF;">Go to Twitch</a>
                 </div>
             </div>
@@ -393,7 +268,7 @@
             <span class="snake-close" id="snake-close">&times;</span>
             <h2 style="margin: 0; font-size: 1.8rem; letter-spacing: 2px;">SNAKE</h2>
             
-            <div style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 15px; flex-wrap: wrap;">
+            <div class="snake-stats">
                 <input type="text" id="snake-player-name" class="snake-input" placeholder="NAME" maxlength="6">
                 <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-primary);">
                     Score: <span id="snake-score" style="color: var(--accent);">0</span>
@@ -402,8 +277,7 @@
 
             <div class="leaderboard">
                 <div class="leaderboard-title">TOP 5 SCORES</div>
-                <ul id="leaderboard-list">
-                    </ul>
+                <ul id="leaderboard-list"></ul>
             </div>
             
             <canvas id="snake-game" width="400" height="400"></canvas>
@@ -422,51 +296,22 @@
     </div>
 
     <script src="https://embed.twitch.tv/embed/v1.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script src="snake.js"></script>
 
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            new Twitch.Embed("twitch-interactive-frame", {
-                width: "100%",
-                height: 300,
-                channel: "joshwuff",
-                parent: ["joshwuff.com", "www.joshwuff.com"], 
-                layout: "video",
-                autoplay: false
-            });
-
-            const tiktokBtn = document.getElementById('tiktok-btn');
-            const tiktokEmbed = document.getElementById('tiktok-embed');
-            const twitchBtn = document.getElementById('twitch-btn');
-            const twitchEmbed = document.getElementById('twitch-embed');
+            new Twitch.Embed("twitch-interactive-frame", { width: "100%", height: 300, channel: "joshwuff", parent: ["joshwuff.com", "www.joshwuff.com"], layout: "video", autoplay: false });
+            const tiktokBtn = document.getElementById('tiktok-btn'); const tiktokEmbed = document.getElementById('tiktok-embed');
+            const twitchBtn = document.getElementById('twitch-btn'); const twitchEmbed = document.getElementById('twitch-embed');
 
             function closeAllEmbeds() {
-                tiktokEmbed.classList.remove('active');
-                tiktokBtn.classList.remove('active-btn');
-                twitchEmbed.classList.remove('active');
-                twitchBtn.classList.remove('active-btn');
+                tiktokEmbed.classList.remove('active'); tiktokBtn.classList.remove('active-btn');
+                twitchEmbed.classList.remove('active'); twitchBtn.classList.remove('active-btn');
             }
 
-            tiktokBtn.addEventListener('click', () => {
-                const isAlreadyOpen = tiktokEmbed.classList.contains('active');
-                closeAllEmbeds();
-                if (!isAlreadyOpen) {
-                    tiktokEmbed.classList.add('active');
-                    tiktokBtn.classList.add('active-btn'); 
-                }
-            });
-
-            twitchBtn.addEventListener('click', () => {
-                const isAlreadyOpen = twitchEmbed.classList.contains('active');
-                closeAllEmbeds();
-                if (!isAlreadyOpen) {
-                    twitchEmbed.classList.add('active');
-                    twitchBtn.classList.add('active-btn'); 
-                }
-            });
+            tiktokBtn.addEventListener('click', () => { const isAlreadyOpen = tiktokEmbed.classList.contains('active'); closeAllEmbeds(); if (!isAlreadyOpen) { tiktokEmbed.classList.add('active'); tiktokBtn.classList.add('active-btn'); } });
+            twitchBtn.addEventListener('click', () => { const isAlreadyOpen = twitchEmbed.classList.contains('active'); closeAllEmbeds(); if (!isAlreadyOpen) { twitchEmbed.classList.add('active'); twitchBtn.classList.add('active-btn'); } });
 
             const profilePic = document.getElementById('profile-pic');
             let clickCount = 0; let clickTimer;
@@ -474,19 +319,14 @@
             const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3'); yippeeSound.volume = 0.1;
 
             profilePic.addEventListener('click', () => {
-                clickCount++;
-                clearTimeout(clickTimer);
-                clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
-
+                clickCount++; clearTimeout(clickTimer); clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
                 if (clickCount === 5) {
                     hornSound.currentTime = 0; yippeeSound.currentTime = 0;
                     Promise.all([hornSound.play(), yippeeSound.play()]).catch(err => console.error(err));
                     profilePic.classList.add('easter-egg-bounce');
-                    
                     const rect = profilePic.getBoundingClientRect();
                     const xCenter = (rect.left + rect.width / 2) / window.innerWidth;
                     const yCenter = (rect.top + rect.height / 2) / window.innerHeight;
-
                     confetti({ particleCount: 150, spread: 100, origin: { x: xCenter, y: yCenter }, zIndex: 9999, colors: ['#ef4444', '#ffffff', '#5865F2', '#f59e0b', '#0085ff'] });
                     setTimeout(() => { profilePic.classList.remove('easter-egg-bounce'); }, 800);
                     clickCount = 0;
