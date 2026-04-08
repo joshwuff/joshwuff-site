@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     
-    // --- SAFE STORAGE WRAPPER (Prevents Mobile Crashes) ---
+    // --- SAFE STORAGE WRAPPER ---
     const safeStorage = {
         get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
         set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage blocked"); } }
@@ -56,7 +56,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (sClickCount === 5) {
             snakeModal.classList.add('active');
-            document.body.style.overflow = 'hidden'; // Lock background scroll properly
+            // This class physically stops the background from scrolling on mobile
+            document.body.classList.add('modal-open'); 
             sClickCount = 0;
             fetchGlobalScores();
         }
@@ -207,15 +208,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- 5. CLEAN UI CONTROLS ---
+    // --- 5. UNIVERSAL UI CONTROLS ---
     function closeGame() {
         snakeModal.classList.remove('active');
-        document.body.style.overflow = ''; // Unlock background
+        document.body.classList.remove('modal-open'); // Unlock background
         clearInterval(gameLoop);
         checkHighScore();
     }
 
-    // Simple, reliable click events
+    // PURE STANDARD CLICKS. No TouchStart to mess with the browser.
     snakeClose.addEventListener('click', closeGame);
     startBtn.addEventListener('click', setupSnake);
     
@@ -258,11 +259,10 @@ document.addEventListener('DOMContentLoaded', () => {
         else if (dir === 'Right' && snakeDirection !== 'Left') snakeDirection = 'Right';
     }
 
-    // Mobile D-Pad
+    // Mobile D-Pad (Pure Click)
     const dpadBtns = document.querySelectorAll('.d-btn');
     dpadBtns.forEach(btn => {
-        btn.addEventListener('pointerdown', (e) => { 
-            e.preventDefault(); 
+        btn.addEventListener('click', (e) => { 
             triggerDirection(btn.getAttribute('data-dir')); 
         });
     });
