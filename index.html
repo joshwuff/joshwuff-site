@@ -87,7 +87,7 @@
         .social-link {
             display: flex; justify-content: center; align-items: center; position: relative; padding: 18px 24px;
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary);
-            text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s ease !important; 
+            text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s ease !important;
             cursor: pointer; user-select: none;
         }
 
@@ -101,7 +101,7 @@
         .embed-wrapper { display: flex; flex-direction: column; }
         .embed-container {
             max-height: 0; opacity: 0; overflow: hidden; padding: 0 16px; margin-top: 0; background: var(--glass-bg);
-            border: 1px solid transparent; border-radius: 12px; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1); 
+            border: 1px solid transparent; border-radius: 12px; pointer-events: none; transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
         .embed-container.active { max-height: 800px; opacity: 1; padding: 16px; margin-top: 8px; border-color: var(--glass-border); pointer-events: auto; }
 
@@ -132,22 +132,19 @@
             background: var(--glass-bg); border: 1px solid var(--accent); border-radius: 16px; padding: 24px;
             text-align: center; position: relative; box-shadow: 0 0 40px var(--accent-glow); color: var(--text-primary);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            /* Prevents phone selection during gaming */
-            user-select: none; -webkit-tap-highlight-color: transparent;
         }
         
         .snake-close { position: absolute; top: 15px; right: 20px; color: var(--text-secondary); font-size: 32px; font-weight: bold; cursor: pointer; transition: color 0.3s ease; z-index: 10; }
         .snake-close:hover { color: var(--accent); }
 
         .arcade-display {
-            width: 400px; height: 400px; background-color: #000; border: 2px solid var(--glass-border); 
+            width: 400px; height: 400px; background-color: #000; border: 2px solid var(--glass-border);
             border-radius: 8px; box-shadow: inset 0 0 20px rgba(0,0,0,0.9); margin-top: 15px;
             position: relative; display: flex; align-items: center; justify-content: center; flex-direction: column;
             overflow: hidden;
         }
 
-        #snake-game { background-color: #000; display: none; width: 100%; height: 100%; }
-
+        #snake-game { background-color: #000; display: none; }
         .screen { display: none; flex-direction: column; align-items: center; justify-content: center; width: 100%; height: 100%; }
         
         #leaderboard-list { list-style: none; padding: 0; margin: 0 0 20px 0; font-family: monospace; font-size: 1.2rem; width: 80%; }
@@ -155,27 +152,39 @@
         
         .snake-input {
             background: rgba(255, 255, 255, 0.1); border: 1px solid var(--accent); color: var(--text-primary);
-            padding: 10px 15px; border-radius: 8px; width: 150px; text-align: center; font-family: monospace; 
+            padding: 10px 15px; border-radius: 8px; width: 150px; text-align: center; font-family: monospace;
             font-size: 1.5rem; font-weight: bold; letter-spacing: 4px; margin: 15px 0; outline: none;
         }
 
-        .snake-btn { 
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary); 
-            padding: 12px 30px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 700; 
+        .snake-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+            padding: 12px 30px; border-radius: 12px; font-family: 'Inter', sans-serif; font-weight: 700;
             font-size: 1rem; cursor: pointer; transition: all 0.3s ease; text-transform: uppercase; letter-spacing: 1px;
-            user-select: none; touch-action: manipulation;
         }
         .snake-btn:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); background: rgba(239, 68, 68, 0.1); transform: translateY(-2px); }
         
-        /* Mobile Control Specific Styling */
-        #mobile-controls { margin-top: 25px; display: flex; flex-direction: column; gap: 10px; align-items: center; }
-        .ctrl-row { display: flex; gap: 15px; }
-        .snake-btn-mobile { padding: 20px 30px; font-size: 1.4rem; }
+        #snake-trigger { cursor: pointer; }
+
+        /* --- MOBILE D-PAD --- */
+        .d-pad {
+            display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 15px;
+        }
+        .d-pad-row { display: flex; gap: 45px; }
+        .d-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+            width: 55px; height: 55px; border-radius: 50%; font-size: 1.4rem; display: flex; justify-content: center;
+            align-items: center; cursor: pointer; backdrop-filter: blur(10px);
+            /* THE ANTI-APPLE ARMOR */
+            touch-action: none;
+            -webkit-user-select: none; user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            outline: none;
+        }
 
         @media (max-width: 500px) {
             .arcade-display { width: 300px; height: 300px; }
-            .snake-container { padding: 15px; width: 95vw; }
-            h1 { font-size: 1.8rem; }
+            #snake-game { width: 300px; height: 300px; }
+            /* D-pad visibility is handled by javascript so it only shows during gameplay */
         }
     </style>
 </head>
@@ -226,7 +235,7 @@
                     <i class="fa-brands fa-tiktok"></i>
                 </a>
                 <div id="tiktok-embed" class="embed-container">
-                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> </blockquote> 
+                    <blockquote class="tiktok-embed" cite="https://www.tiktok.com/@joshwuff" data-unique-id="joshwuff" data-embed-type="creator" style="max-width: 780px; min-width: 288px;" > <section> <a target="_blank" href="https://www.tiktok.com/@joshwuff?refer=creator_embed">@joshwuff</a> </section> </blockquote>
                     <script async src="https://www.tiktok.com/embed.js"></script>
                     <a href="https://tiktok.com/@joshwuff" class="direct-link-btn" style="background: #fe2c55;">Visit TikTok Profile</a>
                 </div>
@@ -252,9 +261,9 @@
     <div id="snake-modal" class="lightbox">
         <div class="snake-container">
             <span class="snake-close" id="snake-close">&times;</span>
-            <h2 style="margin: 0; font-size: 2rem; letter-spacing: 4px;">SNAKE</h2>
+            <h2 style="margin: 0; font-size: 2rem; letter-spacing: 4px; color: var(--text-primary);">SNAKE</h2>
             
-            <div style="font-weight: bold; font-size: 1.1rem; margin-top: 5px;">
+            <div style="font-weight: bold; font-size: 1.1rem; color: var(--text-primary); margin-top: 5px;">
                 Score: <span id="snake-score" style="color: var(--accent);">0</span>
             </div>
 
@@ -262,28 +271,30 @@
                 <div id="screen-leaderboard" class="screen" style="display: flex;">
                     <h3 style="color: var(--accent); letter-spacing: 2px; margin-top: 0;">TOP 5 SCORES</h3>
                     <ul id="leaderboard-list"></ul>
-                    <button class="snake-btn" id="btn-start">INSERT COIN</button>
+                    <button class="snake-btn" id="btn-start">INSERT COIN (Start)</button>
                 </div>
 
                 <canvas id="snake-game" width="400" height="400"></canvas>
 
                 <div id="screen-gameover" class="screen">
                     <h2 style="color: var(--accent); font-size: 2.5rem; margin: 0;">CRASH!</h2>
-                    <p style="font-size: 1.2rem; font-weight: bold; margin: 10px 0;">Final: <span id="final-score" style="color: var(--accent);">0</span></p>
+                    <p style="font-size: 1.2rem; font-weight: bold; margin: 10px 0;">Final Score: <span id="final-score" style="color: var(--accent);">0</span></p>
+                    <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary);">ENTER INITIALS</p>
                     <input type="text" id="snake-player-name" class="snake-input" placeholder="AAA" maxlength="6">
                     <button class="snake-btn" id="btn-submit" style="width: 200px;">Submit Score</button>
-                    <button class="snake-btn" id="btn-menu" style="width: 200px; background: transparent; margin-top: 10px;">Main Menu</button>
+                    <button class="snake-btn" id="btn-menu" style="width: 200px; background: transparent; margin-top: 10px; padding: 8px;">Main Menu</button>
                 </div>
             </div>
 
-            <div id="mobile-controls">
-                <button class="snake-btn snake-btn-mobile" id="ctrl-up"><i class="fa-solid fa-arrow-up"></i></button>
-                <div class="ctrl-row">
-                    <button class="snake-btn snake-btn-mobile" id="ctrl-left"><i class="fa-solid fa-arrow-left"></i></button>
-                    <button class="snake-btn snake-btn-mobile" id="ctrl-right"><i class="fa-solid fa-arrow-right"></i></button>
+            <div class="d-pad" id="mobile-dpad">
+                <button class="d-btn" data-dir="Up"><i class="fa-solid fa-chevron-up"></i></button>
+                <div class="d-pad-row">
+                    <button class="d-btn" data-dir="Left"><i class="fa-solid fa-chevron-left"></i></button>
+                    <button class="d-btn" data-dir="Right"><i class="fa-solid fa-chevron-right"></i></button>
                 </div>
-                <button class="snake-btn snake-btn-mobile" id="ctrl-down"><i class="fa-solid fa-arrow-down"></i></button>
+                <button class="d-btn" data-dir="Down"><i class="fa-solid fa-chevron-down"></i></button>
             </div>
+            
         </div>
     </div>
 
@@ -294,11 +305,8 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             new Twitch.Embed("twitch-interactive-frame", { width: "100%", height: 300, channel: "joshwuff", parent: ["joshwuff.com", "www.joshwuff.com"], layout: "video", autoplay: false });
-            
-            const tiktokBtn = document.getElementById('tiktok-btn'); 
-            const tiktokEmbed = document.getElementById('tiktok-embed');
-            const twitchBtn = document.getElementById('twitch-btn'); 
-            const twitchEmbed = document.getElementById('twitch-embed');
+            const tiktokBtn = document.getElementById('tiktok-btn'); const tiktokEmbed = document.getElementById('tiktok-embed');
+            const twitchBtn = document.getElementById('twitch-btn'); const twitchEmbed = document.getElementById('twitch-embed');
 
             function closeAllEmbeds() {
                 tiktokEmbed.classList.remove('active'); tiktokBtn.classList.remove('active-btn');
@@ -310,9 +318,8 @@
 
             const profilePic = document.getElementById('profile-pic');
             let clickCount = 0; let clickTimer;
-            const hornSound = new Audio('Party Horn sound effect.mp3'); 
-            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3'); 
-            hornSound.volume = 0.1; yippeeSound.volume = 0.1;
+            const hornSound = new Audio('Party Horn sound effect.mp3'); hornSound.volume = 0.1;
+            const yippeeSound = new Audio('Grunt Birthday Party Sound Effect.mp3'); yippeeSound.volume = 0.1;
 
             profilePic.addEventListener('click', () => {
                 clickCount++; clearTimeout(clickTimer); clickTimer = setTimeout(() => { clickCount = 0; }, 2000);
