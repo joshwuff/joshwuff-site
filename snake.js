@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const scoreElem = document.getElementById('snake-score');
     const finalScoreElem = document.getElementById('final-score');
     const nameInput = document.getElementById('snake-player-name');
-    const mobileDpad = document.getElementById('mobile-dpad'); // New D-pad reference
+    const mobileDpad = document.getElementById('mobile-dpad');
     
     // Buttons
     const btnStart = document.getElementById('btn-start');
@@ -40,13 +40,15 @@ document.addEventListener('DOMContentLoaded', () => {
         screenLeaderboard.style.display = 'none';
         screenGame.style.display = 'none';
         screenGameover.style.display = 'none';
-        mobileDpad.style.display = 'none'; // Hide D-pad by default
+        
+        // Use CSS grid display instead of flex for the new symmetrical D-pad
+        mobileDpad.style.display = 'none';
         
         screenElement.style.display = (screenElement === screenGame) ? 'block' : 'flex';
         
         // Only show D-pad if game is active AND we are on a small screen
         if (screenElement === screenGame && window.innerWidth <= 600) {
-            mobileDpad.style.display = 'flex';
+            mobileDpad.style.display = 'grid'; // ACTIVATES THE GRID HITBOXES
         }
     }
 
@@ -132,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     let snake = [];
     let snakeDirection = 'Right';
-    let directionQueue = []; // THE INPUT LAG FIX!
+    let directionQueue = [];
     let food;
     let gameLoop;
     let score = 0;
@@ -147,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function setupSnake() {
         snake = [{ x: 5 * scale, y: 5 * scale }];
         snakeDirection = 'Right';
-        directionQueue = []; // Clear the queue on restart
+        directionQueue = [];
         score = 0;
         scoreElem.innerText = score;
         switchScreen(screenGame);
@@ -171,7 +173,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function updateSnake() {
-        // Process exactly ONE queued direction per frame
         if (directionQueue.length > 0) {
             snakeDirection = directionQueue.shift();
         }
@@ -263,7 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // The Input Queue Manager
     function triggerDirection(dir) {
-        // Look at the last move in the queue to prevent double-turn deaths
         let lastDir = directionQueue.length > 0 ? directionQueue[directionQueue.length - 1] : snakeDirection;
         
         if (dir === 'Up' && lastDir !== 'Down') directionQueue.push('Up');
@@ -279,18 +279,20 @@ document.addEventListener('DOMContentLoaded', () => {
         triggerDirection(e.key.replace('Arrow', ''));
     });
 
-    // Mobile D-Pad (Unbreakable Touch Event)
-    const dpadBtns = document.querySelectorAll('.d-btn');
-    dpadBtns.forEach(btn => {
-        btn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Absolutely kills scrolling
-            btn.style.background = 'var(--accent)'; // Manual color feedback
-            triggerDirection(btn.getAttribute('data-dir'));
+    // Mobile D-Pad (The Hitbox Fix)
+    const dpadCells = document.querySelectorAll('.d-cell');
+    dpadCells.forEach(cell => {
+        const visualBtn = cell.querySelector('.d-btn');
+        
+        cell.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // Kills scrolling
+            visualBtn.style.background = 'var(--accent)'; // Manual color feedback
+            triggerDirection(cell.getAttribute('data-dir'));
         }, {passive: false});
         
-        btn.addEventListener('touchend', (e) => {
+        cell.addEventListener('touchend', (e) => {
             e.preventDefault();
-            btn.style.background = ''; // Clears the "sticky" color
+            visualBtn.style.background = ''; // Clears the color
         });
     });
 });

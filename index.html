@@ -165,26 +165,43 @@
         
         #snake-trigger { cursor: pointer; }
 
-        /* --- MOBILE D-PAD --- */
+        /* --- THE GRID HITBOX D-PAD --- */
         .d-pad {
-            display: none; flex-direction: column; align-items: center; gap: 8px; margin-top: 15px;
+            display: none;
+            grid-template-columns: repeat(3, 70px); /* 3 columns of 70px */
+            grid-template-rows: repeat(3, 70px);    /* 3 rows of 70px */
+            gap: 0; /* Zero empty space between hitboxes! */
+            margin-top: 10px;
+            justify-content: center;
         }
-        .d-pad-row { display: flex; gap: 45px; }
-        .d-btn {
-            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
-            width: 55px; height: 55px; border-radius: 50%; font-size: 1.4rem; display: flex; justify-content: center;
-            align-items: center; cursor: pointer; backdrop-filter: blur(10px);
-            /* THE ANTI-APPLE ARMOR */
+        
+        /* Positioning the massive invisible squares */
+        .up-cell { grid-column: 2; grid-row: 1; }
+        .left-cell { grid-column: 1; grid-row: 2; }
+        .right-cell { grid-column: 3; grid-row: 2; }
+        .down-cell { grid-column: 2; grid-row: 3; }
+
+        .d-cell {
+            display: flex; justify-content: center; align-items: center;
+            width: 100%; height: 100%; cursor: pointer;
+            
+            /* Anti-Apple Armor */
             touch-action: none;
             -webkit-user-select: none; user-select: none;
             -webkit-tap-highlight-color: transparent;
-            outline: none;
+        }
+
+        .d-btn {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); color: var(--text-primary);
+            width: 55px; height: 55px; border-radius: 50%; font-size: 1.4rem;
+            display: flex; justify-content: center; align-items: center;
+            backdrop-filter: blur(10px); transition: background 0.1s ease;
+            pointer-events: none; /* Passes the touch through to the massive cell behind it */
         }
 
         @media (max-width: 500px) {
             .arcade-display { width: 300px; height: 300px; }
             #snake-game { width: 300px; height: 300px; }
-            /* D-pad visibility is handled by javascript so it only shows during gameplay */
         }
     </style>
 </head>
@@ -287,12 +304,10 @@
             </div>
 
             <div class="d-pad" id="mobile-dpad">
-                <button class="d-btn" data-dir="Up"><i class="fa-solid fa-chevron-up"></i></button>
-                <div class="d-pad-row">
-                    <button class="d-btn" data-dir="Left"><i class="fa-solid fa-chevron-left"></i></button>
-                    <button class="d-btn" data-dir="Right"><i class="fa-solid fa-chevron-right"></i></button>
-                </div>
-                <button class="d-btn" data-dir="Down"><i class="fa-solid fa-chevron-down"></i></button>
+                <div class="d-cell up-cell" data-dir="Up"><div class="d-btn"><i class="fa-solid fa-chevron-up"></i></div></div>
+                <div class="d-cell left-cell" data-dir="Left"><div class="d-btn"><i class="fa-solid fa-chevron-left"></i></div></div>
+                <div class="d-cell right-cell" data-dir="Right"><div class="d-btn"><i class="fa-solid fa-chevron-right"></i></div></div>
+                <div class="d-cell down-cell" data-dir="Down"><div class="d-btn"><i class="fa-solid fa-chevron-down"></i></div></div>
             </div>
             
         </div>
