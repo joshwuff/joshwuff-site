@@ -40,29 +40,58 @@
             100% { background-size: 130% 130%; background-position: 5% 5%; }
         }
 
-        .navbar {
-            position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
+        /* --- NAVIGATION --- */
+        .navbar { position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000; }
+
+        .nav-link { 
+            text-decoration: none; 
+            color: var(--text-secondary); 
+            font-weight: 600; 
+            font-size: 0.9rem; 
+            transition: color 0.3s ease; 
+            position: relative;
+            padding-bottom: 4px; 
         }
 
-        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
         .nav-link:hover { color: var(--accent); }
-        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 0;
+            background-color: var(--accent);
+            transition: width 0.3s ease, background-color 0.3s ease; 
+        }
+
+        .nav-link:hover::after { width: 100%; }
+
+        .nav-link.active { color: var(--accent); border-bottom: none; }
+        .nav-link.active::after { width: 100%; }
+
+        /* --- LAYOUT --- */
         .container { width: 100%; max-width: 650px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Minecraft Dirt/Grass Block Icon Styling */
+        /* Custom Minecraft Server Icon Styling */
         .mc-icon {
-            width: 100px; height: 100px; background: #3f2a14; border: 4px solid var(--accent);
-            border-radius: 16px; margin: 0 auto 20px; position: relative; overflow: hidden;
-            box-shadow: 0 0 20px var(--accent-glow); display: flex; justify-content: center; align-items: center;
+            width: 100px; 
+            height: 100px; 
+            border: 4px solid var(--accent);
+            border-radius: 16px; 
+            margin: 0 auto 20px; 
+            box-shadow: 0 0 20px var(--accent-glow); 
+            display: block; 
+            object-fit: cover;
+            image-rendering: pixelated; 
+            transition: transform 0.3s ease;
         }
-        .mc-icon::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 35%;
-            background: var(--accent); border-bottom: 4px solid rgba(0,0,0,0.3);
+        
+        .mc-icon:hover {
+            transform: scale(1.05);
         }
-        .mc-icon i { font-size: 40px; color: white; z-index: 2; text-shadow: 0 4px 0 rgba(0,0,0,0.3); }
 
         h1 { font-size: 2.2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 16px 0 40px; line-height: 1.6; }
@@ -127,9 +156,7 @@
     </nav>
 
     <div class="container">
-        <div class="mc-icon">
-            <i class="fa-solid fa-cube"></i>
-        </div>
+        <img src="server-icon.png" alt="Joshwuff SMP Icon" class="mc-icon">
         
         <h1>Joshwuff SMP</h1>
         <p class="bio">Welcome to the official community server! We support cross-play, meaning both PC and Console players can play together on the exact same world. Grab your pickaxe and join us.</p>
