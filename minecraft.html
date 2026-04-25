@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Joshwuff | Minecraft Server</title>
+
+    <link rel="icon" type="image/png" href="favicon.png?v=3">
+    <link rel="apple-touch-icon" href="favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=VT323&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            /* Swapped the red to an Emerald/Creeper Green for the Minecraft theme */
+            --accent: #22c55e; 
+            --accent-glow: rgba(34, 197, 94, 0.25);
+            --discord-color: #5865F2;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            /* Green breathing gradient background */
+            background-image: radial-gradient(circle at 15% 15%, rgba(34, 197, 94, 0.06) 0%, transparent 35%), 
+                              radial-gradient(circle at 85% 85%, rgba(21, 128, 61, 0.06) 0%, transparent 35%);
+            color: var(--text-primary); display: flex; justify-content: center; min-height: 100vh; overflow-y: scroll;
+            background-size: 100% 100%; animation: breathe 10s infinite alternate ease-in-out;
+        }
+
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
+        }
+
+        .navbar {
+            position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
+        }
+
+        .nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
+
+        .container { width: 100%; max-width: 650px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Minecraft Dirt/Grass Block Icon Styling */
+        .mc-icon {
+            width: 100px; height: 100px; background: #3f2a14; border: 4px solid var(--accent);
+            border-radius: 16px; margin: 0 auto 20px; position: relative; overflow: hidden;
+            box-shadow: 0 0 20px var(--accent-glow); display: flex; justify-content: center; align-items: center;
+        }
+        .mc-icon::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 35%;
+            background: var(--accent); border-bottom: 4px solid rgba(0,0,0,0.3);
+        }
+        .mc-icon i { font-size: 40px; color: white; z-index: 2; text-shadow: 0 4px 0 rgba(0,0,0,0.3); }
+
+        h1 { font-size: 2.2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .bio { font-size: 1rem; color: var(--text-secondary); margin: 16px 0 40px; line-height: 1.6; }
+
+        .server-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
+        
+        .server-card {
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
+            padding: 24px; text-align: left; position: relative; overflow: hidden;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+        .server-card:hover { border-color: var(--accent); transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
+        
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 15px; }
+        .card-header i { font-size: 1.5rem; color: var(--text-primary); }
+        .card-header h2 { margin: 0; font-size: 1.2rem; }
+
+        .ip-box {
+            background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 8px;
+            display: flex; justify-content: space-between; align-items: center; padding: 12px 16px;
+            margin-top: 15px; cursor: pointer; transition: all 0.2s ease;
+        }
+        .ip-box:hover { border-color: var(--accent); background: rgba(34, 197, 94, 0.05); }
+        
+        .ip-text { font-family: 'VT323', monospace; font-size: 1.4rem; color: var(--accent); letter-spacing: 1px; }
+        .copy-btn { color: var(--text-secondary); transition: color 0.2s; font-size: 1.1rem; }
+        .ip-box:hover .copy-btn { color: var(--text-primary); }
+
+        .discord-banner {
+            display: flex; align-items: center; justify-content: center; gap: 15px;
+            background: rgba(88, 101, 242, 0.1); border: 1px solid var(--discord-color);
+            padding: 20px; border-radius: 16px; text-decoration: none; color: var(--text-primary);
+            transition: all 0.3s ease; box-shadow: 0 0 15px rgba(88, 101, 242, 0.2);
+        }
+        .discord-banner:hover { background: rgba(88, 101, 242, 0.2); transform: translateY(-2px); }
+        .discord-banner i { font-size: 2rem; color: var(--discord-color); }
+        .discord-text { text-align: left; }
+        .discord-text h3 { margin: 0 0 4px 0; font-size: 1.1rem; color: #fff; }
+        .discord-text p { margin: 0; font-size: 0.9rem; color: var(--text-secondary); }
+
+        /* Notification Toast */
+        .toast {
+            position: fixed; bottom: -50px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #000; padding: 12px 24px; border-radius: 30px;
+            font-weight: bold; font-size: 0.95rem; box-shadow: 0 5px 15px var(--accent-glow);
+            transition: bottom 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 2000;
+        }
+        .toast.show { bottom: 30px; }
+
+        @media (max-width: 600px) {
+            .server-grid { grid-template-columns: 1fr; }
+            .navbar { gap: 15px; font-size: 0.85rem; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-link">Socials</a>
+        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+        <a href="minecraft.html" class="nav-link active">Minecraft</a>
+    </nav>
+
+    <div class="container">
+        <div class="mc-icon">
+            <i class="fa-solid fa-cube"></i>
+        </div>
+        
+        <h1>Joshwuff SMP</h1>
+        <p class="bio">Welcome to the official community server! We support cross-play, meaning both PC and Console players can play together on the exact same world. Grab your pickaxe and join us.</p>
+
+        <div class="server-grid">
+            <div class="server-card">
+                <div class="card-header">
+                    <i class="fa-brands fa-java" style="color: #f89820;"></i>
+                    <h2>Java Edition</h2>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">For PC / Mac / Linux</div>
+                
+                <div class="ip-box" onclick="copyToClipboard('joshwuff.com')">
+                    <span class="ip-text">joshwuff.com</span>
+                    <i class="fa-solid fa-copy copy-btn"></i>
+                </div>
+            </div>
+
+            <div class="server-card">
+                <div class="card-header">
+                    <i class="fa-solid fa-gamepad" style="color: #0085ff;"></i>
+                    <h2>Bedrock Edition</h2>
+                </div>
+                <div style="font-size: 0.9rem; color: var(--text-secondary);">For Xbox, PS5, Switch & Mobile</div>
+                <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 4px;">Default Port: 19132</div>
+                
+                <div class="ip-box" onclick="copyToClipboard('mc.joshwuff.com')">
+                    <span class="ip-text">mc.joshwuff.com</span>
+                    <i class="fa-solid fa-copy copy-btn"></i>
+                </div>
+            </div>
+        </div>
+
+        <a href="https://discord.gg/fnqvg7dyhR" class="discord-banner" target="_blank">
+            <i class="fa-brands fa-discord"></i>
+            <div class="discord-text">
+                <h3>Join the Community</h3>
+                <p>Found a bug, have a suggestion, or just need help joining the server? Open a ticket in our Discord!</p>
+            </div>
+            <i class="fa-solid fa-arrow-right" style="color: var(--text-secondary); margin-left: auto;"></i>
+        </a>
+    </div>
+
+    <div id="toast" class="toast">IP Copied to Clipboard!</div>
+
+    <script>
+        function copyToClipboard(ipAddress) {
+            navigator.clipboard.writeText(ipAddress).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.add('show');
+                
+                // Vibrate on mobile for tactile feedback
+                if (navigator.vibrate) navigator.vibrate(50);
+                
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 2500);
+            }).catch(err => {
+                console.error('Failed to copy text: ', err);
+                alert("Failed to copy IP. Please select and copy manually: " + ipAddress);
+            });
+        }
+    </script>
+</body>
+</html>
