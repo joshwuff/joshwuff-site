@@ -30,16 +30,44 @@ body {
 
 /* --- NAVIGATION --- */
 .navbar { position: fixed; top: 0; width: 100%; background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000; }
-.nav-link { text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; transition: color 0.3s; }
+
+.nav-link { 
+    text-decoration: none; 
+    color: var(--text-secondary); 
+    font-weight: 600; 
+    font-size: 0.9rem; 
+    transition: color 0.3s ease; 
+    position: relative; /* Acts as an anchor for the sliding line */
+    padding-bottom: 4px; 
+}
+
 .nav-link:hover { color: var(--accent); }
-.nav-link.active { color: var(--accent); border-bottom: 2px solid var(--accent); padding-bottom: 4px; }
 
-/* --- CONTAINERS & SPACING --- */
-.container { width: 100%; max-width: 600px; padding: 120px 24px 40px; text-align: center; animation: fadeIn 0.8s ease-out; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* The invisible, collapsed line waiting underneath every link */
+.nav-link::after {
+    content: '';
+    position: absolute;
+    width: 0; /* Starts at 0 width (invisible) */
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: var(--accent);
+    /* The magic transition that smoothly animates both the width and the color */
+    transition: width 0.3s ease, background-color 0.3s ease; 
+}
 
-.gallery-container { max-width: 1280px; padding-bottom: 60px; }
-.contact-container { padding-top: 150px; flex: 1; }
+/* When you hover, the line expands to 100% width */
+.nav-link:hover::after { width: 100%; }
+
+/* The active page gets the line permanently expanded */
+.nav-link.active { color: var(--accent); border-bottom: none; }
+.nav-link.active::after { width: 100%; }
+
+/* --- THE MINECRAFT GREEN OVERRIDE --- */
+/* This targets ONLY the Minecraft link using its href attribute */
+.nav-link[href="minecraft.html"]:hover { color: #22c55e; }
+.nav-link[href="minecraft.html"].active { color: #22c55e; }
+.nav-link[href="minecraft.html"]::after { background-color: #22c55e; }
 
 /* --- TYPOGRAPHY --- */
 h1 { font-size: 2rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
