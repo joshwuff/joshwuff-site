@@ -59,14 +59,14 @@
             border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
         }
 
-        .nav-link { 
-            text-decoration: none; 
-            color: var(--text-secondary); 
-            font-weight: 600; 
-            font-size: 0.9rem; 
-            transition: color 0.3s ease; 
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: color 0.3s ease;
             position: relative; /* Acts as an anchor for the sliding line */
-            padding-bottom: 4px; 
+            padding-bottom: 4px;
         }
 
         /* 1. Force standard links (Socials, Photography, Contact) to be RED */
@@ -82,13 +82,13 @@
             bottom: 0;
             left: 0;
             background-color: #ef4444 !important;
-            transition: width 0.3s ease, background-color 0.3s ease; 
+            transition: width 0.3s ease, background-color 0.3s ease;
         }
 
         /* 3. Make the line slide out on hover OR stay out if active */
         .nav-link:hover::after,
-        .nav-link.active::after { 
-            width: 100%; 
+        .nav-link.active::after {
+            width: 100%;
         }
 
         /* 4. MINECRAFT OVERRIDE: Force ONLY the Minecraft link to be GREEN */
@@ -148,6 +148,7 @@
         .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
         .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
         .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
+        .social-youtube:hover { border-color: #ff0000 !important; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4) !important; color: #ff0000 !important; transform: translateY(-2px); }
         
         .social-joshinsta:hover { border-color: #bc1888 !important; box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important; background: var(--glass-bg) !important; color: var(--text-primary) !important; transform: translateY(-2px); }
         .social-joshinsta:hover i { opacity: 1; transform: scale(1.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
@@ -279,6 +280,10 @@
             <a href="https://x.com/joshwuff_" class="social-link social-x">
                 <span>Follow on X (@joshwuff_)</span>
                 <i class="fa-brands fa-x-twitter"></i>
+            </a>
+            <a href="https://www.youtube.com/@joshwuff" class="social-link social-youtube">
+                <span>YouTube Channel</span>
+                <i class="fa-brands fa-youtube"></i>
             </a>
             
             <div class="embed-wrapper">
