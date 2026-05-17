@@ -135,12 +135,39 @@
             .photo-grid { grid-template-columns: 1fr; }
             .photo-item .photo-overlay { transform: translateY(0); font-size: 0.9rem; padding: 25px 12px 12px; background: linear-gradient(transparent, rgba(13, 13, 18, 0.98) 60%); }
         }
+
+        /* --- NEW BADGE --- */
+        .new-badge {
+            background-color: #ef4444; 
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            margin-left: 6px;
+            vertical-align: middle;
+            display: inline-block;
+            animation: pulse-badge 1.5s infinite;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+        }
+
+        .nav-link[href="minecraft.html"]:hover .new-badge,
+        .nav-link[href="minecraft.html"].active .new-badge {
+            background-color: #22c55e !important;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <a href="index.html" class="nav-link">Socials</a>
-        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="photography.html" class="nav-link active">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
         <a href="minecraft.html" class="nav-link">Minecraft <span class="new-badge">NEW</span></a>
     </nav>
