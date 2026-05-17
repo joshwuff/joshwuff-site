@@ -138,17 +138,18 @@
 
         /* --- NEW BADGE --- */
         .new-badge {
+            position: absolute;
+            top: -6px;
+            right: -42px;
             background-color: #ef4444; 
             color: white;
             font-size: 0.65rem;
             font-weight: 800;
             padding: 2px 6px;
             border-radius: 6px;
-            margin-left: 6px;
-            vertical-align: middle;
-            display: inline-block;
             animation: pulse-badge 1.5s infinite;
             box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            pointer-events: none; /* Prevents cursor interference */
         }
 
         .nav-link[href="minecraft.html"]:hover .new-badge,
