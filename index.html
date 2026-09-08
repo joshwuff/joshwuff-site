@@ -65,19 +65,17 @@
             font-weight: 600;
             font-size: 0.9rem;
             transition: color 0.3s ease;
-            position: relative; /* Acts as an anchor for the sliding line */
+            position: relative;
             padding-bottom: 4px;
         }
 
-        /* 1. Force standard links (Socials, Photography, Contact) to be RED */
         .nav-link:hover { color: #ef4444 !important; }
         .nav-link.active { color: #ef4444 !important; border-bottom: none !important; }
 
-        /* 2. Create the sliding line and force it to be RED */
         .nav-link::after {
             content: '';
             position: absolute;
-            width: 0; /* Starts invisible */
+            width: 0;
             height: 2px;
             bottom: 0;
             left: 0;
@@ -85,18 +83,40 @@
             transition: width 0.3s ease, background-color 0.3s ease;
         }
 
-        /* 3. Make the line slide out on hover OR stay out if active */
         .nav-link:hover::after,
         .nav-link.active::after {
             width: 100%;
         }
 
-        /* 4. MINECRAFT OVERRIDE: Force ONLY the Minecraft link to be GREEN */
-        .nav-link[href="minecraft.html"]:hover { color: #22c55e !important; }
-        .nav-link[href="minecraft.html"].active { color: #22c55e !important; border-bottom: none !important; }
-        .nav-link[href="minecraft.html"]::after { background-color: #22c55e !important; }
+        /* --- NEW BADGE --- */
+        .new-badge {
+            position: absolute;
+            top: -6px;
+            right: -42px;
+            background-color: #ef4444;
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            animation: pulse-badge 1.5s infinite;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            pointer-events: none;
+        }
 
-        .container { width: 100%; max-width: 600px; padding: 120px 24px 60px; text-align: center; animation: fadeIn 0.8s ease-out; }
+        @keyframes pulse-badge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 850px;
+            padding: 120px 24px 60px;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+        }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .profile-img {
@@ -116,21 +136,46 @@
         .subtitle { color: var(--accent); font-size: 1.1rem; margin-top: 8px; font-weight: 600; }
         .bio { font-size: 1rem; color: var(--text-secondary); margin: 24px 0 40px; line-height: 1.6; }
 
-        .links-container { display: flex; flex-direction: column; gap: 16px; }
-
+        /* Widescreen Grid */
+        .links-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            text-align: left;
+        }
+        
+        /* Frosted Glass Buttons */
         .social-link {
             display: flex; justify-content: center; align-items: center; position: relative; padding: 18px 24px;
-            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 12px; color: var(--text-primary);
-            text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(10px); transition: all 0.3s ease !important;
+            background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 16px; color: var(--text-primary);
+            text-decoration: none; font-weight: 600; font-size: 1.05rem; backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
             cursor: pointer; user-select: none;
         }
 
-        .social-link:hover { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); transform: translateY(-2px); }
+        .social-link:hover {
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-4px);
+        }
 
         .social-link i, .social-link .custom-icon {
             position: absolute; right: 24px; font-size: 1.3rem; width: 1.3rem; height: 1.3rem; opacity: 0.7; transition: transform 0.3s ease, opacity 0.3s ease;
         }
-        .social-link:hover i, .social-link:hover .custom-icon { opacity: 1; transform: scale(1.15); }
+        .social-link:hover i, .social-link:hover .custom-icon {
+            opacity: 1; transform: scale(1.15);
+        }
+
+        /* CUSTOM COLORS (Updated for downward floating shadows!) */
+        .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 12px 24px rgba(88, 101, 242, 0.4) !important; color: #5865F2 !important; }
+        .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 12px 24px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
+        .social-x:hover { border-color: #ffffff !important; box-shadow: 0 12px 24px rgba(255, 255, 255, 0.2) !important; color: #ffffff !important; }
+        .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
+        .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 12px 24px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
+        .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 12px 24px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
+        .social-youtube:hover { border-color: #ff0000 !important; box-shadow: 0 12px 24px rgba(255, 0, 0, 0.4) !important; color: #ff0000 !important; }
+        
+        .social-joshinsta:hover { border-color: #bc1888 !important; box-shadow: -4px 12px 24px rgba(240, 148, 51, 0.3), 4px 12px 24px rgba(188, 24, 136, 0.3) !important; background: var(--glass-bg) !important; color: var(--text-primary) !important; }
+        .social-joshinsta:hover i { opacity: 1; transform: scale(1.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
+
 
         .embed-wrapper { display: flex; flex-direction: column; }
         .embed-container {
@@ -141,17 +186,6 @@
 
         .direct-link-btn { display: inline-block; margin-top: 12px; padding: 10px 20px; color: white; text-decoration: none; border-radius: 8px; font-weight: 600; font-size: 0.95rem; transition: opacity 0.3s; }
         .direct-link-btn:hover { opacity: 0.8; }
-
-        .social-discord:hover { border-color: #5865F2 !important; box-shadow: 0 0 20px rgba(88, 101, 242, 0.5) !important; color: #5865F2 !important; transform: translateY(-2px); }
-        .social-bsky:hover { border-color: #0085ff !important; box-shadow: 0 0 20px rgba(0, 133, 255, 0.4) !important; color: #0085ff !important; }
-        .social-x:hover { border-color: #ffffff !important; box-shadow: 0 0 20px rgba(255, 255, 255, 0.3) !important; color: #ffffff !important; }
-        .social-tiktok:hover, .social-tiktok.active-btn { border-color: #fe2c55 !important; box-shadow: -4px 4px 15px rgba(0, 242, 254, 0.4), 4px -4px 15px rgba(254, 44, 85, 0.4) !important; color: #f8fafc !important; }
-        .social-twitch:hover, .social-twitch.active-btn { border-color: #9146FF !important; box-shadow: 0 0 20px rgba(145, 70, 255, 0.4) !important; color: #9146FF !important; }
-        .social-furtrack:hover { border-color: #f59e0b !important; box-shadow: 0 0 20px rgba(245, 158, 11, 0.4) !important; color: #f59e0b !important; }
-        .social-youtube:hover { border-color: #ff0000 !important; box-shadow: 0 0 20px rgba(255, 0, 0, 0.4) !important; color: #ff0000 !important; transform: translateY(-2px); }
-        
-        .social-joshinsta:hover { border-color: #bc1888 !important; box-shadow: -4px 4px 15px rgba(240, 148, 51, 0.4), 4px -4px 15px rgba(188, 24, 136, 0.4) !important; background: var(--glass-bg) !important; color: var(--text-primary) !important; transform: translateY(-2px); }
-        .social-joshinsta:hover i { opacity: 1; transform: scale(1.15); background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%); -webkit-background-clip: text; background-clip: text; color: transparent !important; }
 
         footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
 
@@ -203,14 +237,13 @@
         /* --- THE GRID HITBOX D-PAD --- */
         .d-pad {
             display: none;
-            grid-template-columns: repeat(3, 70px); /* 3 columns of 70px */
-            grid-template-rows: repeat(3, 70px);    /* 3 rows of 70px */
-            gap: 0; /* Zero empty space between hitboxes! */
+            grid-template-columns: repeat(3, 70px);
+            grid-template-rows: repeat(3, 70px);
+            gap: 0;
             margin-top: 10px;
             justify-content: center;
         }
         
-        /* Positioning the massive invisible squares */
         .up-cell { grid-column: 2; grid-row: 1; }
         .left-cell { grid-column: 1; grid-row: 2; }
         .right-cell { grid-column: 3; grid-row: 2; }
@@ -219,8 +252,6 @@
         .d-cell {
             display: flex; justify-content: center; align-items: center;
             width: 100%; height: 100%; cursor: pointer;
-            
-            /* Anti-Apple Armor */
             touch-action: none;
             -webkit-user-select: none; user-select: none;
             -webkit-tap-highlight-color: transparent;
@@ -231,7 +262,7 @@
             width: 55px; height: 55px; border-radius: 50%; font-size: 1.4rem;
             display: flex; justify-content: center; align-items: center;
             backdrop-filter: blur(10px); transition: background 0.1s ease;
-            pointer-events: none; /* Passes the touch through to the massive cell behind it */
+            pointer-events: none;
         }
 
         @media (max-width: 500px) {
@@ -246,7 +277,6 @@
         <a href="photography.html" class="nav-link">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
         <!-- <a href="minecraft.html" class="nav-link">Minecraft <span class="new-badge">NEW</span></a> -->
-
     </nav>
 
     <div class="container">
