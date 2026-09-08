@@ -110,7 +110,7 @@
 
         .server-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 40px; }
         
-.server-card {
+        .server-card {
             background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 16px;
             padding: 24px; text-align: left; position: relative; overflow: hidden;
             transition: transform 0.3s ease, border-color 0.3s ease;
@@ -161,6 +161,34 @@
             .server-grid { grid-template-columns: 1fr; }
             .navbar { gap: 15px; font-size: 0.85rem; }
         }
+
+        /* --- NEW BADGE --- */
+        .new-badge {
+            position: absolute;
+            top: -6px;
+            right: -42px;
+            background-color: #ef4444; 
+            color: white;
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            animation: pulse-badge 1.5s infinite;
+            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
+            pointer-events: none; /* Prevents cursor interference */
+        }
+
+        .nav-link[href="minecraft.html"]:hover .new-badge,
+        .nav-link[href="minecraft.html"].active .new-badge {
+            background-color: #22c55e !important;
+            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+        }
+
+        @keyframes pulse-badge {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+            100% { transform: scale(1); }
+        }
     </style>
 </head>
 <body>
@@ -168,7 +196,7 @@
         <a href="index.html" class="nav-link">Socials</a>
         <a href="photography.html" class="nav-link">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
-        <a href="minecraft.html" class="nav-link active">Minecraft</a>
+        <a href="minecraft.html" class="nav-link active">Minecraft <span class="new-badge">NEW</span></a>
     </nav>
 
     <div class="container">
