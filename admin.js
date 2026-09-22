@@ -85,8 +85,9 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
         const title = req.body.title;
         const category = req.body.category;
         const file = req.file;
-        const filename = Date.now() + '.jpg';
+        const filename = Date.now() + '.jpg'; 
         
+        // Define paths cleanly
         const originalPath = path.join('photos', filename);
         const thumbPath = path.join('thumbnails', filename);
 
@@ -96,20 +97,25 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
         await sharp(file.path).resize(600, 600, { fit: 'cover' }).jpeg({ quality: 80 }).toFile(thumbPath);
         fs.unlinkSync(file.path);
 
+        // Define the relative source string used in photos.json
+        const photoSrc = 'photos/' + filename;
+
+        // Update photos.json
         let photos = getPhotos();
-        photos.unshift({ src: 'photos/' + filename, title: title, category: category, alt: title });
+        photos.unshift({ src: photoSrc, title: title, category: category, alt: title });
         fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
 
+        // Update thumbnails.json AUTOMATICALLY and accurately
         let thumbs = getThumbs();
-        // FIXED: Explicitly map the full photo path to the thumbnail path
-        thumbs['photos/' + filename] = 'thumbnails/' + filename;
+        thumbs[photoSrc] = 'thumbnails/' + filename;
         fs.writeFileSync('thumbnails.json', JSON.stringify(thumbs, null, 4));
 
-        res.redirect('/');
+        res.redirect('/'); 
     } catch (err) {
         res.status(500).send('<h2 style="color: red;">Error uploading: ' + err.message + '</h2>');
     }
 });
+
 
 
 // 3. The Edit Route
