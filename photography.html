@@ -45,7 +45,7 @@
 
         /* --- LIGHTBOX INFO UI --- */
         .lightbox-info-btn {
-            position: absolute; bottom: 30px; left: 30px; width: 45px; height: 45px;
+            position: absolute; bottom: 20px; left: 20px; width: 45px; height: 45px;
             border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
             color: white; font-size: 20px; display: flex; justify-content: center; align-items: center;
             cursor: pointer; z-index: 2005; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -56,16 +56,23 @@
         }
 
         .lightbox-info-panel {
-            position: absolute; bottom: 85px; left: 30px; background: rgba(13, 13, 18, 0.85);
+            position: absolute; bottom: 75px; left: 20px; background: rgba(13, 13, 18, 0.85);
             backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border); padding: 20px 25px; border-radius: 16px;
+            border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 16px;
             color: var(--text-primary); z-index: 2005; opacity: 0; transform: translateY(15px);
             pointer-events: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 300px; text-align: left;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 280px; text-align: left;
         }
         .lightbox-info-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
-        .lightbox-info-title { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 700; }
-        .lightbox-info-category { margin: 0; font-size: 0.85rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+        .lightbox-info-title { margin: 0 0 4px 0; font-size: 1.1rem; font-weight: 700; }
+        .lightbox-info-category { margin: 0; font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        @media (min-width: 768px) {
+            .lightbox-info-btn { bottom: 30px; left: 30px; }
+            .lightbox-info-panel { bottom: 85px; left: 30px; padding: 20px 25px; max-width: 300px; }
+            .lightbox-info-title { font-size: 1.2rem; margin-bottom: 5px; }
+            .lightbox-info-category { font-size: 0.85rem; }
+        }
 
         /* THEME & LAYOUT */
         :root {
@@ -358,13 +365,11 @@
                 const currentPhoto = filteredPhotos[currentLightboxIndex];
                 lightboxImg.src = currentPhoto.src;
                 
-                // Update Info Panel text with innerHTML so tags work
+                // Update Info Panel text with innerHTML so formatting tags work
                 document.getElementById('lightbox-info-title').innerHTML = currentPhoto.title || "Untitled";
                 document.getElementById('lightbox-info-category').innerText = currentPhoto.category || "Unknown";
                 
-                // Hide panel automatically when switching photos
-                document.getElementById('lightbox-info-btn').classList.remove('active');
-                document.getElementById('lightbox-info-panel').classList.remove('active');
+                // Panel stays open if it was already toggled on when changing photos!
             }
 
             function renderGallery() {
@@ -499,6 +504,12 @@
 
             infoPanel.addEventListener('click', (e) => {
                 e.stopPropagation(); // Prevents clicks inside the panel from closing the lightbox
+            });
+
+            // Close info panel when clicking on the image itself
+            lightboxImg.addEventListener('click', () => {
+                infoBtn.classList.remove('active');
+                infoPanel.classList.remove('active');
             });
         });
 
