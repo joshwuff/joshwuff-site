@@ -90,7 +90,9 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
         const originalPath = path.join('photos', filename);
         const thumbPath = path.join('thumbnails', filename);
 
+        // Compress and save the full image
         await sharp(file.path).jpeg({ quality: 85 }).toFile(originalPath);
+        // Generate the 600x600 thumbnail
         await sharp(file.path).resize(600, 600, { fit: 'cover' }).jpeg({ quality: 80 }).toFile(thumbPath);
         fs.unlinkSync(file.path);
 
@@ -99,14 +101,16 @@ app.post('/upload', upload.single('photo'), async (req, res) => {
         fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
 
         let thumbs = getThumbs();
+        // FIXED: Explicitly map the full photo path to the thumbnail path
         thumbs['photos/' + filename] = 'thumbnails/' + filename;
         fs.writeFileSync('thumbnails.json', JSON.stringify(thumbs, null, 4));
 
-        res.redirect('/'); // Instantly reloads the page to show the new photo
+        res.redirect('/');
     } catch (err) {
         res.status(500).send('<h2 style="color: red;">Error uploading: ' + err.message + '</h2>');
     }
 });
+
 
 // 3. The Edit Route
 app.post('/edit', (req, res) => {
