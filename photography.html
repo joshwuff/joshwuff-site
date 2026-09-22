@@ -358,8 +358,8 @@
                 const currentPhoto = filteredPhotos[currentLightboxIndex];
                 lightboxImg.src = currentPhoto.src;
                 
-                // Update Info Panel text
-                document.getElementById('lightbox-info-title').innerText = currentPhoto.title || "Untitled";
+                // Update Info Panel text with innerHTML so tags work
+                document.getElementById('lightbox-info-title').innerHTML = currentPhoto.title || "Untitled";
                 document.getElementById('lightbox-info-category').innerText = currentPhoto.category || "Unknown";
                 
                 // Hide panel automatically when switching photos
