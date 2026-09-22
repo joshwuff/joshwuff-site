@@ -68,7 +68,8 @@ app.get('/', (req, res) => {
                         <option value="furry">Furry</option>
                         <option value="other">Other</option>
                     </select>
-                    <button type="submit" style="padding: 15px; background: #22c55e; color: #000; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px;">Upload to Gallery</button>
+                    <button type="submit" style="padding: 15px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px;">Upload to Gallery</button>
+
                 </form>
 
                 <h3 style="color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Manage Gallery (${photos.length} Photos)</h3>

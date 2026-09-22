@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" href="favicon.png?v=3">
     <link rel="apple-touch-icon" href="favicon.png?v=3">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         /* LIGHTBOX */
         .lightbox {
@@ -24,7 +25,6 @@
             transition: transform 0.3s ease;
         }
         
-        /* This class is applied via JS while dragging/zooming so the image doesn't lag behind the mouse */
         #lightbox-img.no-transition {
             transition: none !important;
         }
@@ -42,6 +42,30 @@
         .lightbox-next { right: 20px; }
         .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
         .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
+
+        /* --- LIGHTBOX INFO UI --- */
+        .lightbox-info-btn {
+            position: absolute; bottom: 30px; left: 30px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; font-size: 20px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 2005; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .lightbox-info-btn:hover, .lightbox-info-btn.active {
+            background: rgba(239, 68, 68, 0.8); border-color: #ef4444; transform: scale(1.1);
+        }
+
+        .lightbox-info-panel {
+            position: absolute; bottom: 85px; left: 30px; background: rgba(13, 13, 18, 0.85);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); padding: 20px 25px; border-radius: 16px;
+            color: var(--text-primary); z-index: 2005; opacity: 0; transform: translateY(15px);
+            pointer-events: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 300px; text-align: left;
+        }
+        .lightbox-info-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .lightbox-info-title { margin: 0 0 5px 0; font-size: 1.2rem; font-weight: 700; }
+        .lightbox-info-category { margin: 0; font-size: 0.85rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
 
         /* THEME & LAYOUT */
         :root {
@@ -61,39 +85,17 @@
             border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
         }
 
-        .nav-link { 
-            text-decoration: none; 
-            color: var(--text-secondary); 
-            font-weight: 600; 
-            font-size: 0.9rem; 
-            transition: color 0.3s ease; 
-            position: relative; /* Acts as an anchor for the sliding line */
-            padding-bottom: 4px; 
+        .nav-link {
+            text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem;
+            transition: color 0.3s ease; position: relative; padding-bottom: 4px;
         }
-
-        /* 1. Force standard links (Socials, Photography, Contact) to be RED */
         .nav-link:hover { color: #ef4444 !important; }
         .nav-link.active { color: #ef4444 !important; border-bottom: none !important; }
-
-        /* 2. Create the sliding line and force it to be RED */
         .nav-link::after {
-            content: '';
-            position: absolute;
-            width: 0; /* Starts invisible */
-            height: 2px;
-            bottom: 0;
-            left: 0;
-            background-color: #ef4444 !important;
-            transition: width 0.3s ease, background-color 0.3s ease; 
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
+            background-color: #ef4444 !important; transition: width 0.3s ease, background-color 0.3s ease;
         }
-
-        /* 3. Make the line slide out on hover OR stay out if active */
-        .nav-link:hover::after,
-        .nav-link.active::after { 
-            width: 100%; 
-        }
-
-        /* 4. MINECRAFT OVERRIDE: Force ONLY the Minecraft link to be GREEN */
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
         .nav-link[href="minecraft.html"]:hover { color: #22c55e !important; }
         .nav-link[href="minecraft.html"].active { color: #22c55e !important; border-bottom: none !important; }
         .nav-link[href="minecraft.html"]::after { background-color: #22c55e !important; }
@@ -138,31 +140,14 @@
 
         /* --- NEW BADGE --- */
         .new-badge {
-            position: absolute;
-            top: -6px;
-            right: -42px;
-            background-color: #ef4444; 
-            color: white;
-            font-size: 0.65rem;
-            font-weight: 800;
-            padding: 2px 6px;
-            border-radius: 6px;
-            animation: pulse-badge 1.5s infinite;
-            box-shadow: 0 0 10px rgba(239, 68, 68, 0.5);
-            pointer-events: none; /* Prevents cursor interference */
+            position: absolute; top: -6px; right: -42px; background-color: #ef4444; color: white;
+            font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;
+            animation: pulse-badge 1.5s infinite; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); pointer-events: none;
         }
-
-        .nav-link[href="minecraft.html"]:hover .new-badge,
-        .nav-link[href="minecraft.html"].active .new-badge {
-            background-color: #22c55e !important;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
+        .nav-link[href="minecraft.html"]:hover .new-badge, .nav-link[href="minecraft.html"].active .new-badge {
+            background-color: #22c55e !important; box-shadow: 0 0 10px rgba(34, 197, 94, 0.5) !important;
         }
-
-        @keyframes pulse-badge {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-            100% { transform: scale(1); }
-        }
+        @keyframes pulse-badge { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
     </style>
 </head>
 <body>
@@ -171,7 +156,6 @@
         <a href="photography.html" class="nav-link active">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
         <!-- <a href="minecraft.html" class="nav-link">Minecraft <span class="new-badge">NEW</span></a> -->
-
     </nav>
     
     <div class="container">
@@ -222,6 +206,13 @@
         <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
         <img id="lightbox-img" src="" alt="Fullscreen Photography">
         <span class="lightbox-next" id="lightbox-next">&#10095;</span>
+        
+        <!-- New Info UI -->
+        <div id="lightbox-info-btn" class="lightbox-info-btn"><i class="fa-solid fa-info"></i></div>
+        <div id="lightbox-info-panel" class="lightbox-info-panel">
+            <h3 id="lightbox-info-title" class="lightbox-info-title">Title</h3>
+            <p id="lightbox-info-category" class="lightbox-info-category">Category</p>
+        </div>
     </div>
 
     <script>
@@ -293,7 +284,6 @@
 
             lightboxImg.addEventListener('wheel', (e) => {
                 e.preventDefault();
-                
                 lightboxImg.classList.add('no-transition');
                 
                 const zoomSpeed = 0.15;
@@ -310,14 +300,10 @@
                     pointY = 0;
                     lightboxImg.style.cursor = 'default';
                 } else {
-                    // Boundary enforcement when zooming OUT
-                    // This pulls the image back into view if you zoomed out while dragging the edge
                     const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
                     const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
-                    
                     pointX = Math.max(-limitX, Math.min(limitX, pointX));
                     pointY = Math.max(-limitY, Math.min(limitY, pointY));
-
                     lightboxImg.style.cursor = pawCursor;
                 }
                 
@@ -336,39 +322,22 @@
                     lightboxImg.classList.add('no-transition');
                     startDragX = e.clientX - pointX;
                     startDragY = e.clientY - pointY;
-                    
                     lightboxImg.style.cursor = pawCursor;
                 }
             });
 
             window.addEventListener('mousemove', (e) => {
                 if (!isPanning) return;
-                
                 pointX = e.clientX - startDragX;
                 pointY = e.clientY - startDragY;
 
-                // --- BOUNDARY ENFORCEMENT & ANTI-STICK LOGIC ---
-                // Stop dragging if they hit the edge of the image bounds
                 const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
                 const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
 
-                // Clamp the actual X/Y points
-                if (pointX > limitX) {
-                    pointX = limitX;
-                    startDragX = e.clientX - pointX; // Re-sync mouse to prevent "sticky edge"
-                }
-                if (pointX < -limitX) {
-                    pointX = -limitX;
-                    startDragX = e.clientX - pointX;
-                }
-                if (pointY > limitY) {
-                    pointY = limitY;
-                    startDragY = e.clientY - pointY;
-                }
-                if (pointY < -limitY) {
-                    pointY = -limitY;
-                    startDragY = e.clientY - pointY;
-                }
+                if (pointX > limitX) { pointX = limitX; startDragX = e.clientX - pointX; }
+                if (pointX < -limitX) { pointX = -limitX; startDragX = e.clientX - pointX; }
+                if (pointY > limitY) { pointY = limitY; startDragY = e.clientY - pointY; }
+                if (pointY < -limitY) { pointY = -limitY; startDragY = e.clientY - pointY; }
 
                 applyTransform();
             });
@@ -385,7 +354,17 @@
             function updateLightboxImage() {
                 if (filteredPhotos.length === 0) return;
                 resetZoom();
-                lightboxImg.src = filteredPhotos[currentLightboxIndex].src;
+                
+                const currentPhoto = filteredPhotos[currentLightboxIndex];
+                lightboxImg.src = currentPhoto.src;
+                
+                // Update Info Panel text
+                document.getElementById('lightbox-info-title').innerText = currentPhoto.title || "Untitled";
+                document.getElementById('lightbox-info-category').innerText = currentPhoto.category || "Unknown";
+                
+                // Hide panel automatically when switching photos
+                document.getElementById('lightbox-info-btn').classList.remove('active');
+                document.getElementById('lightbox-info-panel').classList.remove('active');
             }
 
             function renderGallery() {
@@ -506,6 +485,20 @@
                     lightbox.classList.remove('active');
                     setTimeout(resetZoom, 300);
                 }
+            });
+
+            // --- INFO PANEL CLICK LOGIC ---
+            const infoBtn = document.getElementById('lightbox-info-btn');
+            const infoPanel = document.getElementById('lightbox-info-panel');
+
+            infoBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stops the click from accidentally closing the lightbox
+                infoBtn.classList.toggle('active');
+                infoPanel.classList.toggle('active');
+            });
+
+            infoPanel.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevents clicks inside the panel from closing the lightbox
             });
         });
 
