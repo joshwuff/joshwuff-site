@@ -9,7 +9,6 @@ const upload = multer({ dest: 'temp_uploads/' });
 
 app.use(express.urlencoded({ extended: true }));
 
-// Capitalized 'Photos'
 app.use('/Photos', express.static(path.join(__dirname, 'Photos')));
 app.use('/thumbnails', express.static(path.join(__dirname, 'thumbnails')));
 
@@ -56,14 +55,15 @@ app.get('/', (req, res) => {
                 <h2 style="color: #f8fafc; text-align: center;">Joshwuff Upload Portal</h2>
                 
                 <form action="/upload" method="POST" enctype="multipart/form-data" style="display: flex; flex-direction: column; gap: 15px; background: rgba(255,255,255,0.03); padding: 30px; border-radius: 16px; border: 1px solid rgba(255,255,255,0.08); margin-bottom: 40px;">
-                    <input type="file" name="photo" accept="image/*" required style="padding: 10px; background: #1a1a24; border-radius: 8px; color: white;">
-                    <input type="text" name="title" placeholder="Photo Title" required style="padding: 15px; border-radius: 8px; border: none; background: #1a1a24; color: white;">
+                    <!-- Added 'multiple' so you can select a whole batch of photos -->
+                    <input type="file" name="photos" accept="image/*" multiple required style="padding: 10px; background: #1a1a24; border-radius: 8px; color: white;">
+                    <input type="text" name="title" placeholder="Photo Title (e.g., Megaplex 2026)" required style="padding: 15px; border-radius: 8px; border: none; background: #1a1a24; color: white;">
                     <select name="category" required style="padding: 15px; border-radius: 8px; border: none; background: #1a1a24; color: white;">
                         <option value="nature">Nature</option>
-                        <option value="furry">Furry</option>
+                        <option value="furry" selected>Furry</option>
                         <option value="other">Other</option>
                     </select>
-                    <button type="submit" style="padding: 15px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px;">Upload to Gallery</button>
+                    <button type="submit" style="padding: 15px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px;">Upload Batch to Gallery</button>
                 </form>
 
                 <h3 style="color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Manage Gallery (${photos.length} Photos)</h3>
@@ -73,34 +73,43 @@ app.get('/', (req, res) => {
     `);
 });
 
-app.post('/upload', upload.single('photo'), async (req, res) => {
+// Batch Upload Processor
+app.post('/upload', upload.array('photos', 50), async (req, res) => {
     try {
         const title = req.body.title;
         const category = req.body.category;
-        const file = req.file;
-        const filename = Date.now() + '.jpg';
-        
-        // Capitalized 'Photos'
-        const originalPath = path.join('Photos', filename);
-        const thumbPath = path.join('thumbnails', filename);
+        const files = req.files;
 
-        await sharp(file.path).jpeg({ quality: 85 }).toFile(originalPath);
-        await sharp(file.path).resize(600, 600, { fit: 'cover' }).jpeg({ quality: 80 }).toFile(thumbPath);
-        fs.unlinkSync(file.path);
-
-        const photoSrc = 'Photos/' + filename;
+        if (!files || files.length === 0) {
+            return res.status(400).send('No files uploaded.');
+        }
 
         let photos = getPhotos();
-        photos.unshift({ src: photoSrc, title: title, category: category, alt: title });
-        fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
-
         let thumbs = getThumbs();
-        thumbs[photoSrc] = 'thumbnails/' + filename;
+
+        for (const file of files) {
+            // Generate a unique filename using timestamp and random suffix to prevent overlaps
+            const filename = Date.now() + '-' + Math.round(Math.random() * 10000) + '.jpg';
+            
+            const originalPath = path.join('Photos', filename);
+            const thumbPath = path.join('thumbnails', filename);
+
+            await sharp(file.path).jpeg({ quality: 85 }).toFile(originalPath);
+            await sharp(file.path).resize(600, 600, { fit: 'cover' }).jpeg({ quality: 80 }).toFile(thumbPath);
+            fs.unlinkSync(file.path);
+
+            const photoSrc = 'Photos/' + filename;
+
+            photos.unshift({ src: photoSrc, title: title, category: category, alt: title });
+            thumbs[photoSrc] = 'thumbnails/' + filename;
+        }
+
+        fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
         fs.writeFileSync('thumbnails.json', JSON.stringify(thumbs, null, 4));
 
         res.redirect('/');
     } catch (err) {
-        res.status(500).send('<h2 style="color: red;">Error uploading: ' + err.message + '</h2>');
+        res.status(500).send('<h2 style="color: red;">Error uploading batch: ' + err.message + '</h2>');
     }
 });
 
