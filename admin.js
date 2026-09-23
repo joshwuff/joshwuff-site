@@ -7,28 +7,23 @@ const path = require('path');
 const app = express();
 const upload = multer({ dest: 'temp_uploads/' });
 
-// Enable form data parsing for the Edit and Delete buttons
 app.use(express.urlencoded({ extended: true }));
 
-// Allow the admin portal to display the actual images
-app.use('/photos', express.static(path.join(__dirname, 'photos')));
+// Capitalized 'Photos'
+app.use('/Photos', express.static(path.join(__dirname, 'Photos')));
 app.use('/thumbnails', express.static(path.join(__dirname, 'thumbnails')));
 
-// Ensure destination folders exist
-['photos', 'thumbnails'].forEach(dir => {
+['Photos', 'thumbnails'].forEach(dir => {
     if (!fs.existsSync(dir)) fs.mkdirSync(dir);
 });
 
-// Helper functions to read JSON safely
 const getPhotos = () => fs.existsSync('photos.json') ? JSON.parse(fs.readFileSync('photos.json')) : [];
 const getThumbs = () => fs.existsSync('thumbnails.json') ? JSON.parse(fs.readFileSync('thumbnails.json')) : {};
 
-// 1. The Admin Interface & Dashboard
 app.get('/', (req, res) => {
     const photos = getPhotos();
     const thumbs = getThumbs();
 
-    // Generate the HTML for the existing gallery list
     let galleryHtml = photos.map(p => {
         const thumbPath = thumbs[p.src] || p.src;
         return `
@@ -69,7 +64,6 @@ app.get('/', (req, res) => {
                         <option value="other">Other</option>
                     </select>
                     <button type="submit" style="padding: 15px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; font-size: 1rem; margin-top: 10px;">Upload to Gallery</button>
-
                 </form>
 
                 <h3 style="color: #f8fafc; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px;">Manage Gallery (${photos.length} Photos)</h3>
@@ -79,46 +73,37 @@ app.get('/', (req, res) => {
     `);
 });
 
-// 2. The Upload Processor
 app.post('/upload', upload.single('photo'), async (req, res) => {
     try {
         const title = req.body.title;
         const category = req.body.category;
         const file = req.file;
-        const filename = Date.now() + '.jpg'; 
+        const filename = Date.now() + '.jpg';
         
-        // Define paths cleanly
-        const originalPath = path.join('photos', filename);
+        // Capitalized 'Photos'
+        const originalPath = path.join('Photos', filename);
         const thumbPath = path.join('thumbnails', filename);
 
-        // Compress and save the full image
         await sharp(file.path).jpeg({ quality: 85 }).toFile(originalPath);
-        // Generate the 600x600 thumbnail
         await sharp(file.path).resize(600, 600, { fit: 'cover' }).jpeg({ quality: 80 }).toFile(thumbPath);
         fs.unlinkSync(file.path);
 
-        // Define the relative source string used in photos.json
-        const photoSrc = 'photos/' + filename;
+        const photoSrc = 'Photos/' + filename;
 
-        // Update photos.json
         let photos = getPhotos();
         photos.unshift({ src: photoSrc, title: title, category: category, alt: title });
         fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
 
-        // Update thumbnails.json AUTOMATICALLY and accurately
         let thumbs = getThumbs();
         thumbs[photoSrc] = 'thumbnails/' + filename;
         fs.writeFileSync('thumbnails.json', JSON.stringify(thumbs, null, 4));
 
-        res.redirect('/'); 
+        res.redirect('/');
     } catch (err) {
         res.status(500).send('<h2 style="color: red;">Error uploading: ' + err.message + '</h2>');
     }
 });
 
-
-
-// 3. The Edit Route
 app.post('/edit', (req, res) => {
     try {
         const src = req.body.src;
@@ -130,7 +115,7 @@ app.post('/edit', (req, res) => {
         
         if (photoIndex !== -1) {
             photos[photoIndex].title = newTitle;
-            photos[photoIndex].alt = newTitle; // Update alt text for accessibility
+            photos[photoIndex].alt = newTitle;
             photos[photoIndex].category = newCategory;
             fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
         }
@@ -140,23 +125,19 @@ app.post('/edit', (req, res) => {
     }
 });
 
-// 4. The Delete Route
 app.post('/delete', (req, res) => {
     try {
         const src = req.body.src;
         
-        // Remove from photos.json
         let photos = getPhotos();
         photos = photos.filter(p => p.src !== src);
         fs.writeFileSync('photos.json', JSON.stringify(photos, null, 4));
 
-        // Get thumb path and remove from thumbnails.json
         let thumbs = getThumbs();
         const thumbSrc = thumbs[src];
         delete thumbs[src];
         fs.writeFileSync('thumbnails.json', JSON.stringify(thumbs, null, 4));
 
-        // Delete the physical .jpg files from the folders
         if (fs.existsSync(src)) fs.unlinkSync(src);
         if (thumbSrc && fs.existsSync(thumbSrc)) fs.unlinkSync(thumbSrc);
 
