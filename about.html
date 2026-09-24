@@ -153,6 +153,63 @@
             .sona-content { width: 100%; padding: 30px 20px; }
             .human-section { padding: 30px 20px; }
         }
+
+        /* --- LIGHTBOX --- */
+        .lightbox {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(13, 13, 18, 0.95); backdrop-filter: blur(15px);
+            z-index: 2000; display: flex; justify-content: center; align-items: center;
+            opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        .lightbox.active { opacity: 1; pointer-events: all; }
+        
+        #lightbox-img {
+            max-width: 95vw; max-height: 95vh; object-fit: contain; border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8); transform: scale(0.95); transition: transform 0.3s ease;
+        }
+        #lightbox-img.no-transition { transition: none !important; }
+        .lightbox.active #lightbox-img { transform: scale(1); }
+        
+        .lightbox-close {
+            position: absolute; top: 20px; right: 30px; color: white; font-size: 40px; font-weight: bold; cursor: pointer; z-index: 2001; transition: color 0.3s ease;
+        }
+        .lightbox-close:hover { color: var(--accent); }
+        .lightbox-prev, .lightbox-next {
+            position: absolute; top: 50%; transform: translateY(-50%); color: white; font-size: 50px; font-weight: bold; cursor: pointer; transition: all 0.3s ease; z-index: 2001; padding: 20px; user-select: none; opacity: 0.7;
+        }
+        .lightbox-prev { left: 20px; }
+        .lightbox-next { right: 20px; }
+        .lightbox-prev:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(-5px); }
+        .lightbox-next:hover { opacity: 1; color: var(--accent); transform: translateY(-50%) translateX(5px); }
+
+        .lightbox-info-btn {
+            position: absolute; bottom: 20px; left: 20px; width: 45px; height: 45px;
+            border-radius: 50%; background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white; font-size: 20px; display: flex; justify-content: center; align-items: center;
+            cursor: pointer; z-index: 2005; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transition: all 0.3s ease;
+        }
+        .lightbox-info-btn:hover, .lightbox-info-btn.active {
+            background: rgba(239, 68, 68, 0.8); border-color: #ef4444; transform: scale(1.1);
+        }
+
+        .lightbox-info-panel {
+            position: absolute; bottom: 75px; left: 20px; background: rgba(13, 13, 18, 0.85);
+            backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border); padding: 16px 20px; border-radius: 16px;
+            color: var(--text-primary); z-index: 2005; opacity: 0; transform: translateY(15px);
+            pointer-events: none; transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5); max-width: 280px; text-align: left;
+        }
+        .lightbox-info-panel.active { opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .lightbox-info-title { margin: 0 0 4px 0; font-size: 1.1rem; font-weight: 700; }
+        .lightbox-info-category { margin: 0; font-size: 0.8rem; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; font-weight: 700; }
+
+        @media (min-width: 768px) {
+            .lightbox-info-btn { bottom: 30px; left: 30px; }
+            .lightbox-info-panel { bottom: 85px; left: 30px; padding: 20px 25px; max-width: 300px; }
+            .lightbox-info-title { font-size: 1.2rem; margin-bottom: 5px; }
+            .lightbox-info-category { font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
@@ -172,16 +229,15 @@
 
         <!-- SONA 1: joshwuff -->
         <div class="sona-card">
-            <!-- Carousel Container -->
             <div class="sona-image carousel-container">
-                <img src="joshwuffref.PNG" alt="joshwuff Reference" class="carousel-slide active">
-                <img src="joshwuffsuit.jpg" alt="joshwuff Fursuit" class="carousel-slide">
+                <img src="joshwuffref.PNG" alt="joshwuff Reference" class="carousel-slide active" data-sona="joshwuff" data-index="0" data-title="joshwuff" data-category="Reference Sheet">
+                <img src="joshwuffsuit.jpg" alt="joshwuff Fursuit" class="carousel-slide" data-sona="joshwuff" data-index="1" data-title="joshwuff" data-category="Fursuit">
                 
-                <button class="carousel-btn left" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
-                <button class="carousel-btn right" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <button class="carousel-btn left" onclick="event.stopPropagation(); changeSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="carousel-btn right" onclick="event.stopPropagation(); changeSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
                 <div class="carousel-indicators">
-                    <span class="carousel-dot active" onclick="setSlide(0)"></span>
-                    <span class="carousel-dot" onclick="setSlide(1)"></span>
+                    <span class="carousel-dot active" onclick="event.stopPropagation(); setSlide(0)"></span>
+                    <span class="carousel-dot" onclick="event.stopPropagation(); setSlide(1)"></span>
                 </div>
             </div>
 
@@ -203,7 +259,7 @@
         <!-- SONA 2: Peachee -->
         <div class="sona-card" style="flex-direction: row-reverse;">
             <div class="sona-image">
-                <img src="peacheeref.PNG" alt="Peachee Reference">
+                <img src="peacheeref.PNG" alt="Peachee Reference" data-sona="peachee" data-index="0" data-title="Peachee" data-category="Reference Sheet">
             </div>
             <div class="sona-content">
                 <h2 class="sona-name">Peachee</h2>
@@ -219,19 +275,22 @@
             </div>
         </div>
 
-        <!-- HUMAN BIO -->
-        <div class="human-section">
-            <h2>Behind the Muzzle</h2>
-            <p class="human-desc">Hey, I'm Josh! When I'm not running around in suit at Megaplex or snapping photos, you can usually find me tinkering with 3D printers, coding web projects, exploring VRChat, or hanging out at Disney. Thanks for checking out my corner of the internet!</p>
+    <!-- LIGHTBOX HTML -->
+    <div id="lightbox" class="lightbox">
+        <span class="lightbox-close">&times;</span>
+        <span class="lightbox-prev" id="lightbox-prev">&#10094;</span>
+        <img id="lightbox-img" src="" alt="Fullscreen Reference">
+        <span class="lightbox-next" id="lightbox-next">&#10095;</span>
+        
+        <div id="lightbox-info-btn" class="lightbox-info-btn"><i class="fa-solid fa-info"></i></div>
+        <div id="lightbox-info-panel" class="lightbox-info-panel">
+            <h3 id="lightbox-info-title" class="lightbox-info-title">Title</h3>
+            <p id="lightbox-info-category" class="lightbox-info-category">Category</p>
         </div>
-
-        <footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
-        </footer>
     </div>
 
-    <!-- JavaScript for Image Carousel -->
     <script>
+        // --- CAROUSEL LOGIC ---
         let currentSlideIndex = 0;
         const slides = document.querySelectorAll('.carousel-slide');
         const dots = document.querySelectorAll('.carousel-dot');
@@ -239,10 +298,10 @@
         function updateSlider() {
             slides.forEach((slide, index) => {
                 slide.classList.remove('active');
-                dots[index].classList.remove('active');
+                if(dots[index]) dots[index].classList.remove('active');
             });
             slides[currentSlideIndex].classList.add('active');
-            dots[currentSlideIndex].classList.add('active');
+            if(dots[currentSlideIndex]) dots[currentSlideIndex].classList.add('active');
         }
 
         function changeSlide(direction) {
@@ -256,6 +315,192 @@
             currentSlideIndex = index;
             updateSlider();
         }
+
+        // --- LIGHTBOX ZOOM & PAN LOGIC ---
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxPrev = document.getElementById('lightbox-prev');
+        const lightboxNext = document.getElementById('lightbox-next');
+        const infoBtn = document.getElementById('lightbox-info-btn');
+        const infoPanel = document.getElementById('lightbox-info-panel');
+
+        let imgScale = 1;
+        let isPanning = false;
+        let pointX = 0, pointY = 0;
+        let startDragX = 0, startDragY = 0;
+        const pawCursor = "url('58aeffb2c869e092af51ee74.png') 25 25, auto";
+
+        let currentLightboxSona = null;
+        let currentLightboxPicIndex = 0;
+        let lightboxPhotos = [];
+
+        document.querySelectorAll('.sona-image img').forEach(img => {
+            if(!img.hasAttribute('data-sona')) return;
+            img.style.cursor = 'pointer';
+            
+            img.addEventListener('click', () => {
+                currentLightboxSona = img.getAttribute('data-sona');
+                currentLightboxPicIndex = parseInt(img.getAttribute('data-index'));
+                
+                lightboxPhotos = Array.from(document.querySelectorAll(`img[data-sona="${currentLightboxSona}"]`)).map(el => ({
+                    src: el.src,
+                    title: el.getAttribute('data-title'),
+                    category: el.getAttribute('data-category')
+                }));
+                
+                updateLightboxImage();
+                lightbox.classList.add('active');
+            });
+        });
+
+        function applyTransform() {
+            lightboxImg.style.transform = `translate(${pointX}px, ${pointY}px) scale(${imgScale})`;
+        }
+
+        function resetZoom() {
+            imgScale = 1; pointX = 0; pointY = 0;
+            lightboxImg.classList.remove('no-transition');
+            lightboxImg.style.transform = `translate(0px, 0px) scale(1)`;
+            lightboxImg.style.cursor = 'default';
+        }
+
+        function updateLightboxImage() {
+            if (lightboxPhotos.length === 0) return;
+            resetZoom();
+            
+            const currentPhoto = lightboxPhotos[currentLightboxPicIndex];
+            lightboxImg.src = currentPhoto.src;
+            
+            document.getElementById('lightbox-info-title').innerHTML = currentPhoto.title || "Untitled";
+            document.getElementById('lightbox-info-category').innerText = currentPhoto.category || "Unknown";
+            
+            if (lightboxPhotos.length <= 1) {
+                lightboxPrev.style.display = 'none';
+                lightboxNext.style.display = 'none';
+            } else {
+                lightboxPrev.style.display = 'block';
+                lightboxNext.style.display = 'block';
+            }
+        }
+
+        lightboxImg.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            lightboxImg.classList.add('no-transition');
+            
+            const zoomSpeed = 0.15;
+            if (e.deltaY < 0) imgScale += zoomSpeed;
+            else imgScale -= zoomSpeed;
+            
+            imgScale = Math.min(Math.max(1, imgScale), 5);
+            
+            if (imgScale === 1) {
+                pointX = 0; pointY = 0;
+                lightboxImg.style.cursor = 'default';
+            } else {
+                const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
+                const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
+                pointX = Math.max(-limitX, Math.min(limitX, pointX));
+                pointY = Math.max(-limitY, Math.min(limitY, pointY));
+                lightboxImg.style.cursor = pawCursor;
+            }
+            
+            applyTransform();
+            clearTimeout(lightboxImg.wheelTimeout);
+            lightboxImg.wheelTimeout = setTimeout(() => lightboxImg.classList.remove('no-transition'), 150);
+        });
+
+        lightboxImg.addEventListener('mousedown', (e) => {
+            if (imgScale > 1) {
+                e.preventDefault();
+                isPanning = true;
+                lightboxImg.classList.add('no-transition');
+                startDragX = e.clientX - pointX;
+                startDragY = e.clientY - pointY;
+                lightboxImg.style.cursor = pawCursor;
+            }
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!isPanning) return;
+            pointX = e.clientX - startDragX;
+            pointY = e.clientY - startDragY;
+
+            const limitX = (lightboxImg.clientWidth * imgScale) / 2.5;
+            const limitY = (lightboxImg.clientHeight * imgScale) / 2.5;
+
+            if (pointX > limitX) { pointX = limitX; startDragX = e.clientX - pointX; }
+            if (pointX < -limitX) { pointX = -limitX; startDragX = e.clientX - pointX; }
+            if (pointY > limitY) { pointY = limitY; startDragY = e.clientY - pointY; }
+            if (pointY < -limitY) { pointY = -limitY; startDragY = e.clientY - pointY; }
+
+            applyTransform();
+        });
+
+        window.addEventListener('mouseup', () => {
+            if (isPanning) {
+                isPanning = false;
+                lightboxImg.classList.remove('no-transition');
+                lightboxImg.style.cursor = imgScale > 1 ? pawCursor : 'default';
+            }
+        });
+
+        document.querySelector('.lightbox-close').addEventListener('click', () => {
+            lightbox.classList.remove('active');
+            setTimeout(resetZoom, 300);
+        });
+        
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                setTimeout(resetZoom, 300);
+            }
+        });
+
+        lightboxPrev.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (lightboxPhotos.length <= 1) return;
+            currentLightboxPicIndex = (currentLightboxPicIndex > 0) ? currentLightboxPicIndex - 1 : lightboxPhotos.length - 1;
+            updateLightboxImage();
+            
+            if (currentLightboxSona === 'joshwuff') setSlide(currentLightboxPicIndex);
+        });
+
+        lightboxNext.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (lightboxPhotos.length <= 1) return;
+            currentLightboxPicIndex = (currentLightboxPicIndex < lightboxPhotos.length - 1) ? currentLightboxPicIndex + 1 : 0;
+            updateLightboxImage();
+            
+            if (currentLightboxSona === 'joshwuff') setSlide(currentLightboxPicIndex);
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('active')) return;
+            if (e.key === 'ArrowLeft' && lightboxPhotos.length > 1) {
+                currentLightboxPicIndex = (currentLightboxPicIndex > 0) ? currentLightboxPicIndex - 1 : lightboxPhotos.length - 1;
+                updateLightboxImage();
+                if (currentLightboxSona === 'joshwuff') setSlide(currentLightboxPicIndex);
+            }
+            else if (e.key === 'ArrowRight' && lightboxPhotos.length > 1) {
+                currentLightboxPicIndex = (currentLightboxPicIndex < lightboxPhotos.length - 1) ? currentLightboxPicIndex + 1 : 0;
+                updateLightboxImage();
+                if (currentLightboxSona === 'joshwuff') setSlide(currentLightboxPicIndex);
+            }
+            else if (e.key === 'Escape') {
+                lightbox.classList.remove('active');
+                setTimeout(resetZoom, 300);
+            }
+        });
+
+        infoBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            infoBtn.classList.toggle('active');
+            infoPanel.classList.toggle('active');
+        });
+
+        infoPanel.addEventListener('click', (e) => { e.stopPropagation(); });
+        lightboxImg.addEventListener('click', () => { infoBtn.classList.remove('active'); infoPanel.classList.remove('active'); });
+
     </script>
 </body>
 </html>
