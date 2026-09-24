@@ -160,9 +160,9 @@
 <body>
     <nav class="navbar">
         <a href="index.html" class="nav-link">Socials</a>
+        <a href="about.html" class="nav-link">About</a>
         <a href="photography.html" class="nav-link active">Photography</a>
         <a href="contact.html" class="nav-link">Contact</a>
-        <!-- <a href="minecraft.html" class="nav-link">Minecraft <span class="new-badge">NEW</span></a> -->
     </nav>
     
     <div class="container">
@@ -365,11 +365,8 @@
                 const currentPhoto = filteredPhotos[currentLightboxIndex];
                 lightboxImg.src = currentPhoto.src;
                 
-                // Update Info Panel text with innerHTML so formatting tags work
                 document.getElementById('lightbox-info-title').innerHTML = currentPhoto.title || "Untitled";
                 document.getElementById('lightbox-info-category').innerText = currentPhoto.category || "Unknown";
-                
-                // Panel stays open if it was already toggled on when changing photos!
             }
 
             function renderGallery() {
@@ -497,16 +494,15 @@
             const infoPanel = document.getElementById('lightbox-info-panel');
 
             infoBtn.addEventListener('click', (e) => {
-                e.stopPropagation(); // Stops the click from accidentally closing the lightbox
+                e.stopPropagation();
                 infoBtn.classList.toggle('active');
                 infoPanel.classList.toggle('active');
             });
 
             infoPanel.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevents clicks inside the panel from closing the lightbox
+                e.stopPropagation();
             });
 
-            // Close info panel when clicking on the image itself
             lightboxImg.addEventListener('click', () => {
                 infoBtn.classList.remove('active');
                 infoPanel.classList.remove('active');

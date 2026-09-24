@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Joshwuff</title>
+    <link rel="icon" type="image/png" href="favicon.png?v=3">
+    <link rel="apple-touch-icon" href="favicon.png?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* THEME & LAYOUT */
+        :root {
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444;
+            --accent-glow: rgba(239, 68, 68, 0.25);
+        }
+        * { box-sizing: border-box; }
+        body {
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color); color: var(--text-primary);
+            display: flex; justify-content: center; min-height: 100vh;
+            background-image: radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                              radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed; top: 0; width: 100%;
+            background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border);
+            display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
+        }
+        .nav-link {
+            text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem;
+            transition: color 0.3s ease; position: relative; padding-bottom: 4px;
+        }
+        .nav-link:hover { color: var(--accent); }
+        .nav-link.active { color: var(--accent); }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
+            background-color: var(--accent); transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        .container {
+            width: 100%; max-width: 1000px; padding: 120px 24px 60px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        /* HEADER */
+        .header-section { text-align: center; margin-bottom: 60px; }
+        h1 { font-size: 2.5rem; margin: 0; font-weight: 700; letter-spacing: -0.03em; }
+        .subtitle { color: var(--accent); font-size: 1rem; margin-top: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; }
+        .bio { font-size: 1.1rem; color: var(--text-secondary); margin: 24px auto 0; line-height: 1.6; max-width: 600px; }
+
+        /* SONA CARDS */
+        .sona-card {
+            display: flex;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            overflow: hidden;
+            margin-bottom: 40px;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .sona-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+            box-shadow: 0 12px 30px var(--accent-glow);
+        }
+        
+        /* --- IMAGE CAROUSEL STYLES --- */
+        .sona-image {
+            width: 40%;
+            min-height: 400px;
+            background: #1a1a24;
+            position: relative;
+        }
+        .carousel-container { overflow: hidden; }
+        .carousel-slide {
+            width: 100%; height: 100%; object-fit: cover;
+            position: absolute; top: 0; left: 0;
+            opacity: 0; transition: opacity 0.4s ease; z-index: 0;
+        }
+        .carousel-slide.active { opacity: 1; z-index: 1; }
+        .carousel-btn {
+            position: absolute; top: 50%; transform: translateY(-50%);
+            background: rgba(13, 13, 18, 0.6); color: white; border: 1px solid rgba(255,255,255,0.2);
+            width: 40px; height: 40px; border-radius: 50%; cursor: pointer; z-index: 10;
+            display: flex; justify-content: center; align-items: center; font-size: 1.2rem;
+            backdrop-filter: blur(5px); transition: all 0.3s ease;
+        }
+        .carousel-btn:hover { background: var(--accent); border-color: var(--accent); transform: translateY(-50%) scale(1.1); }
+        .carousel-btn.left { left: 15px; }
+        .carousel-btn.right { right: 15px; }
+        .carousel-indicators {
+            position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+            display: flex; gap: 8px; z-index: 10;
+        }
+        .carousel-dot {
+            width: 10px; height: 10px; border-radius: 50%; background: rgba(255,255,255,0.3);
+            cursor: pointer; transition: background 0.3s ease, transform 0.3s ease;
+        }
+        .carousel-dot.active { background: var(--accent); transform: scale(1.2); }
+        
+        /* STANDARD IMAGE (for Peachee) */
+        .sona-image img:not(.carousel-slide) {
+            width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0;
+        }
+
+        .sona-content {
+            width: 60%; padding: 40px; display: flex; flex-direction: column; justify-content: center;
+        }
+        .sona-name { font-size: 2rem; margin: 0 0 10px 0; font-weight: 700; }
+        .sona-species { color: var(--accent); font-weight: 600; text-transform: uppercase; letter-spacing: 1px; font-size: 0.9rem; margin-bottom: 20px; }
+        .sona-desc { color: var(--text-secondary); line-height: 1.7; margin-bottom: 30px; }
+        
+        /* MAKER CREDITS */
+        .maker-credits {
+            background: rgba(0,0,0,0.2); padding: 15px 20px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.05);
+        }
+        .maker-title { font-size: 0.8rem; color: #64748b; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; letter-spacing: 0.5px; }
+        .maker-list { display: flex; flex-wrap: wrap; gap: 10px; }
+        .maker-tag {
+            display: inline-flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.05); padding: 6px 12px;
+            border-radius: 8px; font-size: 0.85rem; color: var(--text-primary);
+            text-decoration: none; transition: background 0.3s ease;
+        }
+        .maker-tag:hover { background: rgba(239, 68, 68, 0.2); color: #fff; }
+
+        /* HUMAN SECTION */
+        .human-section {
+            text-align: center; margin-top: 80px; padding: 50px;
+            background: var(--glass-bg); border: 1px solid var(--glass-border); border-radius: 24px;
+        }
+        .human-section h2 { margin: 0 0 20px 0; font-size: 1.8rem; }
+        .human-desc { color: var(--text-secondary); line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+        footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); text-align: center; }
+
+        @media (max-width: 768px) {
+            .sona-card { flex-direction: column; }
+            .sona-image { width: 100%; min-height: 350px; }
+            .sona-content { width: 100%; padding: 30px 20px; }
+            .human-section { padding: 30px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="nav-link">Socials</a>
+        <a href="about.html" class="nav-link active">About</a>
+        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+    
+    <div class="container">
+        <div class="header-section">
+            <h1>Meet the Cast</h1>
+            <div class="subtitle">The characters behind the camera</div>
+            <p class="bio">Whether we are roaming the convention floor or hanging out in virtual reality, here is a little more about my sonas and the amazing makers who brought them to life.</p>
+        </div>
+
+        <!-- SONA 1: joshwuff -->
+        <div class="sona-card">
+            <!-- Carousel Container -->
+            <div class="sona-image carousel-container">
+                <img src="joshwuffref.PNG" alt="joshwuff Reference" class="carousel-slide active">
+                <img src="joshwuffsuit.jpg" alt="joshwuff Fursuit" class="carousel-slide">
+                
+                <button class="carousel-btn left" onclick="changeSlide(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+                <button class="carousel-btn right" onclick="changeSlide(1)"><i class="fa-solid fa-chevron-right"></i></button>
+                <div class="carousel-indicators">
+                    <span class="carousel-dot active" onclick="setSlide(0)"></span>
+                    <span class="carousel-dot" onclick="setSlide(1)"></span>
+                </div>
+            </div>
+
+            <div class="sona-content">
+                <h2 class="sona-name">joshwuff</h2>
+                <div class="sona-species">Wockle / First Sona</div>
+                <p class="sona-desc">joshwuff is my first sona, a silly little 2 foot 3 inch puppydog. His official species is a "wockle", a wolf jackal hybrid. There is a ton of lore behind this that I may delve into one day, but that is for another time in another place. He started off as a recolor in a free ych coloring book page I found yeaaaars ago. I have been modifying his look to match my personality and interests for years now.</p>
+                
+                <div class="maker-credits">
+                    <div class="maker-title">Maker Credits</div>
+                    <div class="maker-list">
+                        <a href="https://2queer2deer.carrd.co/" target="_blank" class="maker-tag"><i class="fa-solid fa-paintbrush"></i> Ref Sheet by DeerDog</a>
+                        <a href="https://www.instagram.com/kingskostumes/" target="_blank" class="maker-tag"><i class="fa-solid fa-dog"></i> Fursuit by King's Kostumes</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SONA 2: Peachee -->
+        <div class="sona-card" style="flex-direction: row-reverse;">
+            <div class="sona-image">
+                <img src="peacheeref.PNG" alt="Peachee Reference">
+            </div>
+            <div class="sona-content">
+                <h2 class="sona-name">Peachee</h2>
+                <div class="sona-species">Peanut butter cheese dog / Second Sona</div>
+                <p class="sona-desc">Peachee is my second sona! I never thought that I would have another sona, but after being inspired by someone's "food-sona" on twitter one day, I decided to take a little spin of my own and ended up making Peachee! He is created from my love of peanut butter and cheese, specifially, the most unhealthy version of peanut butter, the Reese's peanut butter jar. The ongoing joke I have with this sona is that if I eat too much peanut butter and cheese, joshwuff just turns into Peachee. x3</p>
+                
+                <div class="maker-credits">
+                    <div class="maker-title">Maker Credits</div>
+                    <div class="maker-list">
+                        <a href="https://2queer2deer.carrd.co/" target="_blank" class="maker-tag"><i class="fa-solid fa-paintbrush"></i> Ref Sheet by DeerDog</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HUMAN BIO -->
+        <div class="human-section">
+            <h2>Behind the Muzzle</h2>
+            <p class="human-desc">Hey, I'm Josh! When I'm not running around in suit at Megaplex or snapping photos, you can usually find me tinkering with 3D printers, coding web projects, exploring VRChat, or hanging out at Disney. Thanks for checking out my corner of the internet!</p>
+        </div>
+
+        <footer>
+            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- JavaScript for Image Carousel -->
+    <script>
+        let currentSlideIndex = 0;
+        const slides = document.querySelectorAll('.carousel-slide');
+        const dots = document.querySelectorAll('.carousel-dot');
+
+        function updateSlider() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active');
+                dots[index].classList.remove('active');
+            });
+            slides[currentSlideIndex].classList.add('active');
+            dots[currentSlideIndex].classList.add('active');
+        }
+
+        function changeSlide(direction) {
+            currentSlideIndex += direction;
+            if (currentSlideIndex < 0) currentSlideIndex = slides.length - 1;
+            if (currentSlideIndex >= slides.length) currentSlideIndex = 0;
+            updateSlider();
+        }
+
+        function setSlide(index) {
+            currentSlideIndex = index;
+            updateSlider();
+        }
+    </script>
+</body>
+</html>
