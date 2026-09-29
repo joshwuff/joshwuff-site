@@ -196,6 +196,34 @@
 
         footer { margin-top: 64px; padding-top: 32px; border-top: 1px solid var(--glass-border); font-size: 0.85rem; color: var(--text-secondary); }
 
+        /* --- ODOMETER COUNTER --- */
+        .visitor-counter-wrapper {
+            display: flex; flex-direction: column; align-items: center; gap: 8px; margin-top: 20px;
+        }
+        .counter-label {
+            font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+        }
+        .odometer {
+            display: flex; gap: 3px; background: rgba(0, 0, 0, 0.4); padding: 6px;
+            border-radius: 8px; border: 1px solid var(--glass-border); box-shadow: inset 0 4px 10px rgba(0,0,0,0.8);
+        }
+        .digit-window {
+            width: 28px; height: 40px; overflow: hidden; background: #111; border-radius: 4px;
+            display: flex; justify-content: center; position: relative;
+            border: 1px solid rgba(255,255,255,0.05); border-top-color: rgba(0,0,0,0.8);
+        }
+        .digit-window::after {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, transparent 20%, transparent 80%, rgba(0,0,0,0.8) 100%);
+            pointer-events: none;
+        }
+        .digit-strip {
+            display: flex; flex-direction: column; align-items: center;
+            transition: transform 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            color: var(--text-primary); font-family: monospace; font-size: 26px; font-weight: bold; line-height: 40px;
+        }
+        .digit-strip div { height: 40px; width: 100%; text-align: center; }
+
         /* --- ARCADE MODAL --- */
         .lightbox {
             position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(13, 13, 18, 0.95);
@@ -363,7 +391,13 @@
         </div>
 
         <footer>
-            <p>&copy; 2026 Joshwuff. All rights reserved.</p>
+            <div class="visitor-counter-wrapper">
+                <div class="counter-label">Unique Visitors</div>
+                <div class="odometer" id="visitor-odometer">
+                    <!-- Javascript will inject the number strips here -->
+                </div>
+            </div>
+            <p style="margin-top: 24px;">&copy; 2026 Joshwuff. All rights reserved.</p>
         </footer>
     </div>
 
@@ -442,6 +476,74 @@
                     clickCount = 0;
                 }
             });
+
+            // --- ODOMETER COUNTER LOGIC ---
+            const odometer = document.getElementById('visitor-odometer');
+            
+            // Starting "base" global visitor count
+            let globalCount = 14092;
+            let isNewVisitor = false;
+
+            // Check if they are a new unique visitor
+            if (!localStorage.getItem('joshwuff_counted')) {
+                isNewVisitor = true;
+                localStorage.setItem('joshwuff_counted', 'true');
+            } else {
+                globalCount++;
+            }
+
+            function getDigitArray(num) {
+                return num.toString().padStart(5, '0').split('').map(Number);
+            }
+
+            function buildOdometer() {
+                odometer.innerHTML = '';
+                for (let i = 0; i < 5; i++) {
+                    const windowDiv = document.createElement('div');
+                    windowDiv.className = 'digit-window';
+                    
+                    const stripDiv = document.createElement('div');
+                    stripDiv.className = 'digit-strip';
+                    stripDiv.id = `strip-${i}`;
+                    
+                    let stripHTML = '';
+                    for (let n = 0; n <= 19; n++) {
+                        stripHTML += `<div>${n % 10}</div>`;
+                    }
+                    stripDiv.innerHTML = stripHTML;
+                    windowDiv.appendChild(stripDiv);
+                    odometer.appendChild(windowDiv);
+                }
+            }
+
+            function setOdometer(targetNumber, animate = true) {
+                const digits = getDigitArray(targetNumber);
+                digits.forEach((digit, index) => {
+                    const strip = document.getElementById(`strip-${index}`);
+                    if (!strip) return;
+                    
+                    const targetIndex = digit + 10;
+                    
+                    if (!animate) {
+                        strip.style.transition = 'none';
+                    } else {
+                        const delay = (4 - index) * 0.15;
+                        strip.style.transition = `transform 1.5s cubic-bezier(0.25, 0.8, 0.25, 1) ${delay}s`;
+                    }
+                    
+                    strip.style.transform = `translateY(-${targetIndex * 40}px)`;
+                });
+            }
+
+            buildOdometer();
+            setOdometer(globalCount, false);
+
+            if (isNewVisitor) {
+                setTimeout(() => {
+                    globalCount++;
+                    setOdometer(globalCount, true);
+                }, 1000);
+            }
         });
     </script>
 </body>
