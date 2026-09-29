@@ -365,7 +365,7 @@
                     <i class="fa-brands fa-instagram"></i>
                 </a>
 
-                <a href="https://bsky.app/profile/joshwuff.com" target="_blank" class="social-link social-bsky">
+                <a href="https://bsky.app/profile/joshwuff.bsky.social" target="_blank" class="social-link social-bsky">
                     <span>Bluesky</span>
                     <svg class="custom-icon" viewBox="0 0 320 286" fill="currentColor" xmlns="http://www.w3.org/2000/svg"><path d="M69.364 19.146c36.687 27.806 76.147 84.186 90.636 114.439 14.489-30.253 53.949-86.633 90.636-114.439C277.151-1.12 320-9.845 320 25.87c0 15.656-3.526 73.18-5.32 80.528-6.177 25.322-35.316 34.025-61.94 30.686 44.137 6.305 60.108 26.656 46.168 59.83-20.916 49.771-92.486 46.549-115.118 10.457-11.83-18.868-23.79-51.523-23.79-51.523s-11.96 32.655-23.79 51.523c-22.632 36.092-94.202 39.314-115.118-10.457-13.94-33.174 2.031-53.525 46.168-59.83-26.624 3.339-55.763-5.364-61.94-30.686C3.526 99.05 0 41.526 0 25.87 0-9.845 42.849-1.12 69.364 19.146Z"/></svg>
                 </a>
@@ -479,18 +479,15 @@
 
             // --- ODOMETER COUNTER LOGIC ---
             const odometer = document.getElementById('visitor-odometer');
-            
-            // Starting "base" global visitor count
-            let globalCount = 14092;
             let isNewVisitor = false;
 
-            // Check if they are a new unique visitor
             if (!localStorage.getItem('joshwuff_counted')) {
                 isNewVisitor = true;
-                localStorage.setItem('joshwuff_counted', 'true');
-            } else {
-                globalCount++;
             }
+
+            const supaUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co';
+            const supaKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
+            const supa = supabase.createClient(supaUrl, supaKey);
 
             function getDigitArray(num) {
                 return num.toString().padStart(5, '0').split('').map(Number);
@@ -536,14 +533,29 @@
             }
 
             buildOdometer();
-            setOdometer(globalCount, false);
 
-            if (isNewVisitor) {
-                setTimeout(() => {
-                    globalCount++;
-                    setOdometer(globalCount, true);
-                }, 1000);
+            async function initCounter() {
+                if (isNewVisitor) {
+                    localStorage.setItem('joshwuff_counted', 'true');
+                    
+                    const { data, error } = await supa.rpc('increment_visitor');
+                    
+                    if (data) {
+                        setOdometer(data - 1, false);
+                        
+                        setTimeout(() => {
+                            setOdometer(data, true);
+                        }, 1000);
+                    }
+                } else {
+                    const { data, error } = await supa.from('visitor_tracking').select('count').eq('id', 1).single();
+                    if (data) {
+                        setOdometer(data.count, false);
+                    }
+                }
             }
+
+            initCounter();
         });
     </script>
 </body>
