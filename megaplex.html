@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Megaplex Dex | Joshwuff</title>
+    
+    <link rel="icon" type="image/png" href="favicon.png?v=3">
+    <link rel="apple-touch-icon" href="favicon.png?v=3">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Press+Start+2P&family=VT323&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- SUPABASE SCRIPT -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Nunito', 'sans-serif'],
+                        pixel: ['"Press Start 2P"', 'cursive'],
+                        terminal: ['"VT323"', 'monospace'],
+                    },
+                    colors: {
+                        poke: {
+                            red: '#dd2222',
+                            darkred: '#aa1111',
+                            screen: '#2bd0d0',
+                            screendark: '#1c8c8c',
+                            yellow: '#ffcb05',
+                            blue: '#3b4cca'
+                        }
+                    },
+                    boxShadow: {
+                        'inset-screen': 'inset 0 0 20px rgba(0,0,0,0.5)',
+                        'dex': '10px 10px 0px rgba(0,0,0,0.2)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* MAIN SITE INTEGRATION */
+        :root {
+            --bg-color: #0d0d12;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --accent: #ef4444;
+        }
+
+        body {
+            margin: 0; padding: 0; font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color); color: var(--text-primary);
+            background-image: radial-gradient(circle at 15% 15%, rgba(239, 68, 68, 0.08) 0%, transparent 35%),
+                              radial-gradient(circle at 85% 85%, rgba(185, 28, 28, 0.08) 0%, transparent 35%);
+            background-size: 100% 100%; animation: breathe 10s infinite alternate ease-in-out;
+            min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+
+        @keyframes breathe {
+            0% { background-size: 100% 100%; background-position: 0% 0%; }
+            100% { background-size: 130% 130%; background-position: 5% 5%; }
+        }
+
+        /* --- NAVIGATION --- */
+        .navbar {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: rgba(13, 13, 18, 0.8); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--glass-border); display: flex; justify-content: center; gap: 30px; padding: 18px 0; z-index: 1000;
+        }
+        .nav-link {
+            text-decoration: none; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem;
+            transition: color 0.3s ease; position: relative; padding-bottom: 4px; font-family: 'Inter', sans-serif;
+        }
+        .nav-link:hover { color: var(--accent) !important; }
+        .nav-link.active { color: var(--accent) !important; }
+        .nav-link::after {
+            content: ''; position: absolute; width: 0; height: 2px; bottom: 0; left: 0;
+            background-color: var(--accent) !important; transition: width 0.3s ease;
+        }
+        .nav-link:hover::after, .nav-link.active::after { width: 100%; }
+
+        /* --- NEW BADGE --- */
+        .new-badge {
+            position: absolute; top: -6px; right: -42px; background-color: var(--accent); color: white;
+            font-size: 0.65rem; font-weight: 800; padding: 2px 6px; border-radius: 6px;
+            animation: pulse-badge 1.5s infinite; box-shadow: 0 0 10px rgba(239, 68, 68, 0.5); pointer-events: none;
+        }
+        @keyframes pulse-badge { 0% { transform: scale(1); } 50% { transform: scale(1.15); } 100% { transform: scale(1); } }
+
+        /* POKEDEX SPECIFIC STYLES */
+        .dex-wrapper {
+            margin-top: 80px; width: 100%; display: flex; justify-content: center; padding: 20px;
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .pokedex-case {
+            background: linear-gradient(135deg, #f95353 0%, #dd2222 50%, #aa1111 100%);
+            border: 4px solid #550000; border-radius: 1.5rem;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.3), inset -5px -5px 15px rgba(0,0,0,0.2), inset 5px 5px 15px rgba(255,255,255,0.4);
+            max-width: 450px; width: 100%; height: 85vh; max-height: 800px;
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+        }
+
+        .sensor-bar {
+            background-color: #dd2222; padding: 1rem; border-bottom: 4px solid #550000;
+            display: flex; align-items: flex-start; gap: 1rem; position: relative; z-index: 10;
+        }
+
+        .main-lens {
+            width: 60px; height: 60px; border-radius: 50%; border: 4px solid white;
+            background: radial-gradient(circle at 30% 30%, #aaddff 0%, #3b4cca 40%, #000044 100%);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.5);
+            animation: pulse-lens 3s infinite;
+        }
+
+        .mini-led { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #550000; }
+        .led-red { background: radial-gradient(circle at 30% 30%, #ff9999, #dd2222); }
+        .led-yellow { background: radial-gradient(circle at 30% 30%, #ffff99, #ffcb05); }
+        .led-green { background: radial-gradient(circle at 30% 30%, #99ff99, #22dd22); }
+
+        .screen-container {
+            background-color: #dedede; margin: 1rem; padding: 1rem;
+            border-radius: 1rem 1rem 1rem 3rem; border: 4px solid #550000;
+            flex-grow: 1; display: flex; flex-direction: column; position: relative;
+        }
+
+        .screen-display {
+            background-color: #2bd0d0; border: 3px solid #550000; border-radius: 0.5rem;
+            flex-grow: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.3); overflow-y: auto; position: relative;
+        }
+
+        .screen-display::before {
+            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px; z-index: 50; pointer-events: none;
+        }
+
+        .screen-display::-webkit-scrollbar { width: 6px; }
+        .screen-display::-webkit-scrollbar-track { background: transparent; }
+        .screen-display::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.3); border-radius: 3px; }
+
+        .controls-area { padding: 0.5rem 1.5rem 1.5rem 1.5rem; display: flex; justify-content: space-between; align-items: center; }
+        .d-pad { width: 80px; height: 80px; position: relative; }
+        .d-pad-part { background-color: #333; position: absolute; border: 2px solid #111; box-shadow: inset 2px 2px 5px rgba(255,255,255,0.2); }
+        .d-pad-vertical { width: 26px; height: 100%; left: 27px; top: 0; }
+        .d-pad-horizontal { width: 100%; height: 26px; top: 27px; left: 0; }
+        .d-pad-center { width: 26px; height: 26px; top: 27px; left: 27px; background-color: #222; border: none; box-shadow: inset 0 0 5px black;}
+
+        @keyframes pulse-lens {
+            0% { box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.5); }
+            50% { box-shadow: 0 0 20px rgba(59,76,202,0.8), inset 0 0 20px rgba(255,255,255,0.8); }
+            100% { box-shadow: 0 0 10px rgba(0,0,0,0.5), inset 0 0 10px rgba(255,255,255,0.5); }
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="index.html" class="nav-link">Socials</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="photography.html" class="nav-link">Photography</a>
+        <a href="megaplex.html" class="nav-link active">Megaplex Dex <span class="new-badge">NEW</span></a>
+        <a href="contact.html" class="nav-link">Contact</a>
+    </nav>
+
+    <div class="dex-wrapper">
+        <div class="pokedex-case">
+            <!-- Top Sensor Bar -->
+            <div class="sensor-bar">
+                <div class="main-lens"></div>
+                <div class="flex gap-2 pt-2">
+                    <div class="mini-led led-red"></div>
+                    <div class="mini-led led-yellow"></div>
+                    <div class="mini-led led-green"></div>
+                </div>
+                
+                <div class="ml-auto pt-2">
+                    <button id="btn-logout" class="hidden text-white bg-poke-darkred border-2 border-black rounded px-2 py-1 font-pixel text-[10px] hover:bg-red-800 shadow-[2px_2px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none">
+                        RESET DEX
+                    </button>
+                </div>
+            </div>
+
+            <!-- Main Screen Area -->
+            <div class="screen-container">
+                <div class="flex justify-center gap-4 mb-2">
+                    <div class="h-2 w-2 rounded-full bg-poke-darkred"></div>
+                    <div class="h-2 w-2 rounded-full bg-poke-darkred"></div>
+                </div>
+                
+                <div class="screen-display p-4 text-gray-900 font-terminal text-lg leading-tight flex flex-col">
+                    
+                    <div id="view-loading" class="h-full flex flex-col items-center justify-center text-center">
+                        <i class="fa-solid fa-spinner fa-spin text-4xl mb-4"></i>
+                        <p class="font-pixel text-[12px]">CONNECTING TO SUPABASE...</p>
+                    </div>
+
+                    <div id="view-role-select" class="hidden h-full flex-col">
+                        <h2 class="font-pixel text-[14px] text-center mb-6 mt-4">SELECT YOUR PATH</h2>
+                        
+                        <div class="flex-grow flex flex-col gap-4">
+                            <button onclick="selectRole('fursuiter')" class="bg-white border-4 border-black p-4 rounded-xl flex items-center gap-4 hover:bg-gray-100 transition-colors active:scale-95">
+                                <div class="w-12 h-12 bg-poke-red rounded-full flex items-center justify-center text-white border-2 border-black">
+                                    <i class="fa-solid fa-mask text-xl"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h3 class="font-pixel text-[12px] mb-1 text-black">FURSUITER</h3>
+                                    <p class="text-sm leading-none opacity-70 text-black">Register your character.</p>
+                                </div>
+                            </button>
+
+                            <button onclick="selectRole('attendee')" class="bg-white border-4 border-black p-4 rounded-xl flex items-center gap-4 hover:bg-gray-100 transition-colors active:scale-95">
+                                <div class="w-12 h-12 bg-poke-blue rounded-full flex items-center justify-center text-white border-2 border-black">
+                                    <i class="fa-solid fa-camera text-xl"></i>
+                                </div>
+                                <div class="text-left">
+                                    <h3 class="font-pixel text-[12px] mb-1 text-black">ATTENDEE</h3>
+                                    <p class="text-sm leading-none opacity-70 text-black">Catch 'em all!</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="view-fursuiter" class="hidden h-full flex-col">
+                        <div class="flex justify-between items-center border-b-2 border-black pb-2 mb-3 text-black">
+                            <h2 class="font-pixel text-[12px]">MY PROFILE</h2>
+                            <span class="bg-black text-poke-screen px-2 py-1 text-xs font-pixel rounded">SUITER</span>
+                        </div>
+
+                        <div id="fs-code-display" class="bg-black text-poke-yellow font-pixel text-center py-3 mb-4 rounded border-2 border-gray-600 shadow-inner">
+                            <div class="text-[10px] text-gray-400 mb-1">YOUR CATCH CODE:</div>
+                            <div id="fs-code-value" class="text-xl tracking-widest">------</div>
+                        </div>
+
+                        <form id="fursuiter-form" class="flex-grow flex flex-col gap-3 overflow-y-auto pr-2 pb-8 text-black">
+                            <div>
+                                <label class="block font-pixel text-[10px] mb-1 text-black">NAME:</label>
+                                <input type="text" id="fs-name" required class="w-full bg-white border-2 border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-poke-red">
+                            </div>
+                            <div>
+                                <label class="block font-pixel text-[10px] mb-1 text-black">SPECIES:</label>
+                                <input type="text" id="fs-species" required class="w-full bg-white border-2 border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-poke-red">
+                            </div>
+                            <div>
+                                <label class="block font-pixel text-[10px] mb-1 text-black">IMAGE URL (Opt):</label>
+                                <input type="url" id="fs-image" placeholder="https://..." class="w-full bg-white border-2 border-black p-2 text-sm focus:outline-none focus:ring-2 focus:ring-poke-red">
+                            </div>
+                            <div>
+                                <label class="block font-pixel text-[10px] mb-1 text-black">INFO:</label>
+                                <textarea id="fs-desc" rows="2" class="w-full bg-white border-2 border-black p-2 text-sm focus:outline-none focus:ring-2 focus:ring-poke-red resize-none"></textarea>
+                            </div>
+                            
+                            <button type="submit" class="w-full bg-poke-red text-white font-pixel text-[12px] py-3 border-2 border-black rounded shadow-[2px_2px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none mt-2">
+                                SAVE TO DEX
+                            </button>
+                            <div id="fs-save-msg" class="text-center font-bold text-poke-darkred hidden">DATA SAVED!</div>
+                        </form>
+                    </div>
+
+                    <div id="view-attendee" class="hidden h-full flex-col relative">
+                        
+                        <!-- Scanner Input Area -->
+                        <div class="bg-black text-white p-3 rounded-lg border-2 border-gray-600 mb-3 sticky top-0 z-10 shadow-lg">
+                            <label class="block font-pixel text-[10px] text-poke-screen mb-2">SCAN FURSUITER CODE:</label>
+                            <form id="catch-form" class="flex gap-2">
+                                <input type="text" id="catch-input" placeholder="ENTER 6 DIGITS" maxlength="6" class="w-full bg-gray-800 text-poke-yellow font-pixel text-center text-sm border border-gray-600 focus:outline-none focus:border-poke-screen uppercase">
+                                <button type="submit" class="bg-poke-red hover:bg-red-500 border border-white px-3 py-2 flex items-center justify-center">
+                                    <i class="fa-solid fa-satellite-dish"></i>
+                                </button>
+                            </form>
+                            <div id="catch-msg" class="text-[12px] text-center mt-2 font-bold h-4"></div>
+                        </div>
+
+                        <!-- Dex Stats -->
+                        <div class="flex justify-between items-end border-b-2 border-black pb-1 mb-2 px-1 text-black">
+                            <span class="font-pixel text-[10px]">DEX ENTRY LIST</span>
+                            <span class="font-pixel text-[10px] bg-white border border-black px-1 flex gap-2">
+                                <button type="button" onclick="fetchDexData()" class="hover:text-poke-red"><i class="fa-solid fa-arrows-rotate"></i></button>
+                                <span>CAUGHT: <span id="dex-count">0</span></span>
+                            </span>
+                        </div>
+
+                        <!-- Fursuiter List -->
+                        <div id="dex-list" class="flex-grow flex flex-col gap-2 overflow-y-auto pb-10 text-black">
+                            <!-- Items injected here via JS -->
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="flex justify-between mt-2 px-4">
+                    <div class="h-6 w-6 rounded-full bg-poke-red border-2 border-black shadow-inner"></div>
+                    <div class="flex flex-col gap-1 w-16">
+                        <div class="h-1 bg-black w-full"></div>
+                        <div class="h-1 bg-black w-full"></div>
+                        <div class="h-1 bg-black w-full"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Controls Area -->
+            <div class="controls-area">
+                <div class="w-12 h-12 rounded-full bg-black border-2 border-gray-700 shadow-inner"></div>
+                
+                <div class="flex gap-4">
+                    <div class="w-10 h-3 rounded-full bg-red-800 border-2 border-black shadow-inner"></div>
+                    <div class="w-10 h-3 rounded-full bg-blue-800 border-2 border-black shadow-inner"></div>
+                </div>
+
+                <div class="d-pad">
+                    <div class="d-pad-part d-pad-vertical"></div>
+                    <div class="d-pad-part d-pad-horizontal"></div>
+                    <div class="d-pad-part d-pad-center"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 1. SUPABASE INTEGRATION ---
+        const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co';
+        const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // --- 2. LOCAL DEVICE TRACKING ---
+        // Instead of forcing a login, we just remember the specific device
+        let myDeviceId = localStorage.getItem('megaplex_device_id');
+        if (!myDeviceId) {
+            myDeviceId = 'dex_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+            localStorage.setItem('megaplex_device_id', myDeviceId);
+        }
+
+        let userProfile = null;
+        let allFursuiters = [];
+        let metCodes = new Set();
+
+        const views = {
+            loading: document.getElementById('view-loading'),
+            roleSelect: document.getElementById('view-role-select'),
+            fursuiter: document.getElementById('view-fursuiter'),
+            attendee: document.getElementById('view-attendee')
+        };
+        const btnLogout = document.getElementById('btn-logout');
+
+        function showView(viewName) {
+            Object.values(views).forEach(el => el.classList.add('hidden'));
+            if (views[viewName]) {
+                views[viewName].classList.remove('hidden');
+                views[viewName].classList.add('flex');
+            }
+        }
+
+        function generateCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let result = '';
+            for (let i = 0; i < 6; i++) {
+                result += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return result;
+        }
+
+        async function loadUserProfile() {
+            try {
+                const { data, error } = await supabase
+                    .from('dex_profiles')
+                    .select('*')
+                    .eq('device_id', myDeviceId)
+                    .single();
+                
+                if (data) {
+                    userProfile = data;
+                    btnLogout.classList.remove('hidden');
+                    
+                    if (userProfile.role === 'fursuiter') setupFursuiterView();
+                    else setupAttendeeView();
+                } else {
+                    showView('roleSelect');
+                    btnLogout.classList.remove('hidden');
+                }
+            } catch (err) {
+                console.error("Error loading profile:", err);
+                showView('roleSelect');
+            }
+        }
+
+        window.selectRole = async (role) => {
+            showView('loading');
+            
+            const newProfile = {
+                device_id: myDeviceId,
+                role: role
+            };
+
+            if (role === 'fursuiter') {
+                newProfile.name = '';
+                newProfile.species = '';
+                newProfile.description = '';
+                newProfile.image_url = '';
+                newProfile.catch_code = generateCode();
+            }
+
+            try {
+                await supabase.from('dex_profiles').insert([newProfile]);
+                await loadUserProfile();
+            } catch (err) {
+                console.error("Error saving role:", err);
+                showView('roleSelect');
+            }
+        };
+
+        function setupFursuiterView() {
+            showView('fursuiter');
+            
+            const form = document.getElementById('fursuiter-form');
+            document.getElementById('fs-name').value = userProfile.name || '';
+            document.getElementById('fs-species').value = userProfile.species || '';
+            document.getElementById('fs-image').value = userProfile.image_url || '';
+            document.getElementById('fs-desc').value = userProfile.description || '';
+            document.getElementById('fs-code-value').textContent = userProfile.catch_code;
+
+            form.onsubmit = async (e) => {
+                e.preventDefault();
+                
+                try {
+                    await supabase.from('dex_profiles').update({
+                        name: document.getElementById('fs-name').value.trim(),
+                        species: document.getElementById('fs-species').value.trim(),
+                        image_url: document.getElementById('fs-image').value.trim(),
+                        description: document.getElementById('fs-desc').value.trim()
+                    }).eq('device_id', myDeviceId);
+                    
+                    document.getElementById('fs-save-msg').classList.remove('hidden');
+                    setTimeout(() => document.getElementById('fs-save-msg').classList.add('hidden'), 3000);
+                } catch (err) { console.error("Error updating profile:", err); }
+            };
+        }
+
+        window.fetchDexData = async function() {
+            try {
+                // Fetch all registered fursuiters
+                const { data: suits } = await supabase
+                    .from('dex_profiles')
+                    .select('*')
+                    .eq('role', 'fursuiter')
+                    .neq('name', ''); // Only show ones who filled out their name
+
+                allFursuiters = suits || [];
+
+                // Fetch the ones this specific user has caught
+                const { data: catches } = await supabase
+                    .from('dex_catches')
+                    .select('target_code')
+                    .eq('catcher_id', myDeviceId);
+
+                metCodes.clear();
+                if (catches) {
+                    catches.forEach(c => metCodes.add(c.target_code));
+                }
+
+                renderDexList();
+            } catch (error) {
+                console.error("Fetch error:", error);
+            }
+        }
+
+        function setupAttendeeView() {
+            showView('attendee');
+            fetchDexData(); // Initial load
+
+            const catchForm = document.getElementById('catch-form');
+            const catchInput = document.getElementById('catch-input');
+            const catchMsg = document.getElementById('catch-msg');
+
+            catchForm.onsubmit = async (e) => {
+                e.preventDefault();
+
+                const codeToCatch = catchInput.value.trim().toUpperCase();
+                if (!codeToCatch) return;
+
+                const target = allFursuiters.find(f => f.catch_code && f.catch_code.toUpperCase() === codeToCatch);
+
+                if (target) {
+                    if (metCodes.has(target.catch_code)) {
+                        showMessage('ALREADY CAUGHT!', 'text-poke-yellow');
+                    } else {
+                        try {
+                            await supabase.from('dex_catches').insert([{
+                                catcher_id: myDeviceId,
+                                target_code: target.catch_code
+                            }]);
+                            
+                            metCodes.add(target.catch_code);
+                            showMessage(`CAUGHT ${target.name.toUpperCase()}!`, 'text-green-300');
+                            catchInput.value = '';
+                            renderDexList();
+                        } catch (err) {
+                            showMessage('ERROR SAVING', 'text-red-500');
+                        }
+                    }
+                } else {
+                    showMessage('NO SIGNAL FOUND', 'text-red-500');
+                }
+            };
+
+            function showMessage(msg, colorClass) {
+                catchMsg.textContent = msg;
+                catchMsg.className = `text-[12px] text-center mt-2 font-bold h-4 ${colorClass}`;
+                setTimeout(() => { catchMsg.textContent = ''; }, 3000);
+            }
+        }
+
+        function renderDexList() {
+            const listEl = document.getElementById('dex-list');
+            const countEl = document.getElementById('dex-count');
+            
+            if (allFursuiters.length === 0) {
+                listEl.innerHTML = '<div class="text-center opacity-50 mt-10">NO DATA IN REGISTRY</div>';
+                countEl.textContent = '0/0';
+                return;
+            }
+
+            const validMetCount = [...metCodes].filter(code => allFursuiters.some(f => f.catch_code === code)).length;
+            countEl.textContent = `${validMetCount}/${allFursuiters.length}`;
+
+            const sortedSuits = [...allFursuiters].sort((a, b) => {
+                const aMet = metCodes.has(a.catch_code);
+                const bMet = metCodes.has(b.catch_code);
+                if (aMet && !bMet) return -1;
+                if (!aMet && bMet) return 1;
+                return (a.name || '').localeCompare(b.name || '');
+            });
+
+            listEl.innerHTML = sortedSuits.map((fs, index) => {
+                const isMet = metCodes.has(fs.catch_code);
+                const dexNum = (index + 1).toString().padStart(3, '0');
+                
+                let imgHtml = '';
+                if (isMet && fs.image_url) {
+                    imgHtml = `<img src="${escapeHTML(fs.image_url)}" alt="${escapeHTML(fs.name)}" class="w-12 h-12 object-cover rounded border border-black bg-white" onerror="this.onerror=null; this.src='https://placehold.co/100x100/dd2222/ffffff?text=?';">`;
+                } else {
+                    imgHtml = `<div class="w-12 h-12 rounded border border-black flex items-center justify-center bg-gray-300 text-gray-500">
+                                   <i class="fa-solid fa-question text-xl"></i>
+                               </div>`;
+                }
+
+                return `
+                    <div class="bg-white border-2 border-black rounded p-2 flex gap-3 items-center relative overflow-hidden">
+                        ${isMet ? '' : '<div class="absolute inset-0 bg-black opacity-10 pointer-events-none"></div>'}
+                        <div class="font-pixel text-[10px] text-gray-400 absolute top-1 left-1">#${dexNum}</div>
+                        <div class="mt-3">${imgHtml}</div>
+                        <div class="flex-grow mt-2">
+                            <h3 class="font-bold uppercase text-lg leading-none mb-1 ${isMet ? 'text-black' : 'text-gray-500'}">
+                                ${isMet ? escapeHTML(fs.name) : '???'}
+                            </h3>
+                            <span class="text-xs bg-gray-200 border border-gray-400 px-1 rounded inline-block mb-1">
+                                ${isMet ? escapeHTML(fs.species) : 'UNKNOWN'}
+                            </span>
+                            ${isMet && fs.description ? `<p class="text-xs leading-tight italic line-clamp-2 text-gray-600">"${escapeHTML(fs.description)}"</p>` : ''}
+                        </div>
+                        <div class="text-xl">
+                            ${isMet ? '<i class="fa-solid fa-check-circle text-poke-red"></i>' : '<i class="fa-regular fa-circle text-gray-300"></i>'}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function escapeHTML(str) {
+            if (!str) return '';
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        btnLogout.addEventListener('click', () => {
+            // Simply clear the local storage and reload to "logout"
+            localStorage.removeItem('megaplex_device_id');
+            window.location.reload();
+        });
+
+        // Start initialization on load
+        window.onload = loadUserProfile;
+    </script>
+</body>
+</html>
