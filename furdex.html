@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>FurDex | Joshwuff</title>
+    <title>FurDex | Joshwuff</title>
     
     <link rel="icon" type="image/png" href="favicon.png?v=3">
     <link rel="apple-touch-icon" href="favicon.png?v=3">
@@ -132,11 +132,14 @@
             background-color: #dedede; margin: 1rem; padding: 1rem;
             border-radius: 1rem 1rem 1rem 3rem; border: 4px solid #550000;
             flex-grow: 1; display: flex; flex-direction: column; position: relative;
+            min-height: 0; /* CRITICAL FIX: Stops the screen from pushing out controls */
         }
 
         .screen-display {
             background-color: #2bd0d0; border: 3px solid #550000; border-radius: 0.5rem;
             flex-grow: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.3); overflow-y: auto; position: relative;
+            scroll-behavior: smooth;
+            min-height: 0; /* CRITICAL FIX: Allows internal scrolling */
         }
 
         .screen-display::before {
@@ -173,7 +176,6 @@
         <a href="contact.html" class="nav-link">Contact</a>
     </nav>
 
-
     <div class="dex-wrapper">
         <div class="pokedex-case">
             <!-- Top Sensor Bar -->
@@ -206,7 +208,7 @@
                         <p class="font-pixel text-[12px]">CONNECTING TO SUPABASE...</p>
                     </div>
 
-                    <div id="view-role-select" class="hidden h-full flex-col">
+                    <div id="view-role-select" class="hidden h-full flex-col min-h-0">
                         <h2 class="font-pixel text-[14px] text-center mb-6 mt-4">SELECT YOUR PATH</h2>
                         
                         <div class="flex-grow flex flex-col gap-4">
@@ -232,9 +234,12 @@
                         </div>
                     </div>
 
-                    <div id="view-fursuiter" class="hidden h-full flex-col">
+                    <div id="view-fursuiter" class="hidden h-full flex-col min-h-0">
                         <div class="flex justify-between items-center border-b-2 border-black pb-2 mb-3 text-black">
-                            <h2 class="font-pixel text-[12px]">MY PROFILE</h2>
+                            <button type="button" onclick="showView('roleSelect')" class="text-xl hover:text-poke-red transition-colors active:scale-90">
+                                <i class="fa-solid fa-circle-chevron-left"></i>
+                            </button>
+                            <h2 class="font-pixel text-[12px] pt-1">MY PROFILE</h2>
                             <span class="bg-black text-poke-screen px-2 py-1 text-xs font-pixel rounded">SUITER</span>
                         </div>
 
@@ -261,17 +266,24 @@
                                 <textarea id="fs-desc" rows="2" class="w-full bg-white border-2 border-black p-2 text-sm focus:outline-none focus:ring-2 focus:ring-poke-red resize-none"></textarea>
                             </div>
                             
-                            <button type="submit" class="w-full bg-poke-red text-white font-pixel text-[12px] py-3 border-2 border-black rounded shadow-[2px_2px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none mt-2">
+                            <button type="submit" class="w-full bg-poke-red text-white font-pixel text-[12px] py-3 border-2 border-black rounded shadow-[2px_2px_0px_rgba(0,0,0,0.5)] active:translate-y-1 active:shadow-none mt-2 flex-shrink-0">
                                 SAVE TO DEX
                             </button>
-                            <div id="fs-save-msg" class="text-center font-bold text-poke-darkred hidden">DATA SAVED!</div>
+                            <div id="fs-save-msg" class="text-center font-bold text-poke-darkred hidden flex-shrink-0">DATA SAVED!</div>
                         </form>
                     </div>
 
-                    <div id="view-attendee" class="hidden h-full flex-col relative">
+                    <div id="view-attendee" class="hidden h-full flex-col relative min-h-0">
+                        <div class="flex justify-between items-center border-b-2 border-black pb-2 mb-3 text-black">
+                            <button type="button" onclick="showView('roleSelect')" class="text-xl hover:text-poke-red transition-colors active:scale-90">
+                                <i class="fa-solid fa-circle-chevron-left"></i>
+                            </button>
+                            <h2 class="font-pixel text-[12px] pt-1">SCANNER</h2>
+                            <span class="bg-black text-poke-screen px-2 py-1 text-xs font-pixel rounded">ATTENDEE</span>
+                        </div>
                         
                         <!-- Scanner Input Area -->
-                        <div class="bg-black text-white p-3 rounded-lg border-2 border-gray-600 mb-3 sticky top-0 z-10 shadow-lg">
+                        <div class="bg-black text-white p-3 rounded-lg border-2 border-gray-600 mb-3 sticky top-0 z-10 shadow-lg flex-shrink-0">
                             <label class="block font-pixel text-[10px] text-poke-screen mb-2">SCAN FURSUITER CODE:</label>
                             <form id="catch-form" class="flex gap-2">
                                 <input type="text" id="catch-input" placeholder="ENTER 6 DIGITS" maxlength="6" class="w-full bg-gray-800 text-poke-yellow font-pixel text-center text-sm border border-gray-600 focus:outline-none focus:border-poke-screen uppercase">
@@ -283,7 +295,7 @@
                         </div>
 
                         <!-- Dex Stats -->
-                        <div class="flex justify-between items-end border-b-2 border-black pb-1 mb-2 px-1 text-black">
+                        <div class="flex justify-between items-end border-b-2 border-black pb-1 mb-2 px-1 text-black flex-shrink-0">
                             <span class="font-pixel text-[10px]">DEX ENTRY LIST</span>
                             <span class="font-pixel text-[10px] bg-white border border-black px-1 flex gap-2">
                                 <button type="button" onclick="fetchDexData()" class="hover:text-poke-red"><i class="fa-solid fa-arrows-rotate"></i></button>
@@ -310,18 +322,29 @@
             </div>
 
             <!-- Bottom Controls Area -->
-            <div class="controls-area">
-                <div class="w-12 h-12 rounded-full bg-black border-2 border-gray-700 shadow-inner"></div>
+            <div class="controls-area flex-shrink-0">
+                <!-- Home Button -->
+                <button id="btn-home" class="w-12 h-12 rounded-full bg-black border-2 border-gray-700 shadow-inner flex items-center justify-center text-gray-300 hover:text-white hover:bg-gray-800 active:scale-95 transition-all">
+                    <i class="fa-solid fa-house"></i>
+                </button>
                 
+                <!-- Back / Forward Buttons -->
                 <div class="flex gap-4">
-                    <div class="w-10 h-3 rounded-full bg-red-800 border-2 border-black shadow-inner"></div>
-                    <div class="w-10 h-3 rounded-full bg-blue-800 border-2 border-black shadow-inner"></div>
+                    <button id="btn-back" class="w-10 h-3 rounded-full bg-red-800 border-2 border-black shadow-inner hover:bg-red-600 active:scale-95 transition-all"></button>
+                    <button id="btn-forward" class="w-10 h-3 rounded-full bg-blue-800 border-2 border-black shadow-inner hover:bg-blue-600 active:scale-95 transition-all"></button>
                 </div>
 
-                <div class="d-pad">
+                <!-- Interactive D-Pad -->
+                <div class="d-pad relative">
                     <div class="d-pad-part d-pad-vertical"></div>
                     <div class="d-pad-part d-pad-horizontal"></div>
                     <div class="d-pad-part d-pad-center"></div>
+                    
+                    <!-- Invisible Hitboxes for Directions -->
+                    <button id="dpad-up" class="absolute top-0 left-[27px] w-[26px] h-[27px] z-10 active:bg-white/20 rounded-t-sm"></button>
+                    <button id="dpad-down" class="absolute bottom-0 left-[27px] w-[26px] h-[27px] z-10 active:bg-white/20 rounded-b-sm"></button>
+                    <button id="dpad-left" class="absolute top-[27px] left-0 w-[27px] h-[26px] z-10 active:bg-white/20 rounded-l-sm"></button>
+                    <button id="dpad-right" class="absolute top-[27px] right-0 w-[27px] h-[26px] z-10 active:bg-white/20 rounded-r-sm"></button>
                 </div>
             </div>
         </div>
@@ -345,6 +368,9 @@
                         views[viewName].classList.add('flex');
                     }
                 }
+                
+                // Expose showView globally so inline onclick buttons can reach it
+                window.showView = showView;
 
                 // Ensure Supabase is loaded before trying to connect
                 if (!window.supabase) {
@@ -415,15 +441,15 @@
                     };
 
                     if (role === 'fursuiter') {
-                        newProfile.name = '';
-                        newProfile.species = '';
-                        newProfile.description = '';
-                        newProfile.image_url = '';
-                        newProfile.catch_code = generateCode();
+                        newProfile.name = userProfile ? userProfile.name : '';
+                        newProfile.species = userProfile ? userProfile.species : '';
+                        newProfile.description = userProfile ? userProfile.description : '';
+                        newProfile.image_url = userProfile ? userProfile.image_url : '';
+                        newProfile.catch_code = (userProfile && userProfile.catch_code) ? userProfile.catch_code : generateCode();
                     }
 
                     try {
-                        await supabase.from('dex_profiles').insert([newProfile]);
+                        await supabase.from('dex_profiles').upsert([newProfile], { onConflict: 'device_id' });
                         await loadUserProfile();
                     } catch (err) {
                         console.error("Error saving role:", err);
@@ -597,6 +623,46 @@
                     safeStorage.set('megaplex_device_id', '');
                     try { localStorage.removeItem('megaplex_device_id'); } catch(e) {}
                     window.location.reload();
+                });
+
+                // --- UPDATED HARDWARE BUTTON MAPPINGS ---
+                
+                // Home & Back Buttons: Return to the Role Select screen manually
+                document.getElementById('btn-home').addEventListener('click', () => {
+                    showView('roleSelect');
+                });
+
+                document.getElementById('btn-back').addEventListener('click', () => {
+                    showView('roleSelect');
+                });
+
+                // Forward Button: Go back into their assigned role view
+                document.getElementById('btn-forward').addEventListener('click', () => {
+                    if (userProfile && userProfile.role === 'fursuiter') {
+                        setupFursuiterView();
+                    } else if (userProfile && userProfile.role === 'attendee') {
+                        setupAttendeeView();
+                    }
+                });
+
+                // D-Pad: Scrolls the active screen display
+                const screenDisplay = document.querySelector('.screen-display');
+                const scrollAmount = 60; // Adjust this value to scroll faster or slower
+
+                document.getElementById('dpad-up').addEventListener('click', () => {
+                    screenDisplay.scrollBy({ top: -scrollAmount, behavior: 'smooth' });
+                });
+
+                document.getElementById('dpad-down').addEventListener('click', () => {
+                    screenDisplay.scrollBy({ top: scrollAmount, behavior: 'smooth' });
+                });
+
+                document.getElementById('dpad-left').addEventListener('click', () => {
+                    screenDisplay.scrollBy({ left: -scrollAmount, behavior: 'smooth' });
+                });
+
+                document.getElementById('dpad-right').addEventListener('click', () => {
+                    screenDisplay.scrollBy({ left: scrollAmount, behavior: 'smooth' });
                 });
 
                 // Boot it up!
