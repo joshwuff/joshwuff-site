@@ -327,269 +327,280 @@
     </div>
 
     <script>
-        // --- 1. SUPABASE INTEGRATION ---
-        const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co';
-        const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
-        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-        // --- 2. LOCAL DEVICE TRACKING ---
-        // Instead of forcing a login, we just remember the specific device
-        let myDeviceId = localStorage.getItem('megaplex_device_id');
-        if (!myDeviceId) {
-            myDeviceId = 'dex_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
-            localStorage.setItem('megaplex_device_id', myDeviceId);
-        }
-
-        let userProfile = null;
-        let allFursuiters = [];
-        let metCodes = new Set();
-
-        const views = {
-            loading: document.getElementById('view-loading'),
-            roleSelect: document.getElementById('view-role-select'),
-            fursuiter: document.getElementById('view-fursuiter'),
-            attendee: document.getElementById('view-attendee')
-        };
-        const btnLogout = document.getElementById('btn-logout');
-
-        function showView(viewName) {
-            Object.values(views).forEach(el => el.classList.add('hidden'));
-            if (views[viewName]) {
-                views[viewName].classList.remove('hidden');
-                views[viewName].classList.add('flex');
-            }
-        }
-
-        function generateCode() {
-            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-            let result = '';
-            for (let i = 0; i < 6; i++) {
-                result += chars.charAt(Math.floor(Math.random() * chars.length));
-            }
-            return result;
-        }
-
-        async function loadUserProfile() {
-            try {
-                const { data, error } = await supabase
-                    .from('dex_profiles')
-                    .select('*')
-                    .eq('device_id', myDeviceId)
-                    .single();
+            document.addEventListener('DOMContentLoaded', () => {
                 
-                if (data) {
-                    userProfile = data;
-                    btnLogout.classList.remove('hidden');
-                    
-                    if (userProfile.role === 'fursuiter') setupFursuiterView();
-                    else setupAttendeeView();
-                } else {
-                    showView('roleSelect');
-                    btnLogout.classList.remove('hidden');
-                }
-            } catch (err) {
-                console.error("Error loading profile:", err);
-                showView('roleSelect');
-            }
-        }
+                const views = {
+                    loading: document.getElementById('view-loading'),
+                    roleSelect: document.getElementById('view-role-select'),
+                    fursuiter: document.getElementById('view-fursuiter'),
+                    attendee: document.getElementById('view-attendee')
+                };
+                const btnLogout = document.getElementById('btn-logout');
 
-        window.selectRole = async (role) => {
-            showView('loading');
-            
-            const newProfile = {
-                device_id: myDeviceId,
-                role: role
-            };
-
-            if (role === 'fursuiter') {
-                newProfile.name = '';
-                newProfile.species = '';
-                newProfile.description = '';
-                newProfile.image_url = '';
-                newProfile.catch_code = generateCode();
-            }
-
-            try {
-                await supabase.from('dex_profiles').insert([newProfile]);
-                await loadUserProfile();
-            } catch (err) {
-                console.error("Error saving role:", err);
-                showView('roleSelect');
-            }
-        };
-
-        function setupFursuiterView() {
-            showView('fursuiter');
-            
-            const form = document.getElementById('fursuiter-form');
-            document.getElementById('fs-name').value = userProfile.name || '';
-            document.getElementById('fs-species').value = userProfile.species || '';
-            document.getElementById('fs-image').value = userProfile.image_url || '';
-            document.getElementById('fs-desc').value = userProfile.description || '';
-            document.getElementById('fs-code-value').textContent = userProfile.catch_code;
-
-            form.onsubmit = async (e) => {
-                e.preventDefault();
-                
-                try {
-                    await supabase.from('dex_profiles').update({
-                        name: document.getElementById('fs-name').value.trim(),
-                        species: document.getElementById('fs-species').value.trim(),
-                        image_url: document.getElementById('fs-image').value.trim(),
-                        description: document.getElementById('fs-desc').value.trim()
-                    }).eq('device_id', myDeviceId);
-                    
-                    document.getElementById('fs-save-msg').classList.remove('hidden');
-                    setTimeout(() => document.getElementById('fs-save-msg').classList.add('hidden'), 3000);
-                } catch (err) { console.error("Error updating profile:", err); }
-            };
-        }
-
-        window.fetchDexData = async function() {
-            try {
-                // Fetch all registered fursuiters
-                const { data: suits } = await supabase
-                    .from('dex_profiles')
-                    .select('*')
-                    .eq('role', 'fursuiter')
-                    .neq('name', ''); // Only show ones who filled out their name
-
-                allFursuiters = suits || [];
-
-                // Fetch the ones this specific user has caught
-                const { data: catches } = await supabase
-                    .from('dex_catches')
-                    .select('target_code')
-                    .eq('catcher_id', myDeviceId);
-
-                metCodes.clear();
-                if (catches) {
-                    catches.forEach(c => metCodes.add(c.target_code));
-                }
-
-                renderDexList();
-            } catch (error) {
-                console.error("Fetch error:", error);
-            }
-        }
-
-        function setupAttendeeView() {
-            showView('attendee');
-            fetchDexData(); // Initial load
-
-            const catchForm = document.getElementById('catch-form');
-            const catchInput = document.getElementById('catch-input');
-            const catchMsg = document.getElementById('catch-msg');
-
-            catchForm.onsubmit = async (e) => {
-                e.preventDefault();
-
-                const codeToCatch = catchInput.value.trim().toUpperCase();
-                if (!codeToCatch) return;
-
-                const target = allFursuiters.find(f => f.catch_code && f.catch_code.toUpperCase() === codeToCatch);
-
-                if (target) {
-                    if (metCodes.has(target.catch_code)) {
-                        showMessage('ALREADY CAUGHT!', 'text-poke-yellow');
-                    } else {
-                        try {
-                            await supabase.from('dex_catches').insert([{
-                                catcher_id: myDeviceId,
-                                target_code: target.catch_code
-                            }]);
-                            
-                            metCodes.add(target.catch_code);
-                            showMessage(`CAUGHT ${target.name.toUpperCase()}!`, 'text-green-300');
-                            catchInput.value = '';
-                            renderDexList();
-                        } catch (err) {
-                            showMessage('ERROR SAVING', 'text-red-500');
-                        }
+                function showView(viewName) {
+                    Object.values(views).forEach(el => el.classList.add('hidden'));
+                    if (views[viewName]) {
+                        views[viewName].classList.remove('hidden');
+                        views[viewName].classList.add('flex');
                     }
-                } else {
-                    showMessage('NO SIGNAL FOUND', 'text-red-500');
                 }
-            };
 
-            function showMessage(msg, colorClass) {
-                catchMsg.textContent = msg;
-                catchMsg.className = `text-[12px] text-center mt-2 font-bold h-4 ${colorClass}`;
-                setTimeout(() => { catchMsg.textContent = ''; }, 3000);
-            }
-        }
+                // Ensure Supabase is loaded before trying to connect
+                if (!window.supabase) {
+                    document.getElementById('view-loading').innerHTML = '<p class="text-poke-darkred font-bold text-center text-sm">CONNECTION FAILED.<br>REFRESH PAGE.</p>';
+                    return;
+                }
 
-        function renderDexList() {
-            const listEl = document.getElementById('dex-list');
-            const countEl = document.getElementById('dex-count');
-            
-            if (allFursuiters.length === 0) {
-                listEl.innerHTML = '<div class="text-center opacity-50 mt-10">NO DATA IN REGISTRY</div>';
-                countEl.textContent = '0/0';
-                return;
-            }
+                // --- 1. SUPABASE INTEGRATION ---
+                const supabaseUrl = 'https://uxajnyzyjzmlxooybbxi.supabase.co';
+                const supabaseKey = 'sb_publishable_CJPxknccOv31U-so1seu4A_nFLcnHwI';
+                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-            const validMetCount = [...metCodes].filter(code => allFursuiters.some(f => f.catch_code === code)).length;
-            countEl.textContent = `${validMetCount}/${allFursuiters.length}`;
+                // --- 2. SAFE LOCAL DEVICE TRACKING ---
+                const safeStorage = {
+                    get: (key) => { try { return localStorage.getItem(key); } catch(e) { return null; } },
+                    set: (key, val) => { try { localStorage.setItem(key, val); } catch(e) { console.warn("Storage blocked"); } }
+                };
 
-            const sortedSuits = [...allFursuiters].sort((a, b) => {
-                const aMet = metCodes.has(a.catch_code);
-                const bMet = metCodes.has(b.catch_code);
-                if (aMet && !bMet) return -1;
-                if (!aMet && bMet) return 1;
-                return (a.name || '').localeCompare(b.name || '');
+                let myDeviceId = safeStorage.get('megaplex_device_id');
+                if (!myDeviceId) {
+                    myDeviceId = 'dex_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36);
+                    safeStorage.set('megaplex_device_id', myDeviceId);
+                }
+
+                let userProfile = null;
+                let allFursuiters = [];
+                let metCodes = new Set();
+
+                function generateCode() {
+                    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                    let result = '';
+                    for (let i = 0; i < 6; i++) {
+                        result += chars.charAt(Math.floor(Math.random() * chars.length));
+                    }
+                    return result;
+                }
+
+                async function loadUserProfile() {
+                    try {
+                        const { data, error } = await supabase
+                            .from('dex_profiles')
+                            .select('*')
+                            .eq('device_id', myDeviceId)
+                            .single();
+                        
+                        if (data) {
+                            userProfile = data;
+                            btnLogout.classList.remove('hidden');
+                            
+                            if (userProfile.role === 'fursuiter') setupFursuiterView();
+                            else setupAttendeeView();
+                        } else {
+                            showView('roleSelect');
+                            btnLogout.classList.remove('hidden');
+                        }
+                    } catch (err) {
+                        console.error("Error loading profile:", err);
+                        showView('roleSelect');
+                    }
+                }
+
+                window.selectRole = async (role) => {
+                    showView('loading');
+                    
+                    const newProfile = {
+                        device_id: myDeviceId,
+                        role: role
+                    };
+
+                    if (role === 'fursuiter') {
+                        newProfile.name = '';
+                        newProfile.species = '';
+                        newProfile.description = '';
+                        newProfile.image_url = '';
+                        newProfile.catch_code = generateCode();
+                    }
+
+                    try {
+                        await supabase.from('dex_profiles').insert([newProfile]);
+                        await loadUserProfile();
+                    } catch (err) {
+                        console.error("Error saving role:", err);
+                        showView('roleSelect');
+                    }
+                };
+
+                function setupFursuiterView() {
+                    showView('fursuiter');
+                    
+                    const form = document.getElementById('fursuiter-form');
+                    document.getElementById('fs-name').value = userProfile.name || '';
+                    document.getElementById('fs-species').value = userProfile.species || '';
+                    document.getElementById('fs-image').value = userProfile.image_url || '';
+                    document.getElementById('fs-desc').value = userProfile.description || '';
+                    document.getElementById('fs-code-value').textContent = userProfile.catch_code;
+
+                    form.onsubmit = async (e) => {
+                        e.preventDefault();
+                        
+                        try {
+                            await supabase.from('dex_profiles').update({
+                                name: document.getElementById('fs-name').value.trim(),
+                                species: document.getElementById('fs-species').value.trim(),
+                                image_url: document.getElementById('fs-image').value.trim(),
+                                description: document.getElementById('fs-desc').value.trim()
+                            }).eq('device_id', myDeviceId);
+                            
+                            document.getElementById('fs-save-msg').classList.remove('hidden');
+                            setTimeout(() => document.getElementById('fs-save-msg').classList.add('hidden'), 3000);
+                        } catch (err) { console.error("Error updating profile:", err); }
+                    };
+                }
+
+                window.fetchDexData = async function() {
+                    try {
+                        const { data: suits } = await supabase
+                            .from('dex_profiles')
+                            .select('*')
+                            .eq('role', 'fursuiter')
+                            .neq('name', '');
+
+                        allFursuiters = suits || [];
+
+                        const { data: catches } = await supabase
+                            .from('dex_catches')
+                            .select('target_code')
+                            .eq('catcher_id', myDeviceId);
+
+                        metCodes.clear();
+                        if (catches) {
+                            catches.forEach(c => metCodes.add(c.target_code));
+                        }
+
+                        renderDexList();
+                    } catch (error) {
+                        console.error("Fetch error:", error);
+                    }
+                }
+
+                function setupAttendeeView() {
+                    showView('attendee');
+                    fetchDexData();
+
+                    const catchForm = document.getElementById('catch-form');
+                    const catchInput = document.getElementById('catch-input');
+                    const catchMsg = document.getElementById('catch-msg');
+
+                    catchForm.onsubmit = async (e) => {
+                        e.preventDefault();
+
+                        const codeToCatch = catchInput.value.trim().toUpperCase();
+                        if (!codeToCatch) return;
+
+                        const target = allFursuiters.find(f => f.catch_code && f.catch_code.toUpperCase() === codeToCatch);
+
+                        if (target) {
+                            if (metCodes.has(target.catch_code)) {
+                                showMessage('ALREADY CAUGHT!', 'text-poke-yellow');
+                            } else {
+                                try {
+                                    await supabase.from('dex_catches').insert([{
+                                        catcher_id: myDeviceId,
+                                        target_code: target.catch_code
+                                    }]);
+                                    
+                                    metCodes.add(target.catch_code);
+                                    showMessage(`CAUGHT ${target.name.toUpperCase()}!`, 'text-green-300');
+                                    catchInput.value = '';
+                                    renderDexList();
+                                } catch (err) {
+                                    showMessage('ERROR SAVING', 'text-red-500');
+                                }
+                            }
+                        } else {
+                            showMessage('NO SIGNAL FOUND', 'text-red-500');
+                        }
+                    };
+
+                    function showMessage(msg, colorClass) {
+                        catchMsg.textContent = msg;
+                        catchMsg.className = `text-[12px] text-center mt-2 font-bold h-4 ${colorClass}`;
+                        setTimeout(() => { catchMsg.textContent = ''; }, 3000);
+                    }
+                }
+
+                function renderDexList() {
+                    const listEl = document.getElementById('dex-list');
+                    const countEl = document.getElementById('dex-count');
+                    
+                    if (allFursuiters.length === 0) {
+                        listEl.innerHTML = '<div class="text-center opacity-50 mt-10">NO DATA IN REGISTRY</div>';
+                        countEl.textContent = '0/0';
+                        return;
+                    }
+
+                    const validMetCount = [...metCodes].filter(code => allFursuiters.some(f => f.catch_code === code)).length;
+                    countEl.textContent = `${validMetCount}/${allFursuiters.length}`;
+
+                    const sortedSuits = [...allFursuiters].sort((a, b) => {
+                        const aMet = metCodes.has(a.catch_code);
+                        const bMet = metCodes.has(b.catch_code);
+                        if (aMet && !bMet) return -1;
+                        if (!aMet && bMet) return 1;
+                        return (a.name || '').localeCompare(b.name || '');
+                    });
+
+                    listEl.innerHTML = sortedSuits.map((fs, index) => {
+                        const isMet = metCodes.has(fs.catch_code);
+                        const dexNum = (index + 1).toString().padStart(3, '0');
+                        
+                        let imgHtml = '';
+                        if (isMet && fs.image_url) {
+                            imgHtml = `<img src="${escapeHTML(fs.image_url)}" alt="${escapeHTML(fs.name)}" class="w-12 h-12 object-cover rounded border border-black bg-white" onerror="this.onerror=null; this.src='https://placehold.co/100x100/dd2222/ffffff?text=?';">`;
+                        } else {
+                            imgHtml = `<div class="w-12 h-12 rounded border border-black flex items-center justify-center bg-gray-300 text-gray-500">
+                                           <i class="fa-solid fa-question text-xl"></i>
+                                       </div>`;
+                        }
+
+                        return `
+                            <div class="bg-white border-2 border-black rounded p-2 flex gap-3 items-center relative overflow-hidden">
+                                ${isMet ? '' : '<div class="absolute inset-0 bg-black opacity-10 pointer-events-none"></div>'}
+                                <div class="font-pixel text-[10px] text-gray-400 absolute top-1 left-1">#${dexNum}</div>
+                                <div class="mt-3">${imgHtml}</div>
+                                <div class="flex-grow mt-2">
+                                    <h3 class="font-bold uppercase text-lg leading-none mb-1 ${isMet ? 'text-black' : 'text-gray-500'}">
+                                        ${isMet ? escapeHTML(fs.name) : '???'}
+                                    </h3>
+                                    <span class="text-xs bg-gray-200 border border-gray-400 px-1 rounded inline-block mb-1">
+                                        ${isMet ? escapeHTML(fs.species) : 'UNKNOWN'}
+                                    </span>
+                                    ${isMet && fs.description ? `<p class="text-xs leading-tight italic line-clamp-2 text-gray-600">"${escapeHTML(fs.description)}"</p>` : ''}
+                                </div>
+                                <div class="text-xl">
+                                    ${isMet ? '<i class="fa-solid fa-check-circle text-poke-red"></i>' : '<i class="fa-regular fa-circle text-gray-300"></i>'}
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                function escapeHTML(str) {
+                    if (!str) return '';
+                    const div = document.createElement('div');
+                    div.textContent = str;
+                    return div.innerHTML;
+                }
+
+                btnLogout.addEventListener('click', () => {
+                    safeStorage.set('megaplex_device_id', '');
+                    try { localStorage.removeItem('megaplex_device_id'); } catch(e) {}
+                    window.location.reload();
+                });
+
+                // Boot it up!
+                loadUserProfile();
             });
-
-            listEl.innerHTML = sortedSuits.map((fs, index) => {
-                const isMet = metCodes.has(fs.catch_code);
-                const dexNum = (index + 1).toString().padStart(3, '0');
-                
-                let imgHtml = '';
-                if (isMet && fs.image_url) {
-                    imgHtml = `<img src="${escapeHTML(fs.image_url)}" alt="${escapeHTML(fs.name)}" class="w-12 h-12 object-cover rounded border border-black bg-white" onerror="this.onerror=null; this.src='https://placehold.co/100x100/dd2222/ffffff?text=?';">`;
-                } else {
-                    imgHtml = `<div class="w-12 h-12 rounded border border-black flex items-center justify-center bg-gray-300 text-gray-500">
-                                   <i class="fa-solid fa-question text-xl"></i>
-                               </div>`;
-                }
-
-                return `
-                    <div class="bg-white border-2 border-black rounded p-2 flex gap-3 items-center relative overflow-hidden">
-                        ${isMet ? '' : '<div class="absolute inset-0 bg-black opacity-10 pointer-events-none"></div>'}
-                        <div class="font-pixel text-[10px] text-gray-400 absolute top-1 left-1">#${dexNum}</div>
-                        <div class="mt-3">${imgHtml}</div>
-                        <div class="flex-grow mt-2">
-                            <h3 class="font-bold uppercase text-lg leading-none mb-1 ${isMet ? 'text-black' : 'text-gray-500'}">
-                                ${isMet ? escapeHTML(fs.name) : '???'}
-                            </h3>
-                            <span class="text-xs bg-gray-200 border border-gray-400 px-1 rounded inline-block mb-1">
-                                ${isMet ? escapeHTML(fs.species) : 'UNKNOWN'}
-                            </span>
-                            ${isMet && fs.description ? `<p class="text-xs leading-tight italic line-clamp-2 text-gray-600">"${escapeHTML(fs.description)}"</p>` : ''}
-                        </div>
-                        <div class="text-xl">
-                            ${isMet ? '<i class="fa-solid fa-check-circle text-poke-red"></i>' : '<i class="fa-regular fa-circle text-gray-300"></i>'}
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function escapeHTML(str) {
-            if (!str) return '';
-            const div = document.createElement('div');
-            div.textContent = str;
-            return div.innerHTML;
-        }
-
-        btnLogout.addEventListener('click', () => {
-            // Simply clear the local storage and reload to "logout"
-            localStorage.removeItem('megaplex_device_id');
-            window.location.reload();
-        });
-
-        // Start initialization on load
-        window.onload = loadUserProfile;
-    </script>
+        </script>
 </body>
 </html>
