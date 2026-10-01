@@ -132,14 +132,14 @@
             background-color: #dedede; margin: 1rem; padding: 1rem;
             border-radius: 1rem 1rem 1rem 3rem; border: 4px solid #550000;
             flex-grow: 1; display: flex; flex-direction: column; position: relative;
-            min-height: 0; /* CRITICAL FIX: Stops the screen from pushing out controls */
+            min-height: 0;
         }
 
         .screen-display {
             background-color: #2bd0d0; border: 3px solid #550000; border-radius: 0.5rem;
             flex-grow: 1; box-shadow: inset 0 0 15px rgba(0,0,0,0.3); overflow-y: auto; position: relative;
             scroll-behavior: smooth;
-            min-height: 0; /* CRITICAL FIX: Allows internal scrolling */
+            min-height: 0;
         }
 
         .screen-display::before {
@@ -249,6 +249,18 @@
                         </div>
 
                         <form id="fursuiter-form" class="flex-grow flex flex-col gap-3 overflow-y-auto pr-2 pb-8 text-black">
+                            <!-- Circular Upload UI -->
+                            <div class="flex flex-col items-center mb-3 pt-2">
+                                <div id="image-preview-container" class="w-20 h-20 rounded-full border-4 border-black bg-gray-200 overflow-hidden flex items-center justify-center mb-2 relative shadow-inner">
+                                    <i id="preview-icon" class="fa-solid fa-camera text-gray-400 text-3xl"></i>
+                                    <img id="preview-img" class="hidden w-full h-full object-cover absolute top-0 left-0" src="" alt="Preview">
+                                </div>
+                                <label class="bg-white border-2 border-black px-3 py-2 text-[10px] font-pixel cursor-pointer hover:bg-gray-100 active:scale-95 text-black shadow-[2px_2px_0px_rgba(0,0,0,0.5)] active:shadow-none active:translate-y-1">
+                                    CHOOSE PHOTO
+                                    <input type="file" id="fs-image-upload" accept="image/*" class="hidden">
+                                </label>
+                            </div>
+
                             <div>
                                 <label class="block font-pixel text-[10px] mb-1 text-black">NAME:</label>
                                 <input type="text" id="fs-name" required class="w-full bg-white border-2 border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-poke-red">
@@ -256,10 +268,6 @@
                             <div>
                                 <label class="block font-pixel text-[10px] mb-1 text-black">SPECIES:</label>
                                 <input type="text" id="fs-species" required class="w-full bg-white border-2 border-black p-2 font-bold focus:outline-none focus:ring-2 focus:ring-poke-red">
-                            </div>
-                            <div>
-                                <label class="block font-pixel text-[10px] mb-1 text-black">IMAGE URL (Opt):</label>
-                                <input type="url" id="fs-image" placeholder="https://..." class="w-full bg-white border-2 border-black p-2 text-sm focus:outline-none focus:ring-2 focus:ring-poke-red">
                             </div>
                             <div>
                                 <label class="block font-pixel text-[10px] mb-1 text-black">INFO:</label>
@@ -398,6 +406,7 @@
                 let userProfile = null;
                 let allFursuiters = [];
                 let metCodes = new Set();
+                let selectedFile = null;
 
                 function generateCode() {
                     const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
@@ -461,26 +470,88 @@
                     showView('fursuiter');
                     
                     const form = document.getElementById('fursuiter-form');
+                    const fileInput = document.getElementById('fs-image-upload');
+                    const previewImg = document.getElementById('preview-img');
+                    const previewIcon = document.getElementById('preview-icon');
+                    const saveBtn = form.querySelector('button[type="submit"]');
+
+                    // Populate existing text data
                     document.getElementById('fs-name').value = userProfile.name || '';
                     document.getElementById('fs-species').value = userProfile.species || '';
-                    document.getElementById('fs-image').value = userProfile.image_url || '';
                     document.getElementById('fs-desc').value = userProfile.description || '';
                     document.getElementById('fs-code-value').textContent = userProfile.catch_code;
 
+                    // Show existing image if they already have one
+                    if (userProfile.image_url) {
+                        previewImg.src = userProfile.image_url;
+                        previewImg.classList.remove('hidden');
+                        previewIcon.classList.add('hidden');
+                    }
+
+                    // Handle Local Image Preview
+                    fileInput.addEventListener('change', (e) => {
+                        const file = e.target.files[0];
+                        if (file) {
+                            selectedFile = file;
+                            previewImg.src = URL.createObjectURL(file); // Generates temporary local preview
+                            previewImg.classList.remove('hidden');
+                            previewIcon.classList.add('hidden');
+                        }
+                    });
+
+                    // Handle Form Submit and Supabase Upload
                     form.onsubmit = async (e) => {
                         e.preventDefault();
                         
+                        saveBtn.textContent = 'UPLOADING...';
+                        saveBtn.disabled = true;
+                        
                         try {
+                            let finalImageUrl = userProfile.image_url || '';
+
+                            // If they selected a new file, upload it to Storage first
+                            if (selectedFile) {
+                                const fileExt = selectedFile.name.split('.').pop();
+                                const fileName = `${myDeviceId}_${Date.now()}.${fileExt}`;
+                                const filePath = `avatars/${fileName}`;
+
+                                const { error: uploadError } = await supabase.storage
+                                    .from('furdex_images')
+                                    .upload(filePath, selectedFile, { upsert: true });
+
+                                if (uploadError) throw uploadError;
+
+                                // Retrieve the public URL for the newly uploaded file
+                                const { data: publicUrlData } = supabase.storage
+                                    .from('furdex_images')
+                                    .getPublicUrl(filePath);
+                                
+                                finalImageUrl = publicUrlData.publicUrl;
+                            }
+
+                            // Save text data and image URL to the database
                             await supabase.from('dex_profiles').update({
                                 name: document.getElementById('fs-name').value.trim(),
                                 species: document.getElementById('fs-species').value.trim(),
-                                image_url: document.getElementById('fs-image').value.trim(),
+                                image_url: finalImageUrl,
                                 description: document.getElementById('fs-desc').value.trim()
                             }).eq('device_id', myDeviceId);
                             
+                            // Update local memory so it doesn't revert if they hit back
+                            userProfile.image_url = finalImageUrl;
+                            userProfile.name = document.getElementById('fs-name').value.trim();
+                            userProfile.species = document.getElementById('fs-species').value.trim();
+                            userProfile.description = document.getElementById('fs-desc').value.trim();
+                            
                             document.getElementById('fs-save-msg').classList.remove('hidden');
                             setTimeout(() => document.getElementById('fs-save-msg').classList.add('hidden'), 3000);
-                        } catch (err) { console.error("Error updating profile:", err); }
+                        } catch (err) {
+                            console.error("Error updating profile:", err);
+                            alert("Upload failed. Check your Supabase Storage bucket settings.");
+                        } finally {
+                            saveBtn.textContent = 'SAVE TO DEX';
+                            saveBtn.disabled = false;
+                        }
                     };
                 }
 
